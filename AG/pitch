@@ -1,0 +1,64 @@
+# CloudTuner.ai - Interactive Client Pitch (Flow: Intro -> Invincible Ocean -> CloudTuner)
+
+**IO:** "Hi [Client Name], thanks for connecting with us today."
+
+**C:** "Hi, good to be here. I'm curious to hear what you guys do."
+
+**IO:** "Absolutely. Before we jump into the product, let me quickly tell you who we are. We are **Invincible Ocean**—a certified, data-driven technology partner trusted by industry leaders like **Tata AIG, Adani, Cars24, and Toyota**."
+
+**C:** "Oh, I know some of those names. You work with them?"
+
+**IO:** "Yes, we power secure, scalable solutions for them. We take trust seriously—we’re **SOC 2, GDPR, and ISO 27001 certified**. It’s actually that experience with large-scale infrastructure that led us to build our flagship platform: **CloudTuner.ai**."
+
+**C:** "Okay, so what does CloudTuner actually do?"
+
+**IO:** "Let me ask you this—if you had to guess, how much of your cloud budget is driving innovation versus just... leaking away?"
+
+**C:** "Honestly? Probably more than I'd like to admit."
+
+**IO:** "That’s exactly what we solve. CloudTuner is an AI-driven FinOps and SecOps platform. Whether you're on AWS, Azure, or Kubernetes, we unify it all. 
+
+But we don't just *show* you costs. Our AI actively hunts down abandoned resources, flags security risks like open S3 buckets, and gives you a tailored 'savings checklist.'"
+
+**C:** "That sounds useful. But we have complex queries about our infra."
+
+**IO:** "That’s the best part. We have a custom **Cloud GPT**. You can literally ask your infrastructure, 'Where can I save money today?' and get an instant answer."
+
+**C:** "And the pricing?"
+
+**IO:** "It's completely risk-free. We work on a success-fee model. We only charge a percentage of what we *actually* save you. If we don’t save you money, you don’t pay us a dime."
+
+**C:** "That sounds fair. But what about integration? We can't afford a long setup or downtime."
+
+**IO:** "It takes exactly 5 minutes. We use secure, **read-only access**, so we never mess with your live configurations. Plus, we tailor the experience—your CFO gets a high-level ROI view, while your DevOps team gets a technical optimization playbook."
+
+**C:** "Okay, you've covered everything. Let's look at the demo."
+-----------------------
+
+
+
+C: "Hi, good to be here. I'm curious to hear what you guys do."
+
+IO: "Absolutely. Before we jump into the product, let me quickly tell you who we are. We are Invincible Ocean—a certified, data-driven technology partner trusted by industry leaders like -Tata AIG, Adani, Cars24, and Toyota."
+
+C: "Oh, ok"
+
+IO: "Yes, we power secure, scalable solutions for them. We take trust seriously—we’re SOC 2, GDPR, and ISO 27001 certified. It’s actually that experience with large-scale infrastructure that led us to build our flagship platform: CloudTuner.ai."
+
+C: "Okay, so what does CloudTuner actually do?"
+
+IO: "Let me ask you this—if you had to guess, how much of your cloud budget is driving innovation versus just... leaking away?"
+
+C: "Honestly? Probably more than I'd like to admit."
+
+IO: "That’s exactly what we solve. CloudTuner is an AI-driven FinOps and SecOps platform. Whether you're on AWS, Azure, or Kubernetes, we unify it all. 
+
+But we don't just *show* you costs. Our AI actively hunts down abandoned resources, flags security risks like open S3 buckets, and gives you a tailored 'savings checklist.'"
+
+C: "That sounds useful. But we have complex queries about our infra."
+
+IO: "That’s the best part. We have a custom *Cloud GPT**. You can literally ask your infrastructure, 'Where can I save money today?' and get an instant answer."
+
+C: "And the pricing?"
+
+IO: "It's completely risk-free. We work on a success-fee model. We only charge a percentage of what we *actually* save you. If we don’t save you money, you don’t pay us a dime."

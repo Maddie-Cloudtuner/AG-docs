@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvEye - Retail Store Analytics Dashboard</title>
+    <meta name="description"
+        content="Real-time retail analytics and customer behavior monitoring dashboard powered by AI-driven CCTV analytics">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="url(#gradient1)" />
+                            <path d="M16 8L22 12V20L16 24L10 20V12L16 8Z" stroke="white" stroke-width="2"
+                                stroke-linejoin="round" />
+                            <circle cx="16" cy="16" r="3" fill="white" />
+                            <defs>
+                                <linearGradient id="gradient1" x1="0" y1="0" x2="32" y2="32">
+                                    <stop offset="0%" stop-color="#8B5CF6" />
+                                    <stop offset="100%" stop-color="#EC4899" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1>InvEye</h1>
+                        <span>Retail Analytics</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-center">
+                <div class="location-selector">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            d="M10 2C6.686 2 4 4.686 4 8c0 5.25 6 10 6 10s6-4.75 6-10c0-3.314-2.686-6-6-6zm0 8c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2z" />
+                    </svg>
+                    <select id="locationSelect">
+                        <option>Main Store - Mumbai</option>
+                        <option>Store - Delhi</option>
+                        <option>Store - Bangalore</option>
+                    </select>
+                </div>
+
+                <div class="date-selector">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            d="M6 2v2H5C3.895 2 3 2.895 3 4v12c0 1.105.895 2 2 2h10c1.105 0 2-.895 2-2V4c0-1.105-.895-2-2-2h-1V2h-2v2H8V2H6zm-1 6h10v8H5V8z" />
+                    </svg>
+                    <select id="dateSelect">
+                        <option>Today</option>
+                        <option>Yesterday</option>
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="live-status">
+                    <span class="pulse-dot"></span>
+                    <span>LIVE</span>
+                </div>
+
+                <button class="notification-btn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            d="M10 2C8.895 2 8 2.895 8 4v.5C6.067 5.468 5 7.109 5 9v4l-2 2v1h14v-1l-2-2V9c0-1.891-1.067-3.532-3-4.5V4c0-1.105-.895-2-2-2zm-1 16h2c0 .552-.448 1-1 1s-1-.448-1-1z" />
+                    </svg>
+                    <span class="notification-badge">5</span>
+                </button>
+
+                <div class="user-menu">
+                    <div class="user-avatar">SM</div>
+                    <div class="user-info">
+                        <span class="user-name">Store Manager</span>
+                        <span class="user-role">Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- KPI Cards -->
+        <section class="kpi-section kpi-section-retail">
+            <div class="kpi-card" data-color="purple">
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path
+                            d="M16 4c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm8 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-16 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm8 8c-3.3 0-6 1.8-6 4v4h12v-4c0-2.2-2.7-4-6-4z" />
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value" id="footfallCount">2,847</h3>
+                    <p class="kpi-label">Visitors Today</p>
+                    <div class="kpi-trend positive">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M6 2L10 8H2L6 2Z" />
+                        </svg>
+                        <span>+12.4% vs last week</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-color="green">
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M4 8h20v2H4V8zm0 6h20v2H4v-2zm0 6h20v2H4v-2z M26 6v20l-4-3-4 3V6h8z" />
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value" id="revenueToday">₹3.64L</h3>
+                    <p class="kpi-label">Revenue Today</p>
+                    <div class="kpi-trend positive">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M6 2L10 8H2L6 2Z" />
+                        </svg>
+                        <span>+18.2% vs yesterday</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-color="blue">
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path
+                            d="M28 8H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h24c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-12 14H4v-4h12v4zm0-6H4v-4h12v4zm14 6H18v-4h12v4zm0-6H18v-4h12v4z" />
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value" id="conversionRate">34.2%</h3>
+                    <p class="kpi-label">Conversion Rate</p>
+                    <div class="kpi-trend positive">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M6 2L10 8H2L6 2Z" />
+                        </svg>
+                        <span>974 purchases</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-color="amber">
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M6 4v4H4v18h24V8h-2V4h-4v4H10V4H6zm2 6h16v14H8V10z M12 14h8v2h-8v-2zm0 4h8v2h-8v-2z" />
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value" id="avgBasketValue">₹1,247</h3>
+                    <p class="kpi-label">Avg Basket Value</p>
+                    <div class="kpi-trend positive">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M6 2L10 8H2L6 2Z" />
+                        </svg>
+                        <span>+₹127 from target</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-color="red">
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path
+                            d="M28 10v12c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V10c0-1.1.9-2 2-2h2V6c0-2.2 1.8-4 4-4h8c2.2 0 4 1.8 4 4v2h2c1.1 0 2 .9 2 2zM12 8h8V6c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2z" />
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value" id="storeCapacity">68%</h3>
+                    <p class="kpi-label">Store Capacity</p>
+                    <div class="kpi-trend neutral">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <circle cx="6" cy="6" r="2" />
+                        </svg>
+                        <span>187 / 275 max</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Left Column: CCTV & Charts -->
+            <div class="content-left">
+                <!-- Live CCTV Grid -->
+                <div class="card cctv-card">
+                    <div class="card-header">
+                        <h2>Live Store Cameras</h2>
+                        <div class="header-actions">
+                            <span class="camera-count">4 of 12 cameras</span>
+                            <button class="btn-icon" id="expandCameras">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path
+                                        d="M3 3h6v2H5v4H3V3zm12 0h2v6h-2V5h-4V3h4zM3 15v-2h2v-4h2v6H3zm14-2v2h-6v-2h4v-4h2v4z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="cctv-grid" id="cctvGrid">
+                        <!-- CCTV feeds will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Customer Flow Chart -->
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h2>Customer Flow Today</h2>
+                        <div class="chart-legend">
+                            <span class="legend-item">
+                                <span class="legend-color" style="background: #8B5CF6"></span>
+                                Visitors
+                            </span>
+                            <span class="legend-item">
+                                <span class="legend-color" style="background: #10B981"></span>
+                                Purchases
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="customerFlowChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Zone Heatmap -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Department Performance</h2>
+                        <span class="badge badge-success">High Engagement</span>
+                    </div>
+                    <div class="compliance-grid">
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Electronics</span>
+                                <span class="compliance-value">89%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 89%; background: #EF4444"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Fashion/Apparel</span>
+                                <span class="compliance-value">72%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 72%; background: #F59E0B"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Groceries</span>
+                                <span class="compliance-value">91%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 91%; background: #EF4444"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Home Goods</span>
+                                <span class="compliance-value">56%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 56%; background: #10B981"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Alerts & Top Products -->
+            <div class="content-right">
+                <!-- Real-time Alerts -->
+                <div class="card alerts-card">
+                    <div class="card-header">
+                        <h2>Security Alerts</h2>
+                        <button class="btn-text">View All (7)</button>
+                    </div>
+                    <div class="alerts-container" id="alertsContainer">
+                        <!-- Alerts will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Top Selling Products -->
+                <div class="card employee-list-card">
+                    <div class="card-header">
+                        <h2>Top Selling Today</h2>
+                        <span class="badge badge-success">Live</span>
+                    </div>
+                    <div class="employee-list" id="topProductsList">
+                        <!-- Top products will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Customer Insights -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Customer Insights</h2>
+                    </div>
+                    <div class="compliance-grid">
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Peak Hour</span>
+                                <span class="compliance-value">2:00-4:00 PM</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 87%; background: #8B5CF6"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Repeat Customers</span>
+                                <span class="compliance-value">42%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 42%; background: #10B981"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Avg Items/Cart</span>
+                                <span class="compliance-value">7.3</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 73%; background: #EC4899"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="chart.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+# Fire & Fight Detection - Requirements
+# Install: pip install -r requirements.txt
+
+# Core ML
+ultralytics>=8.0.0
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Data handling
+numpy>=1.23.0
+opencv-python>=4.7.0
+Pillow>=9.0.0
+PyYAML>=6.0
+
+# Dataset download
+roboflow>=1.0.0
+kaggle>=1.5.0
+
+# Visualization
+matplotlib>=3.6.0
+seaborn>=0.12.0
+
+# Utilities
+tqdm>=4.64.0
+pandas>=1.5.0
+
+# For Jetson deployment (install separately on Jetson)
+# tensorrt  # Pre-installed on Jetson
+# pycuda    # For CUDA operations

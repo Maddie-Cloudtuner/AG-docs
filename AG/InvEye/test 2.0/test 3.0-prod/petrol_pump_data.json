@@ -1,0 +1,429 @@
+{
+    "site_info": {
+        "site_id": "RO_001_NAYARA",
+        "site_name": "Nayara Energy - Andheri West",
+        "location": "Mumbai, Maharashtra",
+        "pumps": 6,
+        "cameras": 12
+    },
+    "timestamp": "2024-12-30T12:00:00+05:30",
+    "shift": "Morning (06:00 - 14:00)",
+    "safety_incidents": {
+        "hourly_data": [
+            {
+                "hour": "06:00",
+                "fire": 0,
+                "smoke": 0,
+                "smoking": 0,
+                "violence": 0
+            },
+            {
+                "hour": "07:00",
+                "fire": 0,
+                "smoke": 0,
+                "smoking": 1,
+                "violence": 0
+            },
+            {
+                "hour": "08:00",
+                "fire": 0,
+                "smoke": 0,
+                "smoking": 0,
+                "violence": 0
+            },
+            {
+                "hour": "09:00",
+                "fire": 0,
+                "smoke": 1,
+                "smoking": 0,
+                "violence": 0
+            },
+            {
+                "hour": "10:00",
+                "fire": 0,
+                "smoke": 0,
+                "smoking": 2,
+                "violence": 0
+            },
+            {
+                "hour": "11:00",
+                "fire": 0,
+                "smoke": 0,
+                "smoking": 0,
+                "violence": 1
+            },
+            {
+                "hour": "12:00",
+                "fire": 0,
+                "smoke": 0,
+                "smoking": 1,
+                "violence": 0
+            }
+        ],
+        "by_zone": {
+            "PUMP_1": {
+                "incidents": 1,
+                "severity": "low"
+            },
+            "PUMP_2": {
+                "incidents": 2,
+                "severity": "medium"
+            },
+            "PUMP_3": {
+                "incidents": 0,
+                "severity": "safe"
+            },
+            "PUMP_4": {
+                "incidents": 1,
+                "severity": "low"
+            },
+            "PUMP_5": {
+                "incidents": 0,
+                "severity": "safe"
+            },
+            "PUMP_6": {
+                "incidents": 1,
+                "severity": "low"
+            },
+            "AIR_STATION": {
+                "incidents": 0,
+                "severity": "safe"
+            },
+            "TANK_AREA": {
+                "incidents": 1,
+                "severity": "high"
+            }
+        }
+    },
+    "five_litre_testing": {
+        "completed": 18,
+        "pending": 4,
+        "total_required": 22,
+        "compliance_rate": 81.8,
+        "return_to_tank": 16,
+        "return_compliance": 88.9,
+        "last_test_time": "11:45:23"
+    },
+    "equipment_status": {
+        "du_covers": [
+            {
+                "id": "DU_1",
+                "status": "secure",
+                "open_duration": 0
+            },
+            {
+                "id": "DU_2",
+                "status": "open",
+                "open_duration": 5
+            },
+            {
+                "id": "DU_3",
+                "status": "secure",
+                "open_duration": 0
+            },
+            {
+                "id": "DU_4",
+                "status": "secure",
+                "open_duration": 0
+            },
+            {
+                "id": "DU_5",
+                "status": "secure",
+                "open_duration": 0
+            },
+            {
+                "id": "DU_6",
+                "status": "secure",
+                "open_duration": 0
+            }
+        ],
+        "manholes": [
+            {
+                "id": "MH_1",
+                "status": "secure"
+            },
+            {
+                "id": "MH_2",
+                "status": "secure"
+            },
+            {
+                "id": "MH_3",
+                "status": "open",
+                "alert": true
+            }
+        ]
+    },
+    "vehicle_analytics": {
+        "entered": 156,
+        "queued": 142,
+        "fueled": 128,
+        "completed_payment": 125,
+        "left_without_fueling": 28,
+        "conversion_rate": 82.1,
+        "avg_wait_time_minutes": 3.2,
+        "wait_distribution": {
+            "0-2 min": 45,
+            "2-5 min": 52,
+            "5-10 min": 25,
+            "10+ min": 6
+        },
+        "hourly_traffic": [
+            {
+                "hour": "06:00",
+                "count": 12
+            },
+            {
+                "hour": "07:00",
+                "count": 28
+            },
+            {
+                "hour": "08:00",
+                "count": 35
+            },
+            {
+                "hour": "09:00",
+                "count": 22
+            },
+            {
+                "hour": "10:00",
+                "count": 18
+            },
+            {
+                "hour": "11:00",
+                "count": 25
+            },
+            {
+                "hour": "12:00",
+                "count": 16
+            }
+        ]
+    },
+    "pump_utilization": [
+        {
+            "pump_id": "PUMP_1",
+            "sessions": 28,
+            "idle_percent": 15,
+            "avg_duration": 4.2
+        },
+        {
+            "pump_id": "PUMP_2",
+            "sessions": 32,
+            "idle_percent": 8,
+            "avg_duration": 3.8
+        },
+        {
+            "pump_id": "PUMP_3",
+            "sessions": 25,
+            "idle_percent": 22,
+            "avg_duration": 4.5
+        },
+        {
+            "pump_id": "PUMP_4",
+            "sessions": 30,
+            "idle_percent": 12,
+            "avg_duration": 4.0
+        },
+        {
+            "pump_id": "PUMP_5",
+            "sessions": 22,
+            "idle_percent": 28,
+            "avg_duration": 4.8
+        },
+        {
+            "pump_id": "PUMP_6",
+            "sessions": 19,
+            "idle_percent": 35,
+            "avg_duration": 5.2
+        }
+    ],
+    "fsm_attendance": [
+        {
+            "id": "FSM001",
+            "name": "Rajesh Kumar",
+            "check_in": "06:02",
+            "uniform_score": 95,
+            "present": true
+        },
+        {
+            "id": "FSM002",
+            "name": "Priya Sharma",
+            "check_in": "06:15",
+            "uniform_score": 88,
+            "present": true
+        },
+        {
+            "id": "FSM003",
+            "name": "Suresh Patil",
+            "check_in": null,
+            "uniform_score": null,
+            "present": false
+        },
+        {
+            "id": "FSM004",
+            "name": "Anita Desai",
+            "check_in": "06:05",
+            "uniform_score": 92,
+            "present": true
+        },
+        {
+            "id": "FSM005",
+            "name": "Vikram Singh",
+            "check_in": "06:08",
+            "uniform_score": 90,
+            "present": true
+        }
+    ],
+    "sop_compliance": {
+        "greeting_namaste": {
+            "performed": 85,
+            "total": 128,
+            "rate": 66.4
+        },
+        "showing_zero": {
+            "performed": 118,
+            "total": 128,
+            "rate": 92.2
+        },
+        "uniform_compliance": {
+            "compliant": 4,
+            "total": 5,
+            "rate": 80.0
+        },
+        "response_time_avg_sec": 8.5,
+        "cleanliness_score": 78
+    },
+    "repeat_customers": {
+        "new": 67,
+        "returning_2_5": 52,
+        "loyal_6_plus": 31,
+        "top_plates": [
+            {
+                "plate": "MH02AB1234",
+                "visits": 15
+            },
+            {
+                "plate": "MH04CD5678",
+                "visits": 12
+            },
+            {
+                "plate": "MH01EF9012",
+                "visits": 10
+            },
+            {
+                "plate": "MH03GH3456",
+                "visits": 9
+            },
+            {
+                "plate": "MH12IJ7890",
+                "visits": 8
+            }
+        ]
+    },
+    "air_filling_station": {
+        "total_sessions": 45,
+        "manned_sessions": 38,
+        "unmanned_sessions": 7,
+        "manned_rate": 84.4,
+        "avg_wait_for_fsm_sec": 45
+    },
+    "cleanliness_timeline": [
+        {
+            "time": "06:30",
+            "score": 92
+        },
+        {
+            "time": "07:00",
+            "score": 88
+        },
+        {
+            "time": "07:30",
+            "score": 85
+        },
+        {
+            "time": "08:00",
+            "score": 82
+        },
+        {
+            "time": "08:30",
+            "score": 78
+        },
+        {
+            "time": "09:00",
+            "score": 75
+        },
+        {
+            "time": "09:30",
+            "score": 88
+        },
+        {
+            "time": "10:00",
+            "score": 85
+        },
+        {
+            "time": "10:30",
+            "score": 80
+        },
+        {
+            "time": "11:00",
+            "score": 76
+        },
+        {
+            "time": "11:30",
+            "score": 72
+        },
+        {
+            "time": "12:00",
+            "score": 78
+        }
+    ],
+    "violations": {
+        "fuel_in_plastic": 2,
+        "clutter_detected": 5,
+        "mob_gathering": 0,
+        "unauthorized_access": 1,
+        "daily_trend": [
+            {
+                "date": "2024-12-25",
+                "fuel": 1,
+                "clutter": 3,
+                "mob": 0,
+                "other": 2
+            },
+            {
+                "date": "2024-12-26",
+                "fuel": 0,
+                "clutter": 4,
+                "mob": 1,
+                "other": 1
+            },
+            {
+                "date": "2024-12-27",
+                "fuel": 2,
+                "clutter": 2,
+                "mob": 0,
+                "other": 0
+            },
+            {
+                "date": "2024-12-28",
+                "fuel": 1,
+                "clutter": 5,
+                "mob": 0,
+                "other": 1
+            },
+            {
+                "date": "2024-12-29",
+                "fuel": 0,
+                "clutter": 3,
+                "mob": 0,
+                "other": 2
+            },
+            {
+                "date": "2024-12-30",
+                "fuel": 2,
+                "clutter": 5,
+                "mob": 0,
+                "other": 1
+            }
+        ]
+    }
+}

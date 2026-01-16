@@ -1,0 +1,18 @@
+# Unified YOLO11n Model Labels for Petrol Pump Monitoring
+# Single model trained on all 5 classes
+
+# Detection Classes
+0: person       # Customer/employee tracking
+1: fire         # Fire/flame detection (CRITICAL)
+2: smoke        # Smoke detection (early warning)
+3: violence     # Fighting/violence detection
+4: cigarette    # Smoking detection (CRITICAL at petrol pump)
+
+# ============================================
+# DATASET SOURCES:
+# ============================================
+# person    - Roboflow people-detection + COCO subset
+# fire      - Roboflow fire-detection (aligned with FASDD/ProFSAM)
+# smoke     - Roboflow fire-smoke datasets
+# violence  - Roboflow violence-detection (aligned with fight_detection_yolov8)
+# cigarette - Roboflow smoker-detection

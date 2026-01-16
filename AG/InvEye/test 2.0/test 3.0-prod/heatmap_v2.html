@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Occupancy Heatmap | InvEye</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #F8FAFC;
+            color: #1E293B;
+            min-height: 100vh;
+        }
+
+        /* Header with Global Filter */
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            padding: 0.5rem 1rem;
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            color: #475569;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #E2E8F0;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Global Date Filter */
+        .global-filter {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-left: auto;
+            font-size: 0.85rem;
+        }
+
+        .global-filter label {
+            color: #64748B;
+            font-weight: 500;
+        }
+
+        .global-filter input[type="date"] {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: white;
+        }
+
+        .global-filter input[type="date"]:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover {
+            background: #2563EB;
+        }
+
+        .filter-btn:disabled {
+            background: #94A3B8;
+            cursor: not-allowed;
+        }
+
+        /* Loading State */
+        .loading .section-body {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .loading-indicator {
+            display: none;
+            color: #64748B;
+            font-size: 0.85rem;
+        }
+
+        .loading .loading-indicator {
+            display: inline;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 1.5rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .section-header .date-display {
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        .section-body {
+            padding: 1.5rem;
+        }
+
+        /* Zone Heatmap Grid */
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .camera-heatmap {
+            background: #F8FAFC;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #E2E8F0;
+        }
+
+        .camera-heatmap h3 {
+            font-size: 0.85rem;
+            color: #64748B;
+            margin-bottom: 0.75rem;
+        }
+
+        .heatmap-visual {
+            height: 100px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .heatmap-visual.low {
+            background: linear-gradient(135deg, #86EFAC 0%, #22C55E 100%);
+        }
+
+        .heatmap-visual.medium {
+            background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 100%);
+        }
+
+        .heatmap-visual.high {
+            background: linear-gradient(135deg, #FCA5A5 0%, #DC2626 100%);
+        }
+
+        .peak-info {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        /* Hourly Activity Grid */
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+        }
+
+        .time-slot {
+            padding: 0.75rem 0.5rem;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #1E293B;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot.low {
+            background: #DCFCE7;
+        }
+
+        .time-slot.medium {
+            background: #FEF3C7;
+        }
+
+        .time-slot.high {
+            background: #FEE2E2;
+        }
+
+        .time-slot.empty {
+            background: #F1F5F9;
+            color: #94A3B8;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .legend-dot.low {
+            background: #22C55E;
+        }
+
+        .legend-dot.medium {
+            background: #F59E0B;
+        }
+
+        .legend-dot.high {
+            background: #DC2626;
+        }
+
+        /* Critical Events Summary */
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .event-card {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .event-card.critical {
+            background: #FEE2E2;
+            border-color: #DC2626;
+        }
+
+        .event-card.warning {
+            background: #FEF3C7;
+            border-color: #F59E0B;
+        }
+
+        .event-card.info {
+            background: #DBEAFE;
+            border-color: #3B82F6;
+        }
+
+        .event-card.success {
+            background: #DCFCE7;
+            border-color: #22C55E;
+        }
+
+        .event-card .count {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .event-card .label {
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Error State */
+        .error-message {
+            background: #FEE2E2;
+            color: #DC2626;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            display: none;
+        }
+
+        .error .error-message {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .global-filter {
+                flex-wrap: wrap;
+                margin-left: 0;
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            .heatmap-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .time-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .event-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <a href="index.html" class="back-btn">← Back</a>
+        <h1 class="page-title">Occupancy Heatmap</h1>
+
+        <!-- Global Date Filter -->
+        <div class="global-filter">
+            <label for="date-filter">Date:</label>
+            <input type="date" id="date-filter" />
+            <button id="apply-filter" class="filter-btn">Apply</button>
+            <span class="loading-indicator">Loading...</span>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="error-message" id="error-msg">Failed to load data. Please try again.</div>
+
+        <!-- Peak Occupancy by Location -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Peak Occupancy by Location</h2>
+                <span class="date-display" id="zone-date-display">Loading...</span>
+            </div>
+            <div class="section-body">
+                <div class="heatmap-grid" id="zone-grid">
+                    <!-- Dynamically populated -->
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><span class="legend-dot low"></span> Low (1-3)</div>
+                    <div class="legend-item"><span class="legend-dot medium"></span> Medium (4-6)</div>
+                    <div class="legend-item"><span class="legend-dot high"></span> High (7+)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hourly Activity -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Hourly Activity (All Cameras)</h2>
+            </div>
+            <div class="section-body">
+                <div class="time-grid" id="hourly-grid">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Critical Events Summary -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Critical Events Summary</h2>
+            </div>
+            <div class="section-body">
+                <div class="event-grid" id="events-grid">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ============================================================
+        // CONFIGURATION - Update these for your environment
+        // ============================================================
+        const CONFIG = {
+            API_BASE_URL: '/api/v1',  // Change to your API endpoint
+            SITE_ID: 'HEAD_OFFICE',    // Your site identifier
+
+            // ⚡ MOCK MODE - Set to true to test without backend
+            USE_MOCK_DATA: true,
+            MOCK_DASHBOARD_URL: 'mock_dashboard.json',
+            MOCK_HEATMAP_URL: 'mock_heatmap.json',
+
+            // Zone configuration (maps zone_id to display name)
+            ZONES: {
+                'EMPLOYEE_AREA': 'Employee Area',
+                'RECEPTION_AREA': 'Reception Area',
+                'CAFETERIA': 'Cafeteria',
+                'BOSS_CABIN': 'Boss Cabin'
+            }
+        };
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        const state = {
+            selectedDate: new Date().toISOString().split('T')[0],
+            isLoading: false
+        };
+
+        // ============================================================
+        // API CALLS - Single consolidated endpoint
+        // ============================================================
+
+        /**
+         * Fetch all dashboard data in ONE API call
+         * GET /api/v1/dashboard/{site_id}?date=2026-01-05
+         * 
+         * Response:
+         * {
+         *   "site_id": "HEAD_OFFICE",
+         *   "date": "2026-01-05",
+         *   "zones": {
+         *     "EMPLOYEE_AREA": {"peak": 8, "events": 17, "intensity": "high"},
+         *     "RECEPTION_AREA": {"peak": 6, "events": 312, "intensity": "medium"}
+         *   },
+         *   "hourly": [
+         *     {"hour": 5, "count": 1, "intensity": "low"},
+         *     {"hour": 10, "count": 8, "intensity": "high"}
+         *   ],
+         *   "critical_events": {
+         *     "unauthorized_stranger": 23,
+         *     "restricted_access": 18,
+         *     "crowd_violation": 3,
+         *     "total_events": 2844
+         *   }
+         * }
+         */
+        async function fetchDashboardData(date) {
+            // Use mock data for testing without backend
+            if (CONFIG.USE_MOCK_DATA) {
+                const response = await fetch(CONFIG.MOCK_DASHBOARD_URL);
+                return response.json();
+            }
+
+            const url = `${CONFIG.API_BASE_URL}/dashboard/${CONFIG.SITE_ID}?date=${date}`;
+
+            const response = await fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json'
+                    // Add 'Authorization': 'Bearer <token>' if needed
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+
+            return response.json();
+        }
+
+        // ============================================================
+        // UI UPDATES
+        // ============================================================
+
+        function setLoading(loading) {
+            state.isLoading = loading;
+            document.body.classList.toggle('loading', loading);
+        }
+
+        function showError(message) {
+            document.body.classList.add('error');
+            document.getElementById('error-msg').textContent = message;
+        }
+
+        function clearError() {
+            document.body.classList.remove('error');
+        }
+
+        function updateZoneGrid(zones) {
+            const grid = document.getElementById('zone-grid');
+            grid.innerHTML = '';
+
+            for (const [zoneId, displayName] of Object.entries(CONFIG.ZONES)) {
+                const stats = zones[zoneId] || { peak: 0, events: 0, intensity: 'low' };
+
+                const card = document.createElement('div');
+                card.className = 'camera-heatmap';
+                card.innerHTML = `
+                    <h3>${displayName.toUpperCase()}</h3>
+                    <div class="heatmap-visual ${stats.intensity}">${stats.peak}</div>
+                    <p class="peak-info">Peak: ${stats.peak} people • ${stats.events} events</p>
+                `;
+                grid.appendChild(card);
+            }
+        }
+
+        function updateHourlyGrid(hourly) {
+            const grid = document.getElementById('hourly-grid');
+            grid.innerHTML = '';
+
+            // Create slots for hours that have data
+            for (const hourData of hourly) {
+                const slot = document.createElement('div');
+                slot.className = `time-slot ${hourData.intensity || 'empty'}`;
+                slot.innerHTML = `${formatHour(hourData.hour)}<br><strong>${hourData.count}</strong>`;
+                grid.appendChild(slot);
+            }
+
+            // If no data, show message
+            if (hourly.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #64748B;">No activity data for this date</div>';
+            }
+        }
+
+        function updateEventsGrid(events) {
+            const grid = document.getElementById('events-grid');
+
+            const eventTypes = [
+                { key: 'unauthorized_stranger', label: 'UNAUTHORIZED_STRANGER', class: 'critical', color: '#DC2626' },
+                { key: 'restricted_access', label: 'RESTRICTED_ACCESS', class: 'warning', color: '#F59E0B' },
+                { key: 'crowd_violation', label: 'CROWD_VIOLATION', class: 'info', color: '#3B82F6' },
+                { key: 'total_events', label: 'Total Events', class: 'success', color: '#22C55E' }
+            ];
+
+            grid.innerHTML = eventTypes.map(et => `
+                <div class="event-card ${et.class}">
+                    <div class="count" style="color: ${et.color}">${events[et.key] || 0}</div>
+                    <div class="label" style="color: ${et.color}99">${et.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateDateDisplay(date) {
+            const display = document.getElementById('zone-date-display');
+            const formatted = new Date(date).toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            display.textContent = `Data from ${formatted} • ${CONFIG.SITE_ID}`;
+        }
+
+        function formatHour(hour) {
+            if (hour === 0) return '12 AM';
+            if (hour < 12) return `${hour} AM`;
+            if (hour === 12) return '12 PM';
+            return `${hour - 12} PM`;
+        }
+
+        // ============================================================
+        // MAIN DATA LOADING
+        // ============================================================
+
+        async function loadDashboardData() {
+            if (state.isLoading) return;
+
+            setLoading(true);
+            clearError();
+
+            try {
+                const data = await fetchDashboardData(state.selectedDate);
+
+                updateZoneGrid(data.zones || {});
+                updateHourlyGrid(data.hourly || []);
+                updateEventsGrid(data.critical_events || {});
+                updateDateDisplay(state.selectedDate);
+
+            } catch (error) {
+                console.error('Failed to load dashboard:', error);
+                showError('Failed to load heatmap data. Please check your connection.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // ============================================================
+        // INITIALIZATION
+        // ============================================================
+
+        function init() {
+            // Set date picker to today
+            const datePicker = document.getElementById('date-filter');
+            datePicker.value = state.selectedDate;
+            datePicker.max = new Date().toISOString().split('T')[0]; // Can't select future
+
+            // Date change handler
+            datePicker.addEventListener('change', (e) => {
+                state.selectedDate = e.target.value;
+                loadDashboardData();
+            });
+
+            // Apply button handler
+            document.getElementById('apply-filter').addEventListener('click', () => {
+                state.selectedDate = datePicker.value;
+                loadDashboardData();
+            });
+
+            // Initial load
+            loadDashboardData();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>

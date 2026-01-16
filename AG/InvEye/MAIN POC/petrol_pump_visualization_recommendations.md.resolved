@@ -1,0 +1,313 @@
+# ⛽ InvEye Petrol Pump - Graph & Visualization Recommendations
+
+## Executive Summary
+
+Based on analysis of the existing InvEye dashboard architecture (test 3.0), the 17 KPIs defined for petrol pump monitoring, and the "Trigger & Verify" pipeline strategy, this document recommends **actionable data visualizations** optimized for the Petrol Pump use case.
+
+---
+
+## Current Architecture Analysis
+
+### Tech Stack (test 3.0)
+| Component | Technology |
+|-----------|------------|
+| **Charts** | Chart.js (CDN) |
+| **Deployment** | Vercel Static (`@vercel/static`) |
+| **Data Flow** | JSON → localStorage → Multi-page sync |
+| **UI Framework** | Vanilla HTML/CSS/JS |
+| **Font** | Inter (Google Fonts) |
+
+### Existing Visualizations
+1. ✅ **Timeline Chart** - People count over time per camera
+2. ✅ **Camera Distribution** - Doughnut chart of activity
+3. ✅ **Object Detection Bars** - Horizontal bars with icons
+4. ✅ **Alerts Panel** - Event-based critical alerts
+5. ✅ **KPI Cards** - Restricted access, peak occupancy, detections
+
+---
+
+## 🎯 Recommended Visualizations for Petrol Pump
+
+### Category 1: Safety & Compliance (Critical Priority)
+
+#### 1.1 **Safety Incident Heatmap**
+![Safety Heatmap Reference](file:///C:/Users/LENOVO/.gemini/antigravity/brain/4eb278ff-1f9c-4098-b748-fa02f2765f69/uploaded_image_1767076184165.png)
+
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | Fire, Smoke, Smoking (KPI 8), Violence/Fighting |
+| **Chart Type** | `heatmapjs` or Chart.js matrix plugin |
+| **X-Axis** | Time of Day (Hourly buckets) |
+| **Y-Axis** | Camera Zones (Pump 1-6, Air Station, Tank Area) |
+| **Color Scale** | Green (0) → Yellow → Red (Critical) |
+| **Actionable Insight** | Identify high-risk time slots for staff deployment |
+
+```javascript
+// Data structure example
+const safetyHeatmapData = {
+  zones: ['Pump_1', 'Pump_2', 'Air_Station', 'Tank_Area'],
+  hours: ['06:00', '07:00', '08:00', ...],
+  incidents: [
+    { zone: 'Pump_2', hour: '14:00', severity: 'high', type: 'smoking' }
+  ]
+};
+```
+
+---
+
+#### 1.2 **5L Testing Compliance Gauge**
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | KPI 1 (5L Test), KPI 3 (Return to Tank) |
+| **Chart Type** | Radial Gauge / Speedometer |
+| **Target** | 100% compliance per shift |
+| **Display** | Current % + Trend Arrow |
+| **Alert** | Red zone if < 90% |
+
+```javascript
+// Chart.js Doughnut as Gauge
+{
+  type: 'doughnut',
+  data: {
+    datasets: [{
+      data: [completedTests, pendingTests],
+      backgroundColor: ['#22C55E', '#E2E8F0'],
+      circumference: 180,
+      rotation: 270
+    }]
+  }
+}
+```
+
+---
+
+#### 1.3 **DU/Manhole Cover Status Panel**
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | KPI 4 (DU Cover Open), KPI 5 (Manhole Open) |
+| **Chart Type** | Real-time Status Grid |
+| **Layout** | 6x Pump Icons + Tank Icons |
+| **States** | ✅ Secure / ⚠️ Open (Timer) / 🔴 Violation (>15 min) |
+
+---
+
+### Category 2: Operational Efficiency
+
+#### 2.1 **Vehicle Conversion Funnel**
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | KPI 2 (% Conversion), KPI 12 (Left without Fueling) |
+| **Chart Type** | Funnel Chart (Chart.js funnel plugin) |
+| **Stages** | Entry → Queued → Fueling → Payment → Exit |
+| **Metric** | Conversion Rate % + Drop-off Points |
+
+```
+          ╔═══════════════════════╗
+          ║ 100% Vehicles Entered ║
+          ╠═══════════════════════╣
+          ║  85% Reached Pumps    ║
+          ╠═══════════════════════╣
+          ║  78% Started Fueling  ║
+          ╠═══════════════════════╣
+          ║  75% Completed        ║
+          ╚═══════════════════════╝
+          Lost: 25% (45 vehicles)
+```
+
+---
+
+#### 2.2 **Pump Utilization Timeline (Gantt-style)**
+| Parameter | Implementation |
+|-----------|----------------|
+| **Relationship** | Vehicle-to-Pump allocation |
+| **Chart Type** | Horizontal Bar Timeline |
+| **X-Axis** | Time (Continuous) |
+| **Y-Axis** | Pump 1-6 |
+| **Color** | Green (Active) / Gray (Idle) / Orange (Waiting) |
+| **Actionable Insight** | Identify underutilized pumps & peak bottlenecks |
+
+---
+
+#### 2.3 **Air Filling Station Monitoring**
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | KPI 17 (Manned Air Filling) |
+| **Chart Type** | Status + Donut |
+| **Metrics** | % Manned vs Unmanned sessions |
+| **Alert** | Trigger when vehicle present but no FSM for >60 sec |
+
+---
+
+### Category 3: Staff Performance & Compliance
+
+#### 3.1 **FSM Attendance Dashboard**
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | KPI 7 (FSM Attendance), KPI 10 (Uniform) |
+| **Chart Type** | Avatar Grid + Progress Bar |
+| **Display** | Employee photos with check-in time, uniform score |
+| **Integration** | Face Recognition (ArcFace) results |
+
+```
+┌────────────────────────────────────────────┐
+│  FSM Attendance - Today (30 Dec 2024)      │
+├────────────────────────────────────────────┤
+│ 👤 Rajesh     ✅ 06:02 AM  │ Uniform: 95% │
+│ 👤 Priya      ✅ 06:15 AM  │ Uniform: 88% │
+│ 👤 Suresh     ⏰ Pending   │ Uniform: --  │
+│ 👤 Anita      ✅ 06:05 AM  │ Uniform: 92% │
+└────────────────────────────────────────────┘
+```
+
+---
+
+#### 3.2 **SOP Compliance Radar Chart**
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | KPI 15 (Greeting), KPI 16 (Showing Zero), KPI 10 (Uniform) |
+| **Chart Type** | Radar / Spider Chart |
+| **Axes** | Greeting, Zero Display, Uniform, Cleanliness, Response Time |
+| **Data** | Per-shift or Per-FSM scores |
+
+---
+
+#### 3.3 **Customer Greeting Timeline**
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | KPI 15 (Namaste Greeting) |
+| **Chart Type** | Scatter Plot |
+| **X-Axis** | Customer arrival time |
+| **Y-Axis** | Response time (seconds to greeting) |
+| **Target Line** | <10 seconds = Excellent |
+
+---
+
+### Category 4: Customer Analytics
+
+#### 4.1 **Repeat Customer Insights (ANPR)**
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | KPI 9 (Repeat Customer ANPR) |
+| **Chart Type** | Pie Chart + Table |
+| **Segments** | New / Returning (2-5x) / Loyal (6+ visits) |
+| **Table** | Top 10 frequent plates with visit count |
+
+```javascript
+const repeatCustomerData = {
+  labels: ['New Customers', 'Returning (2-5)', 'Loyal (6+)'],
+  data: [45, 35, 20], // percentages
+  colors: ['#60A5FA', '#22C55E', '#7C3AED']
+};
+```
+
+---
+
+#### 4.2 **Queue Wait Time Distribution**
+| Parameter | Implementation |
+|-----------|----------------|
+| **Derived From** | Vehicle tracking + Pump zone timing |
+| **Chart Type** | Histogram |
+| **X-Axis** | Wait time buckets (0-2 min, 2-5 min, 5-10 min, 10+ min) |
+| **Y-Axis** | Vehicle count |
+| **Target** | >90% served within 5 minutes |
+
+---
+
+#### 4.3 **Peak Hours Traffic Heatmap**
+| Parameter | Implementation |
+|-----------|----------------|
+| **Chart Type** | Calendar Heatmap (Day × Hour) |
+| **Color** | Intensity = Vehicle count |
+| **Actionable Insight** | Staffing optimization for busy periods |
+
+---
+
+### Category 5: Cleanliness & Environment
+
+#### 5.1 **Cleanliness Score Timeline**
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | KPI 11 (DU Cleanliness), KPI 13 (Plastic/Clutter) |
+| **Chart Type** | Line Chart with Areas |
+| **Frequency** | Every 30-60 min VLM snapshots |
+| **Scoring** | 0-100 based on VLM output |
+| **Trend** | Show improvement/degradation over shift |
+
+---
+
+#### 5.2 **Violation Tracker Stacked Bar**
+| Parameter | Implementation |
+|-----------|----------------|
+| **KPIs Covered** | KPI 6 (Plastic Bottles), KPI 13 (Clutter), KPI 14 (Mob) |
+| **Chart Type** | Stacked Bar (Daily) |
+| **Categories** | Fuel Violation / Clutter / Mob / Other |
+| **Y-Axis** | Violation count |
+
+---
+
+## 📊 Priority Implementation Matrix
+
+| Priority | Visualization | Complexity | Value |
+|----------|---------------|------------|-------|
+| **P0** | Safety Incident Heatmap | Medium | 🔴 Critical |
+| **P0** | DU/Manhole Cover Status | Low | 🔴 Critical |
+| **P0** | 5L Testing Compliance Gauge | Low | 🔴 Critical |
+| **P1** | Vehicle Conversion Funnel | Medium | 🟠 High |
+| **P1** | FSM Attendance Dashboard | Medium | 🟠 High |
+| **P1** | Repeat Customer Insights | Low | 🟠 High |
+| **P2** | Pump Utilization Timeline | High | 🟡 Medium |
+| **P2** | SOP Compliance Radar | Medium | 🟡 Medium |
+| **P2** | Cleanliness Score Timeline | Low | 🟡 Medium |
+| **P3** | Queue Wait Time Distribution | Medium | 🟢 Nice-to-have |
+| **P3** | Customer Greeting Timeline | Medium | 🟢 Nice-to-have |
+
+---
+
+## Technical Implementation Notes
+
+### Chart.js Plugins Required
+```html
+<!-- Add to index.html -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.1.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+```
+
+### Data JSON Structure (Proposed)
+```javascript
+// petrol_pump_analytics.json
+{
+  "timestamp": "2024-12-30T12:00:00Z",
+  "site_id": "RO_001_NAYARA",
+  "kpi_metrics": {
+    "five_litre_tests": { "completed": 12, "pending": 2, "compliance": 85.7 },
+    "vehicle_conversion": { "entered": 150, "fueled": 128, "rate": 85.3 },
+    "safety_incidents": { "fire": 0, "smoke": 0, "smoking": 1 },
+    "fsm_attendance": [
+      { "id": "FSM001", "name": "Rajesh", "check_in": "06:02", "uniform_score": 95 }
+    ],
+    "repeat_customers": { "new": 67, "returning": 52, "loyal": 31 }
+  }
+}
+```
+
+### Vercel Deployment (No Changes Needed)
+The existing [vercel.json](file:///c:/Users/LENOVO/Desktop/my_docs/AG/InvEye/test%202.0/test%203.0/vercel.json) static configuration supports adding new HTML pages:
+```json
+{
+  "version": 2,
+  "builds": [{ "src": "**/*", "use": "@vercel/static" }]
+}
+```
+
+---
+
+## Next Steps
+
+1. **Phase 1**: Implement P0 visualizations (Safety + Compliance)
+2. **Phase 2**: Add operational efficiency charts
+3. **Phase 3**: Staff & Customer analytics
+4. **Phase 4**: Advanced integrations (ANPR, Face Recognition)
+
+---
+
+*Document generated for InvEye Petrol Pump POC - December 2024*

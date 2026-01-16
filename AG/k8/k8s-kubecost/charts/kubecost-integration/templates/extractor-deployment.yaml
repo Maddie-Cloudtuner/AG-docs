@@ -1,0 +1,77 @@
+{{- if .Values.extractor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.extractor.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.extractor.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/component: extractor
+    app.kubernetes.io/part-of: kubecost-integration
+spec:
+  replicas: {{ .Values.extractor.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.extractor.name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.extractor.name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: extractor
+    spec:
+      serviceAccountName: {{ include "kubecost-integration.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Values.extractor.name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+        image: "{{ .Values.global.imageRegistry }}/{{ .Values.extractor.image.repository }}:{{ .Values.extractor.image.tag | default .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.extractor.image.pullPolicy | default .Values.global.imagePullPolicy }}
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: KUBECOST_ENDPOINT
+          value: {{ (.Values.extractor.config.kubecostEndpoint | default (printf "http://%s-cost-analyzer.%s.svc.cluster.local:9090" .Release.Name .Release.Namespace)) | quote }}
+        - name: CLOUDTUNER_INFLUXDB_URL
+          value: {{ .Values.kubecost.cloudtuner.storage.influxdb | quote }}
+        - name: CLOUDTUNER_CLICKHOUSE_URL
+          value: {{ .Values.kubecost.cloudtuner.storage.clickhouse | quote }}
+        - name: BATCH_SIZE
+          value: {{ .Values.extractor.config.batchSize | quote }}
+        - name: TIMEOUT
+          value: {{ .Values.extractor.config.timeout | quote }}
+        - name: MAX_RETRIES
+          value: {{ .Values.extractor.config.retries | quote }}
+        - name: LOG_LEVEL
+          value: "INFO"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          {{- toYaml .Values.extractor.resources | nindent 10 }}
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: var-run
+          mountPath: /var/run
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: var-run
+        emptyDir: {}
+{{- end }}

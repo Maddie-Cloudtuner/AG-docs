@@ -1,0 +1,18 @@
+{
+    "name": "nayara-petrol-pump-dashboard",
+    "version": "1.0.0",
+    "description": "Nayara Energy Petrol Pump Analytics Dashboard - Powered by InvEye",
+    "scripts": {
+        "dev": "npx serve .",
+        "start": "npx serve ."
+    },
+    "keywords": [
+        "dashboard",
+        "petrol-pump",
+        "analytics",
+        "nayara",
+        "inveye"
+    ],
+    "author": "InvEye Team",
+    "license": "MIT"
+}

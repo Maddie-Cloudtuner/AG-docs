@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roboi Dashboard - Petrol Pump Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">🛢️</span>
+                    <span class="logo-text">Nayara Admin Side</span>
+                </div>
+                <div class="site-info">
+                    <span class="site-badge" id="siteId">R0001</span>
+                    <span class="status-badge" id="siteStatus">
+                        <span class="status-dot online"></span>
+                        Online • Last Refreshed <span id="lastRefresh">13:14</span>
+                    </span>
+                    <button class="refresh-btn" onclick="refreshData()" title="Refresh Data">🔄</button>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="date-range-picker">
+                    <span class="date-label">From</span>
+                    <input type="datetime-local" id="startDate" class="date-input">
+                    <span class="date-label">To</span>
+                    <input type="datetime-local" id="endDate" class="date-input">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Stats Bar -->
+            <div class="stats-bar" id="statsBar">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">ACTIVE CAMERAS</span>
+                        <span class="stat-icon">📹</span>
+                    </div>
+                    <div class="stat-value blue" id="activeCameras">5</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">ACTIVE EVENTS</span>
+                        <span class="stat-icon">📊</span>
+                    </div>
+                    <div class="stat-value orange" id="activeEvents">30</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">CRITICAL ALERTS</span>
+                        <span class="stat-icon">⚠️</span>
+                    </div>
+                    <div class="stat-value red" id="criticalAlerts">30</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">TOTAL PEOPLE</span>
+                        <span class="stat-icon">👥</span>
+                    </div>
+                    <div class="stat-value green" id="totalPeople">897</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">PEAK OCCUPANCY</span>
+                        <span class="stat-icon">📈</span>
+                    </div>
+                    <div class="stat-value orange" id="peakOccupancy">8</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">SOP VIOLATIONS (24H)</span>
+                        <span class="stat-icon">📋</span>
+                    </div>
+                    <div class="stat-value navy" id="sopViolations">38</div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="overview">OVERVIEW</button>
+                <button class="tab-btn" data-tab="safety">SAFETY</button>
+                <button class="tab-btn" data-tab="operations">OPERATIONS</button>
+                <button class="tab-btn" data-tab="staff">STAFF</button>
+                <button class="tab-btn" data-tab="customers">CUSTOMERS</button>
+                <button class="tab-btn" data-tab="cameras">CAMERAS</button>
+            </div>
+
+            <!-- Tab Content: OVERVIEW -->
+            <div class="tab-content active" id="tab-overview">
+                <!-- Compliance Cards -->
+                <div class="compliance-cards">
+                    <div class="compliance-card" style="border-top-color: #FF7373;">
+                        <div class="compliance-title">SAFETY INCIDENTS</div>
+                        <div class="compliance-value" style="color: #FF7373;" id="safetyIncidents">5</div>
+                        <div class="compliance-subtext">Fire: 0 | Smoke: 1 | Smoking: 4</div>
+                    </div>
+                    <div class="compliance-card" style="border-top-color: #F89022;">
+                        <div class="compliance-title">5L TESTING</div>
+                        <div class="compliance-value" style="color: #F89022;">81.8%</div>
+                        <div class="compliance-subtext">18 Of 22 Completed</div>
+                    </div>
+                    <div class="compliance-card" style="border-top-color: #39CC2B;">
+                        <div class="compliance-title">EQUIPMENT SECURE</div>
+                        <div class="compliance-value" style="color: #39CC2B;">7/9</div>
+                        <div class="compliance-subtext">2 Items Need Attention</div>
+                    </div>
+                    <div class="compliance-card" style="border-top-color: #3A6DC9;">
+                        <div class="compliance-title">VEHICLE CONVERSION</div>
+                        <div class="compliance-value" style="color: #3A6DC9;">82.1%</div>
+                        <div class="compliance-subtext">128 Of 156 Fueled</div>
+                    </div>
+                </div>
+
+                <!-- Main Grid: Heatmap + Alerts -->
+                <div class="main-grid">
+                    <div class="card heatmap-card">
+                        <div class="card-header">
+                            <h3>Heatmap Analysis</h3>
+                            <div class="heatmap-controls">
+                                <select id="cameraFilter" class="camera-select" onchange="updateHeatmap()">
+                                    <option value="all">All Cameras</option>
+                                    <option value="d5">D5 - Forecourt</option>
+                                    <option value="d6">D6 - Air Station</option>
+                                    <option value="d7">D7 - Employee Area</option>
+                                    <option value="d8">D8 - Entry Gate</option>
+                                    <option value="d9">D9 - Exit Gate</option>
+                                </select>
+                                <span class="detection-count" id="detectionCount">Detections: 821</span>
+                            </div>
+                        </div>
+                        <div class="heatmap-container">
+                            <canvas id="heatmapCanvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="card alerts-card">
+                        <div class="card-header">
+                            <h3>Recent Alerts</h3>
+                            <div class="alert-filters">
+                                <button class="filter-btn active" data-filter="all">All</button>
+                                <button class="filter-btn" data-filter="emergency">EMERGENCY</button>
+                                <button class="filter-btn" data-filter="critical">CRITICAL</button>
+                                <button class="filter-btn" data-filter="warning">WARNING</button>
+                                <button class="filter-btn" data-filter="triaged">TRIAGED</button>
+                            </div>
+                        </div>
+                        <div class="alerts-list" id="alertsList">
+                            <!-- Alerts will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-row two-cols">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h3>SOP Compliance</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="sopRadarChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h3>Cleanliness Score</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="cleanlinessChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Object Count Over Time -->
+                <div class="card full-width">
+                    <div class="card-header">
+                        <h3>Object Count Over Time</h3>
+                    </div>
+                    <div class="chart-container large">
+                        <canvas id="objectCountChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Detection Log -->
+                <div class="card full-width">
+                    <div class="card-header">
+                        <h3>Recent Detection Log</h3>
+                        <button class="filter-toggle" onclick="toggleFilters()">🔧 Filters</button>
+                    </div>
+                    <div class="filters-panel" id="filtersPanel">
+                        <select id="filterStatus" onchange="applyFilters()">
+                            <option value="ALL">All Status</option>
+                            <option value="CRITICAL">Critical</option>
+                            <option value="WARNING">Warning</option>
+                            <option value="SAFE">Safe</option>
+                        </select>
+                        <select id="filterType" onchange="applyFilters()">
+                            <option value="ALL">All Types</option>
+                            <option value="EVENT">Event</option>
+                            <option value="METRIC">Metric</option>
+                        </select>
+                        <input type="text" id="filterCamera" placeholder="Camera name..." oninput="applyFilters()">
+                    </div>
+                    <div class="table-container">
+                        <table class="detection-table">
+                            <thead>
+                                <tr>
+                                    <th>TIMESTAMP</th>
+                                    <th>CAMERA</th>
+                                    <th>TYPE</th>
+                                    <th>STATUS</th>
+                                    <th>KEY DETECTIONS</th>
+                                    <th>CONFIDENCE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detectionTableBody">
+                                <!-- Rows populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination controls -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: SAFETY -->
+            <div class="tab-content" id="tab-safety">
+                <div class="tab-placeholder">
+                    <div class="placeholder-icon">🛡️</div>
+                    <h2>Safety Analytics</h2>
+                    <p>Critical safety KPIs monitoring fire, smoke, smoking, and hazardous conditions.</p>
+                    <div class="safety-grid expanded">
+                        <div class="safety-stat-card fire">
+                            <span class="safety-icon">🔥</span>
+                            <span class="safety-label">Fire Alerts</span>
+                            <span class="safety-value" id="fireAlerts">0</span>
+                        </div>
+                        <div class="safety-stat-card smoke">
+                            <span class="safety-icon">💨</span>
+                            <span class="safety-label">Smoke Detected</span>
+                            <span class="safety-value" id="smokeAlerts">1</span>
+                        </div>
+                        <div class="safety-stat-card smoking">
+                            <span class="safety-icon">🚬</span>
+                            <span class="safety-label">Smoking Violations</span>
+                            <span class="safety-value" id="smokingAlerts">4</span>
+                        </div>
+                        <div class="safety-stat-card violence">
+                            <span class="safety-icon">👊</span>
+                            <span class="safety-label">Violence/Fighting</span>
+                            <span class="safety-value" id="violenceAlerts">0</span>
+                        </div>
+                        <div class="safety-stat-card plastic">
+                            <span class="safety-icon">🧴</span>
+                            <span class="safety-label">Plastic Fill</span>
+                            <span class="safety-value" id="plasticFillAlerts">0</span>
+                        </div>
+                        <div class="safety-stat-card du">
+                            <span class="safety-icon">⛽</span>
+                            <span class="safety-label">DU Cover Open</span>
+                            <span class="safety-value" id="duOpenAlerts">0</span>
+                        </div>
+                        <div class="safety-stat-card manhole">
+                            <span class="safety-icon">🕳️</span>
+                            <span class="safety-label">Manhole Open</span>
+                            <span class="safety-value" id="manholeAlerts">0</span>
+                        </div>
+                        <div class="safety-stat-card mob">
+                            <span class="safety-icon">👥</span>
+                            <span class="safety-label">Mob Gathering</span>
+                            <span class="safety-value" id="mobAlerts">0</span>
+                        </div>
+                        <div class="safety-stat-card cellphone">
+                            <span class="safety-icon">📱</span>
+                            <span class="safety-label">Cell Phone Near Pump</span>
+                            <span class="safety-value" id="cellphoneAlerts">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: OPERATIONS -->
+            <div class="tab-content" id="tab-operations">
+                <div class="tab-placeholder">
+                    <div class="placeholder-icon">⚙️</div>
+                    <h2>Operations Metrics</h2>
+                    <p>5L testing compliance, equipment status, vehicle tracking and operational KPIs.</p>
+                    <div class="operations-grid expanded">
+                        <div class="ops-card">
+                            <h4>5L Testing Status</h4>
+                            <div class="ops-progress">
+                                <div class="ops-bar" style="width: 81.8%;"></div>
+                            </div>
+                            <span class="ops-value">81.8% (18/22)</span>
+                        </div>
+                        <div class="ops-card">
+                            <h4>Equipment Secure</h4>
+                            <div class="ops-progress">
+                                <div class="ops-bar" style="width: 77.7%;"></div>
+                            </div>
+                            <span class="ops-value">7/9 Secure</span>
+                        </div>
+                        <div class="ops-card">
+                            <h4>Vehicle Conversion</h4>
+                            <div class="ops-progress">
+                                <div class="ops-bar" style="width: 82.1%;"></div>
+                            </div>
+                            <span class="ops-value">82.1% (128/156)</span>
+                        </div>
+                        <div class="ops-card">
+                            <h4>Vehicles Detected</h4>
+                            <div class="ops-stats-row">
+                                <span class="ops-stat">🚗 Cars: <strong>45</strong></span>
+                                <span class="ops-stat">🏍️ Bikes: <strong>32</strong></span>
+                                <span class="ops-stat">🚛 Trucks: <strong>12</strong></span>
+                            </div>
+                        </div>
+                        <div class="ops-card">
+                            <h4>License Plates Captured</h4>
+                            <span class="ops-value-large" id="licensePlates">87</span>
+                            <span class="ops-subtext">OCR Success Rate: 94%</span>
+                        </div>
+                        <div class="ops-card">
+                            <h4>Clutter Score</h4>
+                            <div class="ops-progress">
+                                <div class="ops-bar green" style="width: 90%;"></div>
+                            </div>
+                            <span class="ops-value">4.5/5 - Minimal Clutter</span>
+                        </div>
+                        <div class="ops-card">
+                            <h4>⏱️ Idle Time per Pump</h4>
+                            <div class="ops-stats-row">
+                                <span class="ops-stat">DU1: <strong>2.3 min</strong></span>
+                                <span class="ops-stat">DU2: <strong>1.8 min</strong></span>
+                                <span class="ops-stat">DU3: <strong>3.1 min</strong></span>
+                            </div>
+                            <span class="ops-subtext">Avg Idle: 2.4 min</span>
+                        </div>
+                        <div class="ops-card">
+                            <h4>🌬️ Air Station Usage</h4>
+                            <span class="ops-value-large" id="airStationUsage">42</span>
+                            <span class="ops-subtext">Customers today | Peak: 11 AM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: STAFF -->
+            <div class="tab-content" id="tab-staff">
+                <div class="tab-placeholder">
+                    <div class="placeholder-icon">👔</div>
+                    <h2>Staff Analytics</h2>
+                    <p>Uniform compliance, staff presence, greeting, zero display, and attendance KPIs.</p>
+                    <div class="staff-grid expanded">
+                        <div class="staff-card">
+                            <h4>Uniform Score</h4>
+                            <div class="staff-score">
+                                <span class="score-circle" style="--score: 80%;">4/5</span>
+                            </div>
+                            <span class="staff-subtext">Hat ✓ | Shirt ✓ | Shoes ⚠</span>
+                        </div>
+                        <div class="staff-card">
+                            <h4>Cleanliness Score</h4>
+                            <div class="staff-score">
+                                <span class="score-circle green" style="--score: 90%;">4.5/5</span>
+                            </div>
+                            <span class="staff-subtext">Minor items detected</span>
+                        </div>
+                        <div class="staff-card">
+                            <h4>Safety Score</h4>
+                            <div class="staff-score">
+                                <span class="score-circle green" style="--score: 100%;">5/5</span>
+                            </div>
+                            <span class="staff-subtext">No hazards detected</span>
+                        </div>
+                        <div class="staff-card">
+                            <h4>FSM Present</h4>
+                            <span class="staff-status online">✓ Present</span>
+                            <span class="staff-subtext">Detected at 10:45 AM</span>
+                        </div>
+                        <div class="staff-card">
+                            <h4>Air Station Manned</h4>
+                            <span class="staff-status warning">⚠ Unmanned</span>
+                            <span class="staff-subtext">Last seen: 15 min ago</span>
+                        </div>
+                        <div class="staff-card">
+                            <h4>Greeting (Namaste)</h4>
+                            <div class="staff-score">
+                                <span class="score-circle" style="--score: 65%;">65%</span>
+                            </div>
+                            <span class="staff-subtext">13/20 customers greeted</span>
+                        </div>
+                        <div class="staff-card">
+                            <h4>Zero Display</h4>
+                            <span class="staff-status online">✓ Compliant</span>
+                            <span class="staff-subtext">DU Zero shown before fueling</span>
+                        </div>
+                        <div class="staff-card">
+                            <h4>Staff Count</h4>
+                            <span class="staff-count">👤 3 Active</span>
+                            <span class="staff-subtext">2 Uniform Compliant</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: CUSTOMERS -->
+            <div class="tab-content" id="tab-customers">
+                <div class="tab-placeholder">
+                    <div class="placeholder-icon">👥</div>
+                    <h2>Customer Analytics</h2>
+                    <p>Footfall, peak hours, dwell time, and customer satisfaction metrics.</p>
+                    <div class="customer-stats expanded">
+                        <div class="customer-card">
+                            <span class="customer-icon">🚶</span>
+                            <h4>Total Footfall (Today)</h4>
+                            <span class="customer-value" id="footfallToday">897</span>
+                        </div>
+                        <div class="customer-card">
+                            <span class="customer-icon">⏰</span>
+                            <h4>Peak Hour</h4>
+                            <span class="customer-value">14:00 - 15:00</span>
+                        </div>
+                        <div class="customer-card">
+                            <span class="customer-icon">⏱️</span>
+                            <h4>Avg Dwell Time</h4>
+                            <span class="customer-value">4.2 min</span>
+                        </div>
+                        <div class="customer-card">
+                            <span class="customer-icon">🚗</span>
+                            <h4>Vehicles Served</h4>
+                            <span class="customer-value" id="vehiclesServed">156</span>
+                        </div>
+                        <div class="customer-card highlight">
+                            <span class="customer-icon">🔄</span>
+                            <h4>Return Customers</h4>
+                            <span class="customer-value" id="returnCustomers">23</span>
+                            <span class="customer-subtext">Face Recognition Match</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: CAMERAS -->
+            <div class="tab-content" id="tab-cameras">
+                <div class="tab-placeholder">
+                    <div class="placeholder-icon">📹</div>
+                    <h2>Camera Grid</h2>
+                    <p>Live feeds and camera status for all connected cameras.</p>
+                    <div class="camera-grid" id="cameraGrid">
+                        <div class="camera-tile">
+                            <div class="camera-feed placeholder"></div>
+                            <div class="camera-info">
+                                <span class="camera-name">D5 - Forecourt</span>
+                                <span class="camera-status online">● Online</span>
+                            </div>
+                        </div>
+                        <div class="camera-tile">
+                            <div class="camera-feed placeholder"></div>
+                            <div class="camera-info">
+                                <span class="camera-name">D7 - Employee Area</span>
+                                <span class="camera-status online">● Online</span>
+                            </div>
+                        </div>
+                        <div class="camera-tile">
+                            <div class="camera-feed placeholder"></div>
+                            <div class="camera-info">
+                                <span class="camera-name">D6 - Air Station</span>
+                                <span class="camera-status online">● Online</span>
+                            </div>
+                        </div>
+                        <div class="camera-tile">
+                            <div class="camera-feed placeholder"></div>
+                            <div class="camera-info">
+                                <span class="camera-name">D8 - Entry Gate</span>
+                                <span class="camera-status online">● Online</span>
+                            </div>
+                        </div>
+                        <div class="camera-tile">
+                            <div class="camera-feed placeholder"></div>
+                            <div class="camera-info">
+                                <span class="camera-name">D9 - Exit Gate</span>
+                                <span class="camera-status online">● Online</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Alert Detail Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <div class="modal-header" id="modalHeader">
+                <div class="modal-title-section">
+                    <span class="modal-icon" id="modalIcon">🔥</span>
+                    <div class="modal-title-text">
+                        <h2 id="modalTitle">Alert Title</h2>
+                        <span class="modal-tags" id="modalTags">tags</span>
+                    </div>
+                </div>
+                <div class="modal-badges">
+                    <span class="severity-badge" id="modalSeverity">CRITICAL</span>
+                    <button class="close-btn" onclick="closeModal()">✕</button>
+                </div>
+            </div>
+
+            <div class="evidence-section">
+                <h3>📷 Evidence</h3>
+                <div class="evidence-carousel">
+                    <div class="carousel-container" id="carouselContainer"></div>
+                    <button class="carousel-btn prev" onclick="prevSlide()">‹</button>
+                    <button class="carousel-btn next" onclick="nextSlide()">›</button>
+                </div>
+            </div>
+
+            <div class="ai-insights-section" id="aiInsightsSection">
+                <div class="insights-header">
+                    <h3>✨ AI Insights</h3>
+                    <div class="kpi-score" id="kpiScore">
+                        <span class="score-value">7</span>
+                        <span class="score-max">/10</span>
+                        <span class="score-label">KPI</span>
+                    </div>
+                </div>
+                <div class="kpi-scores-grid" id="kpiScoresGrid"></div>
+                <div class="quick-facts" id="quickFacts"></div>
+                <div class="insight-alerts" id="insightAlerts"></div>
+                <div class="ai-summary" id="aiSummary"></div>
+                <div class="tldr-section" id="tldrSection"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="action-button secondary" onclick="downloadReport()">📥 Download Report</button>
+                <button class="action-button secondary" onclick="shareToTelegram()">📤 Share to Telegram</button>
+                <button class="action-button primary" onclick="markAsRead()">✓ Mark as Read</button>
+                <button class="action-button outline" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Config Modal -->
+    <div class="config-modal" id="configModal">
+        <div class="config-content">
+            <h3>⚙️ API Configuration</h3>
+            <div class="config-field">
+                <label>Backend URL</label>
+                <input type="text" id="apiUrl" value="http://localhost:8000" placeholder="http://localhost:8000">
+            </div>
+            <div class="config-field">
+                <label>API Key</label>
+                <input type="text" id="apiKey" value="default_unsafe_key" placeholder="Your API Key">
+            </div>
+            <div class="config-field">
+                <label>Site ID</label>
+                <input type="text" id="configSiteId" value="ro001" placeholder="ro001">
+            </div>
+            <div class="config-actions">
+                <button onclick="saveConfig()">Save & Connect</button>
+                <button class="secondary" onclick="closeConfig()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Config Button -->
+    <button class="config-fab" onclick="openConfig()">⚙️</button>
+
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

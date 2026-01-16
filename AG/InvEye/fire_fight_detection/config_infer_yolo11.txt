@@ -1,0 +1,56 @@
+# InvEye YOLO11 DeepStream nvinfer Configuration
+# For Employee Tracking + Petrol Pump Monitoring
+# Classes: 36 (focused on relevant detections)
+
+[property]
+gpu-id=0
+net-scale-factor=0.0039215697906911373
+model-color-format=0
+
+# TensorRT Engine File
+model-engine-file=yolo11s_inveye.engine
+
+# Labels file
+labelfile-path=labels.txt
+
+# YOLO parser
+parse-bbox-func-name=NvDsInferParseYolo
+custom-lib-path=/opt/nvidia/deepstream/deepstream/lib/libnvds_infercustomparser.so
+
+# Network dimensions
+infer-dims=3;640;640
+maintain-aspect-ratio=1
+symmetric-padding=1
+
+# Detection settings
+batch-size=4
+network-mode=2
+num-detected-classes=36
+interval=0
+
+gie-unique-id=1
+process-mode=1
+network-type=0
+cluster-mode=2
+output-blob-names=output
+
+# NMS configuration
+nms-iou-threshold=0.45
+pre-cluster-threshold=0.25
+
+[class-attrs-all]
+pre-cluster-threshold=0.25
+topk=100
+
+# Priority alert classes (fire, smoke, fighting, crowd)
+[class-attrs-28]
+pre-cluster-threshold=0.3
+
+[class-attrs-29]
+pre-cluster-threshold=0.3
+
+[class-attrs-30]
+pre-cluster-threshold=0.3
+
+[class-attrs-31]
+pre-cluster-threshold=0.3

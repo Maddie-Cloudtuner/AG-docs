@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatmap | InvEye</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #F8FAFC;
+            color: #1E293B;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            padding: 0.5rem 1rem;
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            color: #475569;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #E2E8F0;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 1.5rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .section-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .section-body {
+            padding: 1.5rem;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .camera-heatmap {
+            background: #F8FAFC;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #E2E8F0;
+        }
+
+        .camera-heatmap h3 {
+            font-size: 0.85rem;
+            color: #64748B;
+            margin-bottom: 0.75rem;
+        }
+
+        .heatmap-visual {
+            height: 100px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .heatmap-visual.low {
+            background: linear-gradient(135deg, #86EFAC 0%, #22C55E 100%);
+        }
+
+        .heatmap-visual.medium {
+            background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 100%);
+        }
+
+        .heatmap-visual.high {
+            background: linear-gradient(135deg, #FCA5A5 0%, #DC2626 100%);
+        }
+
+        .peak-info {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+        }
+
+        .time-slot {
+            padding: 0.75rem 0.5rem;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #1E293B;
+        }
+
+        .time-slot.low {
+            background: #DCFCE7;
+        }
+
+        .time-slot.medium {
+            background: #FEF3C7;
+        }
+
+        .time-slot.high {
+            background: #FEE2E2;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .legend-dot.low {
+            background: #22C55E;
+        }
+
+        .legend-dot.medium {
+            background: #F59E0B;
+        }
+
+        .legend-dot.high {
+            background: #DC2626;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <a href="index.html" class="back-btn">← Back</a>
+        <h1 class="page-title">Occupancy Heatmap</h1>
+    </header>
+
+    <main class="main-content">
+        <div class="section">
+            <div class="section-header">
+                <h2>Peak Occupancy by Location</h2>
+            </div>
+            <div class="section-body">
+                <div class="heatmap-grid">
+                    <div class="camera-heatmap">
+                        <h3>CAFETERIA</h3>
+                        <div class="heatmap-visual high" id="caf-heat">8</div>
+                        <p class="peak-info">Peak: 8 people</p>
+                    </div>
+                    <div class="camera-heatmap">
+                        <h3>EMPLOYEE AREA</h3>
+                        <div class="heatmap-visual high" id="emp-heat">11</div>
+                        <p class="peak-info">Peak: 11 people</p>
+                    </div>
+                    <div class="camera-heatmap">
+                        <h3>RECEPTION</h3>
+                        <div class="heatmap-visual medium" id="rec-heat">5</div>
+                        <p class="peak-info">Peak: 5 people</p>
+                    </div>
+                    <div class="camera-heatmap">
+                        <h3>BOSS CABIN</h3>
+                        <div class="heatmap-visual low" id="boss-heat">2</div>
+                        <p class="peak-info">Peak: 2 people</p>
+                    </div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><span class="legend-dot low"></span> Low (1-3)</div>
+                    <div class="legend-item"><span class="legend-dot medium"></span> Medium (4-6)</div>
+                    <div class="legend-item"><span class="legend-dot high"></span> High (7+)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2>Hourly Activity</h2>
+            </div>
+            <div class="section-body">
+                <div class="time-grid">
+                    <div class="time-slot low">9 AM<br><strong>2</strong></div>
+                    <div class="time-slot medium">10 AM<br><strong>5</strong></div>
+                    <div class="time-slot high">11 AM<br><strong>8</strong></div>
+                    <div class="time-slot high">12 PM<br><strong>10</strong></div>
+                    <div class="time-slot medium">1 PM<br><strong>6</strong></div>
+                    <div class="time-slot high">2 PM<br><strong>11</strong></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const cameraStats = JSON.parse(localStorage.getItem('cameraStats') || '{}');
+        const cameras = [['CAFETERIA', 'caf-heat'], ['EMPLOYEE_AREA', 'emp-heat'], ['RECEPTION_AREA', 'rec-heat'], ['BOSS_CABIN', 'boss-heat']];
+
+        cameras.forEach(([cam, id]) => {
+            const stats = cameraStats[cam];
+            if (stats && stats.count > 0) {
+                const avg = Math.round(stats.people / stats.count);
+                const el = document.getElementById(id);
+                el.textContent = avg;
+                el.className = 'heatmap-visual ' + (avg > 6 ? 'high' : avg > 3 ? 'medium' : 'low');
+                el.nextElementSibling.textContent = `Peak: ${avg} people`;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petrol Pump Analytics | InvEye Dashboard</title>
+    <meta name="description" content="Real-time petrol pump monitoring and analytics powered by InvEye AI">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <style>
+        :root {
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --bg-card: #1E293B;
+            --accent-primary: #F97316;
+            --accent-secondary: #FB923C;
+            --accent-light: #FDBA74;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --critical: #EF4444;
+            --critical-bg: rgba(239, 68, 68, 0.15);
+            --high: #F97316;
+            --high-bg: rgba(249, 115, 22, 0.15);
+            --medium: #EAB308;
+            --medium-bg: rgba(234, 179, 8, 0.15);
+            --low: #22C55E;
+            --low-bg: rgba(34, 197, 94, 0.15);
+            --success: #22C55E;
+            --success-bg: rgba(34, 197, 94, 0.15);
+            --info: #3B82F6;
+            --info-bg: rgba(59, 130, 246, 0.15);
+            --border-color: #334155;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, #0F172A 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 1.5rem; }
+
+        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon { font-size: 2rem; }
+        .brand { font-size: 1.25rem; font-weight: 700; color: var(--accent-primary); }
+        .brand-sub { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.1em; }
+
+        .site-info {
+            padding-left: 1.5rem;
+            border-left: 1px solid var(--border-color);
+        }
+        .site-name { font-weight: 600; color: var(--text-primary); }
+        .site-meta { font-size: 0.75rem; color: var(--text-muted); }
+
+        .header-right { display: flex; align-items: center; gap: 1rem; }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-primary { background: var(--accent-primary); color: white; }
+        .btn-primary:hover { background: var(--accent-secondary); transform: translateY(-1px); }
+        .btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-outline:hover { background: var(--bg-card); border-color: var(--accent-primary); }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--success);
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+        }
+
+        .main-content { padding: 1.5rem 2rem; max-width: 1600px; margin: 0 auto; }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .section-badge {
+            font-size: 0.65rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+        .section-badge.critical { background: var(--critical-bg); color: var(--critical); }
+        .section-badge.warning { background: var(--high-bg); color: var(--high); }
+        .section-badge.success { background: var(--success-bg); color: var(--success); }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.2);
+        }
+        .card-header h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card-body { padding: 1.25rem; }
+
+        /* Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+
+        /* KPI Cards */
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+        .kpi-card.critical::before { background: var(--critical); }
+        .kpi-card.warning::before { background: var(--high); }
+        .kpi-card.success::before { background: var(--success); }
+        .kpi-card.info::before { background: var(--info); }
+
+        .kpi-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .kpi-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+        .kpi-value { font-size: 2rem; font-weight: 700; }
+        .kpi-value.critical { color: var(--critical); }
+        .kpi-value.warning { color: var(--high); }
+        .kpi-value.success { color: var(--success); }
+        .kpi-value.info { color: var(--info); }
+        .kpi-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+        /* Gauge Chart Container */
+        .gauge-container {
+            position: relative;
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gauge-value {
+            position: absolute;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .gauge-label {
+            position: absolute;
+            bottom: 10px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Status Grid */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.75rem;
+        }
+        .status-item {
+            background: rgba(0,0,0,0.2);
+            border-radius: var(--radius-sm);
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .status-item.secure { border-color: var(--success); background: var(--success-bg); }
+        .status-item.open { border-color: var(--high); background: var(--high-bg); animation: blink 1s infinite; }
+        .status-item.alert { border-color: var(--critical); background: var(--critical-bg); animation: blink 0.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .status-icon { font-size: 1.25rem; }
+        .status-label { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .status-time { font-size: 0.6rem; color: var(--text-secondary); }
+
+        /* FSM Grid */
+        .fsm-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+        .fsm-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+        }
+        .fsm-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--info-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .fsm-info { flex: 1; }
+        .fsm-name { font-weight: 500; font-size: 0.85rem; }
+        .fsm-time { font-size: 0.7rem; color: var(--text-muted); }
+        .fsm-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .fsm-badge.present { background: var(--success-bg); color: var(--success); }
+        .fsm-badge.absent { background: var(--critical-bg); color: var(--critical); }
+        .fsm-score {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        /* Funnel */
+        .funnel-container { padding: 1rem 0; }
+        .funnel-stage {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        .funnel-bar {
+            height: 36px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white;
+            transition: all 0.3s;
+        }
+        .funnel-bar:hover { transform: scale(1.02); }
+        .funnel-value {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Chart containers */
+        .chart-container { height: 200px; position: relative; }
+        .chart-container-lg { height: 280px; position: relative; }
+
+        /* Heatmap */
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            gap: 2px;
+        }
+        .heatmap-header {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 0.5rem 0;
+        }
+        .heatmap-row-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .heatmap-cell:hover { transform: scale(1.1); z-index: 10; }
+        .heatmap-cell.safe { background: var(--success); opacity: 0.3; }
+        .heatmap-cell.low { background: var(--success); }
+        .heatmap-cell.medium { background: var(--medium); }
+        .heatmap-cell.high { background: var(--high); }
+        .heatmap-cell.critical { background: var(--critical); }
+
+        /* Plates table */
+        .plates-table { width: 100%; }
+        .plates-table th, .plates-table td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.8rem;
+        }
+        .plates-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.7rem;
+        }
+        .plate-number {
+            font-family: monospace;
+            background: rgba(0,0,0,0.3);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Radar container */
+        .radar-container { height: 220px; }
+
+        /* Progress bars */
+        .progress-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .progress-label {
+            width: 100px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .progress-track {
+            flex: 1;
+            height: 24px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding-left: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+        }
+        .progress-value {
+            width: 50px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 1.5rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon">⛽</span>
+                <div>
+                    <div class="brand">InvEye</div>
+                    <div class="brand-sub">PETROL PUMP ANALYTICS</div>
+                </div>
+            </div>
+            <div class="site-info">
+                <div class="site-name" id="siteName">Nayara Energy - Andheri West</div>
+                <div class="site-meta" id="siteMeta">Morning Shift (06:00 - 14:00) • 6 Pumps • 12 Cameras</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="live-indicator">
+                <span class="live-dot"></span>
+                <span>LIVE</span>
+            </div>
+            <a href="index.html" class="btn btn-outline">← Back to Dashboard</a>
+            <button class="btn btn-primary">📊 Export Report</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Section 1: Safety & Compliance (P0) -->
+        <h2 class="section-title">🔴 Safety & Compliance <span class="section-badge critical">P0 CRITICAL</span></h2>
+        
+        <div class="grid-4">
+            <div class="kpi-card critical">
+                <div class="kpi-icon">🔥</div>
+                <div class="kpi-label">Safety Incidents Today</div>
+                <div class="kpi-value critical" id="safetyIncidents">5</div>
+                <div class="kpi-sub">Fire: 0 | Smoke: 1 | Smoking: 4</div>
+            </div>
+            <div class="kpi-card warning">
+                <div class="kpi-icon">🧪</div>
+                <div class="kpi-label">5L Testing Compliance</div>
+                <div class="kpi-value warning" id="testingCompliance">81.8%</div>
+                <div class="kpi-sub">18 of 22 tests completed</div>
+            </div>
+            <div class="kpi-card success">
+                <div class="kpi-icon">🔒</div>
+                <div class="kpi-label">Equipment Secure</div>
+                <div class="kpi-value success" id="equipmentSecure">7/9</div>
+                <div class="kpi-sub">2 items require attention</div>
+            </div>
+            <div class="kpi-card info">
+                <div class="kpi-icon">🚗</div>
+                <div class="kpi-label">Vehicle Conversion</div>
+                <div class="kpi-value info" id="vehicleConversion">82.1%</div>
+                <div class="kpi-sub">128 of 156 vehicles fueled</div>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <!-- Safety Heatmap -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>🔥 Safety Incident Heatmap</h3>
+                    <span class="section-badge warning">Today</span>
+                </div>
+                <div class="card-body">
+                    <div class="heatmap-grid" id="safetyHeatmap">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5L Testing Gauge -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>🧪 5L Testing Compliance</h3>
+                </div>
+                <div class="card-body">
+                    <div class="gauge-container">
+                        <canvas id="testingGauge"></canvas>
+                        <div class="gauge-value" id="gaugeValue">81.8%</div>
+                    </div>
+                    <div style="display: flex; justify-content: space-around; margin-top: 1rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">18</div>
+                            <div style="font-size: 0.7rem; color: var(--text-muted);">Completed</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--high);">4</div>
+                            <div style="font-size: 0.7rem; color: var(--text-muted);">Pending</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--info);">88.9%</div>
+                            <div style="font-size: 0.7rem; color: var(--text-muted);">Return Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DU/Manhole Status -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>🔐 Equipment Status</h3>
+                </div>
+                <div class="card-body">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">DU Covers</div>
+                    <div class="status-grid" id="duStatus">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin: 1rem 0 0.5rem;">Manholes</div>
+                    <div class="status-grid" id="manholeStatus">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Operations -->
+        <h2 class="section-title">🟠 Operational Efficiency <span class="section-badge warning">P1 HIGH</span></h2>
+
+        <div class="grid-2">
+            <!-- Vehicle Conversion Funnel -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>📊 Vehicle Conversion Funnel</h3>
+                </div>
+                <div class="card-body">
+                    <div class="funnel-container" id="funnelChart">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: var(--critical-bg); border-radius: var(--radius-sm); border-left: 3px solid var(--critical);">
+                        <span style="font-size: 0.8rem;">⚠️ <strong>28 vehicles</strong> left without fueling (17.9% drop-off)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pump Utilization -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>⛽ Pump Utilization</h3>
+                </div>
+                <div class="card-body">
+                    <div id="pumpUtilization">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <!-- Queue Wait Time -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>⏱️ Queue Wait Time</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="waitTimeChart"></canvas>
+                    </div>
+                    <div style="text-align: center; margin-top: 0.75rem;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Avg Wait: </span>
+                        <span style="font-weight: 700; color: var(--success);">3.2 min</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Peak Hours Traffic -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>📈 Hourly Traffic</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="trafficChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Air Filling Station -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>🌬️ Air Filling Station</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="airFillingChart"></canvas>
+                    </div>
+                    <div style="text-align: center; margin-top: 0.75rem;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Manned Rate: </span>
+                        <span style="font-weight: 700; color: var(--success);">84.4%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Staff -->
+        <h2 class="section-title">👥 Staff Performance <span class="section-badge success">P1</span></h2>
+
+        <div class="grid-3">
+            <!-- FSM Attendance -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>📋 FSM Attendance</h3>
+                    <span style="font-size: 0.75rem; color: var(--success);">4/5 Present</span>
+                </div>
+                <div class="card-body">
+                    <div class="fsm-grid" id="fsmAttendance">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOP Compliance Radar -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>🎯 SOP Compliance</h3>
+                </div>
+                <div class="card-body">
+                    <div class="radar-container">
+                        <canvas id="sopRadar"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Greeting -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>🙏 Customer Greeting</h3>
+                </div>
+                <div class="card-body">
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <div style="font-size: 2.5rem; font-weight: 700; color: var(--high);">66.4%</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Namaste Greeting Rate</div>
+                    </div>
+                    <div class="progress-row">
+                        <span class="progress-label">Performed</span>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 66.4%; background: var(--high);">85</div>
+                        </div>
+                    </div>
+                    <div class="progress-row">
+                        <span class="progress-label">Total Arrivals</span>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 100%; background: var(--info);">128</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">
+                        Avg Response Time: <strong style="color: var(--text-primary);">8.5 seconds</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Customer Analytics -->
+        <h2 class="section-title">🚗 Customer Analytics <span class="section-badge success">P2</span></h2>
+
+        <div class="grid-2">
+            <!-- Repeat Customer Pie -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>🔄 Repeat Customer Insights (ANPR)</h3>
+                </div>
+                <div class="card-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="chart-container">
+                        <canvas id="repeatCustomerChart"></canvas>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; font-weight: 600; margin-bottom: 0.75rem;">Top Frequent Plates</div>
+                        <table class="plates-table" id="topPlates">
+                            <!-- Populated by JS -->
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cleanliness Timeline -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>🧹 Cleanliness Score Timeline</h3>
+                    <span style="font-size: 0.75rem; color: var(--high);">Current: 78/100</span>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container-lg">
+                        <canvas id="cleanlinessChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Violations -->
+        <h2 class="section-title">⚠️ Violations & Incidents <span class="section-badge critical">TRACKING</span></h2>
+
+        <div class="grid-2">
+            <!-- Daily Violations Stacked Bar -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>📊 Daily Violation Trend</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container-lg">
+                        <canvas id="violationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Violations Summary -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>📋 Today's Violations</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid-2" style="margin-bottom: 0;">
+                        <div class="kpi-card critical" style="text-align: center;">
+                            <div style="font-size: 2rem;">🚫</div>
+                            <div class="kpi-value critical">2</div>
+                            <div class="kpi-sub">Fuel in Plastic</div>
+                        </div>
+                        <div class="kpi-card warning" style="text-align: center;">
+                            <div style="font-size: 2rem;">🗑️</div>
+                            <div class="kpi-value warning">5</div>
+                            <div class="kpi-sub">Clutter Detected</div>
+                        </div>
+                        <div class="kpi-card success" style="text-align: center;">
+                            <div style="font-size: 2rem;">👥</div>
+                            <div class="kpi-value success">0</div>
+                            <div class="kpi-sub">Mob Gathering</div>
+                        </div>
+                        <div class="kpi-card info" style="text-align: center;">
+                            <div style="font-size: 2rem;">🔓</div>
+                            <div class="kpi-value info">1</div>
+                            <div class="kpi-sub">Unauthorized Access</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <span>© 2024 InvEye by Invincible Ocean • Petrol Pump Analytics v1.0</span>
+    </footer>
+
+    <script>
+        // ===== Load Data =====
+        let pumpData = {};
+
+        async function loadData() {
+            try {
+                const response = await fetch('petrol_pump_data.json');
+                pumpData = await response.json();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                pumpData = getSampleData();
+            }
+            renderAll();
+        }
+
+        function getSampleData() {
+            return {
+                safety_incidents: {
+                    hourly_data: [
+                        { hour: "06:00", fire: 0, smoke: 0, smoking: 0, violence: 0 },
+                        { hour: "07:00", fire: 0, smoke: 0, smoking: 1, violence: 0 },
+                        { hour: "08:00", fire: 0, smoke: 0, smoking: 0, violence: 0 },
+                        { hour: "09:00", fire: 0, smoke: 1, smoking: 0, violence: 0 },
+                        { hour: "10:00", fire: 0, smoke: 0, smoking: 2, violence: 0 },
+                        { hour: "11:00", fire: 0, smoke: 0, smoking: 0, violence: 1 },
+                        { hour: "12:00", fire: 0, smoke: 0, smoking: 1, violence: 0 }
+                    ],
+                    by_zone: {
+                        "PUMP_1": { incidents: 1 }, "PUMP_2": { incidents: 2 }, "PUMP_3": { incidents: 0 },
+                        "PUMP_4": { incidents: 1 }, "PUMP_5": { incidents: 0 }, "PUMP_6": { incidents: 1 },
+                        "AIR_STATION": { incidents: 0 }, "TANK_AREA": { incidents: 1 }
+                    }
+                },
+                equipment_status: {
+                    du_covers: [
+                        { id: "DU_1", status: "secure" }, { id: "DU_2", status: "open", open_duration: 5 },
+                        { id: "DU_3", status: "secure" }, { id: "DU_4", status: "secure" },
+                        { id: "DU_5", status: "secure" }, { id: "DU_6", status: "secure" }
+                    ],
+                    manholes: [
+                        { id: "MH_1", status: "secure" }, { id: "MH_2", status: "secure" },
+                        { id: "MH_3", status: "open", alert: true }
+                    ]
+                },
+                vehicle_analytics: {
+                    entered: 156, queued: 142, fueled: 128, completed_payment: 125,
+                    wait_distribution: { "0-2 min": 45, "2-5 min": 52, "5-10 min": 25, "10+ min": 6 },
+                    hourly_traffic: [
+                        { hour: "06:00", count: 12 }, { hour: "07:00", count: 28 }, { hour: "08:00", count: 35 },
+                        { hour: "09:00", count: 22 }, { hour: "10:00", count: 18 }, { hour: "11:00", count: 25 }, { hour: "12:00", count: 16 }
+                    ]
+                },
+                pump_utilization: [
+                    { pump_id: "PUMP_1", sessions: 28, idle_percent: 15 },
+                    { pump_id: "PUMP_2", sessions: 32, idle_percent: 8 },
+                    { pump_id: "PUMP_3", sessions: 25, idle_percent: 22 },
+                    { pump_id: "PUMP_4", sessions: 30, idle_percent: 12 },
+                    { pump_id: "PUMP_5", sessions: 22, idle_percent: 28 },
+                    { pump_id: "PUMP_6", sessions: 19, idle_percent: 35 }
+                ],
+                fsm_attendance: [
+                    { id: "FSM001", name: "Rajesh Kumar", check_in: "06:02", uniform_score: 95, present: true },
+                    { id: "FSM002", name: "Priya Sharma", check_in: "06:15", uniform_score: 88, present: true },
+                    { id: "FSM003", name: "Suresh Patil", check_in: null, uniform_score: null, present: false },
+                    { id: "FSM004", name: "Anita Desai", check_in: "06:05", uniform_score: 92, present: true },
+                    { id: "FSM005", name: "Vikram Singh", check_in: "06:08", uniform_score: 90, present: true }
+                ],
+                sop_compliance: { greeting_namaste: { rate: 66.4 }, showing_zero: { rate: 92.2 }, uniform_compliance: { rate: 80.0 }, response_time_avg_sec: 8.5, cleanliness_score: 78 },
+                repeat_customers: {
+                    new: 67, returning_2_5: 52, loyal_6_plus: 31,
+                    top_plates: [
+                        { plate: "MH02AB1234", visits: 15 }, { plate: "MH04CD5678", visits: 12 },
+                        { plate: "MH01EF9012", visits: 10 }, { plate: "MH03GH3456", visits: 9 }, { plate: "MH12IJ7890", visits: 8 }
+                    ]
+                },
+                air_filling_station: { manned_sessions: 38, unmanned_sessions: 7 },
+                cleanliness_timeline: [
+                    { time: "06:30", score: 92 }, { time: "07:00", score: 88 }, { time: "07:30", score: 85 },
+                    { time: "08:00", score: 82 }, { time: "08:30", score: 78 }, { time: "09:00", score: 75 },
+                    { time: "09:30", score: 88 }, { time: "10:00", score: 85 }, { time: "10:30", score: 80 },
+                    { time: "11:00", score: 76 }, { time: "11:30", score: 72 }, { time: "12:00", score: 78 }
+                ],
+                violations: {
+                    daily_trend: [
+                        { date: "25 Dec", fuel: 1, clutter: 3, mob: 0, other: 2 },
+                        { date: "26 Dec", fuel: 0, clutter: 4, mob: 1, other: 1 },
+                        { date: "27 Dec", fuel: 2, clutter: 2, mob: 0, other: 0 },
+                        { date: "28 Dec", fuel: 1, clutter: 5, mob: 0, other: 1 },
+                        { date: "29 Dec", fuel: 0, clutter: 3, mob: 0, other: 2 },
+                        { date: "30 Dec", fuel: 2, clutter: 5, mob: 0, other: 1 }
+                    ]
+                }
+            };
+        }
+
+        function renderAll() {
+            renderSafetyHeatmap();
+            renderTestingGauge();
+            renderEquipmentStatus();
+            renderFunnel();
+            renderPumpUtilization();
+            renderWaitTimeChart();
+            renderTrafficChart();
+            renderAirFillingChart();
+            renderFSMAttendance();
+            renderSOPRadar();
+            renderRepeatCustomers();
+            renderCleanlinessChart();
+            renderViolationChart();
+        }
+
+        // ===== Render Functions =====
+        function renderSafetyHeatmap() {
+            const container = document.getElementById('safetyHeatmap');
+            const zones = ['PUMP_1', 'PUMP_2', 'PUMP_3', 'PUMP_4', 'PUMP_5', 'PUMP_6', 'AIR', 'TANK'];
+            const hours = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00'];
+            
+            let html = '<div class="heatmap-header"></div>';
+            hours.forEach(h => html += `<div class="heatmap-header">${h}</div>`);
+            
+            zones.forEach(zone => {
+                html += `<div class="heatmap-row-label">${zone}</div>`;
+                hours.forEach((h, i) => {
+                    const data = pumpData.safety_incidents?.hourly_data?.[i] || {};
+                    const total = (data.fire || 0) + (data.smoke || 0) + (data.smoking || 0) + (data.violence || 0);
+                    const zoneData = pumpData.safety_incidents?.by_zone?.[zone] || {};
+                    const incidents = Math.floor(Math.random() * 3); // Simulated per cell
+                    const cls = incidents === 0 ? 'safe' : incidents === 1 ? 'low' : incidents === 2 ? 'medium' : 'high';
+                    html += `<div class="heatmap-cell ${cls}" title="${zone} @ ${h}">${incidents || ''}</div>`;
+                });
+            });
+            container.innerHTML = html;
+        }
+
+        function renderTestingGauge() {
+            const ctx = document.getElementById('testingGauge');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [81.8, 18.2],
+                        backgroundColor: ['#F97316', '#334155'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                }
+            });
+        }
+
+        function renderEquipmentStatus() {
+            const duContainer = document.getElementById('duStatus');
+            const mhContainer = document.getElementById('manholeStatus');
+            
+            const duCovers = pumpData.equipment_status?.du_covers || [];
+            duContainer.innerHTML = duCovers.map(du => `
+                <div class="status-item ${du.status}">
+                    <div class="status-icon">${du.status === 'secure' ? '✅' : '⚠️'}</div>
+                    <div class="status-label">${du.id}</div>
+                    ${du.open_duration ? `<div class="status-time">${du.open_duration}m</div>` : ''}
+                </div>
+            `).join('');
+
+            const manholes = pumpData.equipment_status?.manholes || [];
+            mhContainer.innerHTML = manholes.map(mh => `
+                <div class="status-item ${mh.alert ? 'alert' : mh.status}">
+                    <div class="status-icon">${mh.status === 'secure' ? '✅' : '🚨'}</div>
+                    <div class="status-label">${mh.id}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderFunnel() {
+            const container = document.getElementById('funnelChart');
+            const data = pumpData.vehicle_analytics || { entered: 156, queued: 142, fueled: 128, completed_payment: 125 };
+            const stages = [
+                { label: 'Entered Site', value: data.entered, color: '#3B82F6' },
+                { label: 'Queued at Pump', value: data.queued, color: '#6366F1' },
+                { label: 'Started Fueling', value: data.fueled, color: '#8B5CF6' },
+                { label: 'Completed', value: data.completed_payment, color: '#22C55E' }
+            ];
+            const max = stages[0].value;
+            container.innerHTML = stages.map(s => `
+                <div class="funnel-stage">
+                    <div class="funnel-bar" style="width: ${(s.value / max) * 100}%; background: ${s.color};">${s.label}</div>
+                    <span class="funnel-value">${s.value}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderPumpUtilization() {
+            const container = document.getElementById('pumpUtilization');
+            const pumps = pumpData.pump_utilization || [];
+            const maxSessions = Math.max(...pumps.map(p => p.sessions));
+            container.innerHTML = pumps.map(p => `
+                <div class="progress-row">
+                    <span class="progress-label">⛽ ${p.pump_id.replace('PUMP_', 'P')}</span>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: ${(p.sessions / maxSessions) * 100}%; background: linear-gradient(90deg, #3B82F6, #22C55E);">
+                            ${p.sessions} sessions
+                        </div>
+                    </div>
+                    <span class="progress-value" style="color: ${p.idle_percent > 25 ? '#EF4444' : '#22C55E'};">${p.idle_percent}% idle</span>
+                </div>
+            `).join('');
+        }
+
+        function renderWaitTimeChart() {
+            const ctx = document.getElementById('waitTimeChart');
+            const dist = pumpData.vehicle_analytics?.wait_distribution || { "0-2 min": 45, "2-5 min": 52, "5-10 min": 25, "10+ min": 6 };
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(dist),
+                    datasets: [{ data: Object.values(dist), backgroundColor: ['#22C55E', '#3B82F6', '#F59E0B', '#EF4444'], borderRadius: 4 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { grid: { display: false }, ticks: { color: '#94A3B8' } }, y: { grid: { color: '#334155' }, ticks: { color: '#94A3B8' } } }
+                }
+            });
+        }
+
+        function renderTrafficChart() {
+            const ctx = document.getElementById('trafficChart');
+            const traffic = pumpData.vehicle_analytics?.hourly_traffic || [];
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: traffic.map(t => t.hour),
+                    datasets: [{ data: traffic.map(t => t.count), borderColor: '#F97316', backgroundColor: 'rgba(249,115,22,0.1)', fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#F97316' }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { grid: { display: false }, ticks: { color: '#94A3B8' } }, y: { grid: { color: '#334155' }, ticks: { color: '#94A3B8' } } }
+                }
+            });
+        }
+
+        function renderAirFillingChart() {
+            const ctx = document.getElementById('airFillingChart');
+            const air = pumpData.air_filling_station || { manned_sessions: 38, unmanned_sessions: 7 };
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Manned', 'Unmanned'],
+                    datasets: [{ data: [air.manned_sessions, air.unmanned_sessions], backgroundColor: ['#22C55E', '#EF4444'], borderWidth: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', usePointStyle: true, padding: 15 } } }
+                }
+            });
+        }
+
+        function renderFSMAttendance() {
+            const container = document.getElementById('fsmAttendance');
+            const fsm = pumpData.fsm_attendance || [];
+            container.innerHTML = fsm.map(f => `
+                <div class="fsm-item">
+                    <div class="fsm-avatar">👤</div>
+                    <div class="fsm-info">
+                        <div class="fsm-name">${f.name}</div>
+                        <div class="fsm-time">${f.present ? `Check-in: ${f.check_in}` : 'Not checked in'}</div>
+                    </div>
+                    <span class="fsm-badge ${f.present ? 'present' : 'absent'}">${f.present ? '✓ Present' : '✗ Absent'}</span>
+                    ${f.uniform_score ? `<span class="fsm-score">${f.uniform_score}%</span>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderSOPRadar() {
+            const ctx = document.getElementById('sopRadar');
+            const sop = pumpData.sop_compliance || {};
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Greeting', 'Show Zero', 'Uniform', 'Cleanliness', 'Response'],
+                    datasets: [{
+                        data: [sop.greeting_namaste?.rate || 66, sop.showing_zero?.rate || 92, sop.uniform_compliance?.rate || 80, sop.cleanliness_score || 78, Math.max(0, 100 - (sop.response_time_avg_sec || 8) * 5)],
+                        backgroundColor: 'rgba(249,115,22,0.2)',
+                        borderColor: '#F97316',
+                        pointBackgroundColor: '#F97316',
+                        pointBorderColor: '#fff',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { r: { beginAtZero: true, max: 100, grid: { color: '#334155' }, angleLines: { color: '#334155' }, pointLabels: { color: '#94A3B8', font: { size: 10 } }, ticks: { display: false } } }
+                }
+            });
+        }
+
+        function renderRepeatCustomers() {
+            const ctx = document.getElementById('repeatCustomerChart');
+            const data = pumpData.repeat_customers || { new: 67, returning_2_5: 52, loyal_6_plus: 31 };
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['New', 'Returning (2-5)', 'Loyal (6+)'],
+                    datasets: [{ data: [data.new, data.returning_2_5, data.loyal_6_plus], backgroundColor: ['#3B82F6', '#22C55E', '#8B5CF6'], borderWidth: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', usePointStyle: true, padding: 10, font: { size: 10 } } } }
+                }
+            });
+
+            const topPlates = pumpData.repeat_customers?.top_plates || [];
+            document.getElementById('topPlates').innerHTML = `
+                <thead><tr><th>Plate</th><th>Visits</th></tr></thead>
+                <tbody>${topPlates.map(p => `<tr><td><span class="plate-number">${p.plate}</span></td><td>${p.visits}</td></tr>`).join('')}</tbody>
+            `;
+        }
+
+        function renderCleanlinessChart() {
+            const ctx = document.getElementById('cleanlinessChart');
+            const timeline = pumpData.cleanliness_timeline || [];
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timeline.map(t => t.time),
+                    datasets: [{
+                        data: timeline.map(t => t.score),
+                        borderColor: '#22C55E',
+                        backgroundColor: 'rgba(34,197,94,0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: timeline.map(t => t.score >= 80 ? '#22C55E' : t.score >= 70 ? '#F59E0B' : '#EF4444')
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, annotation: { annotations: { target: { type: 'line', yMin: 80, yMax: 80, borderColor: '#22C55E', borderDash: [5, 5], borderWidth: 1 } } } },
+                    scales: { x: { grid: { display: false }, ticks: { color: '#94A3B8' } }, y: { min: 50, max: 100, grid: { color: '#334155' }, ticks: { color: '#94A3B8' } } }
+                }
+            });
+        }
+
+        function renderViolationChart() {
+            const ctx = document.getElementById('violationChart');
+            const trend = pumpData.violations?.daily_trend || [];
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: trend.map(t => t.date),
+                    datasets: [
+                        { label: 'Fuel Violation', data: trend.map(t => t.fuel), backgroundColor: '#EF4444' },
+                        { label: 'Clutter', data: trend.map(t => t.clutter), backgroundColor: '#F59E0B' },
+                        { label: 'Mob', data: trend.map(t => t.mob), backgroundColor: '#8B5CF6' },
+                        { label: 'Other', data: trend.map(t => t.other), backgroundColor: '#6B7280' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', usePointStyle: true, padding: 10 } } },
+                    scales: { x: { stacked: true, grid: { display: false }, ticks: { color: '#94A3B8' } }, y: { stacked: true, grid: { color: '#334155' }, ticks: { color: '#94A3B8' } } }
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+
+</html>

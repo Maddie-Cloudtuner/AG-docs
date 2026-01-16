@@ -1,0 +1,7 @@
+# Ignore node_modules (Standard practice)
+node_modules/
+
+# Ignore large binary/archive files
+*.zip
+*.ts
+*.pdf

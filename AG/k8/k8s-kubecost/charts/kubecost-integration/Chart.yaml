@@ -1,0 +1,24 @@
+apiVersion: v2
+name: kubecost-integration
+description: A Helm chart for CloudTuner-Kubecost integration components
+type: application
+version: 0.1.0
+appVersion: "1.3.0"
+
+keywords:
+- kubecost
+- cloudtuner  
+- cost-analytics
+- kubernetes
+- finops
+
+maintainers:
+- name: CloudTuner Team
+  email: support@cloudtuner.ai
+
+dependencies:
+- name: cost-analyzer
+  version: "2.8.0"
+  repository: https://kubecost.github.io/cost-analyzer/
+  condition: kubecost.enabled
+  alias: kubecost

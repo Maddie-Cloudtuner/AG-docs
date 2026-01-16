@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvEye Nayara - Fuel Station Compliance Dashboard | CloudTuner.ai</title>
+    <meta name="description"
+        content="Real-time AI-powered fuel station monitoring and compliance tracking for Nayara petroleum retail operations">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="url(#gradient1)" />
+                            <path d="M16 8L22 12V20L16 24L10 20V12L16 8Z" stroke="white" stroke-width="2"
+                                stroke-linejoin="round" />
+                            <circle cx="16" cy="16" r="3" fill="white" />
+                            <defs>
+                                <linearGradient id="gradient1" x1="0" y1="0" x2="32" y2="32">
+                                    <stop offset="0%" stop-color="#8B5CF6" />
+                                    <stop offset="100%" stop-color="#EC4899" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1>InvEye Nayara</h1>
+                        <span>Fuel Station Monitoring</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-center">
+                <div class="location-selector">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            d="M10 2C6.686 2 4 4.686 4 8c0 5.25 6 10 6 10s6-4.75 6-10c0-3.314-2.686-6-6-6zm0 8c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2z" />
+                    </svg>
+                    <select id="locationSelect">
+                        <option>Nayara - Sector 12, Noida</option>
+                        <option>Nayara - NH-8, Gurgaon</option>
+                        <option>Nayara - MG Road, Bangalore</option>
+                    </select>
+                </div>
+
+                <div class="date-selector">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            d="M6 2v2H5C3.895 2 3 2.895 3 4v12c0 1.105.895 2 2 2h10c1.105 0 2-.895 2-2V4c0-1.105-.895-2-2-2h-1V2h-2v2H8V2H6zm-1 6h10v8H5V8z" />
+                    </svg>
+                    <select id="dateSelect">
+                        <option>Today</option>
+                        <option>Yesterday</option>
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="live-status">
+                    <span class="pulse-dot"></span>
+                    <span>LIVE</span>
+                </div>
+
+                <button class="notification-btn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            d="M10 2C8.895 2 8 2.895 8 4v.5C6.067 5.468 5 7.109 5 9v4l-2 2v1h14v-1l-2-2V9c0-1.891-1.067-3.532-3-4.5V4c0-1.105-.895-2-2-2zm-1 16h2c0 .552-.448 1-1 1s-1-.448-1-1z" />
+                    </svg>
+                    <span class="notification-badge">12</span>
+                </button>
+
+                <div class="user-menu">
+                    <div class="user-avatar">SM</div>
+                    <div class="user-info">
+                        <span class="user-name">Station Manager</span>
+                        <span class="user-role">Sector 12</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Compliance Score Banner -->
+        <section class="compliance-banner">
+            <div class="compliance-banner-content">
+                <div class="compliance-score">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="currentColor" class="compliance-icon">
+                        <path
+                            d="M24 4L8 12v12c0 9.941 6 15 16 19 10-4 16-9.059 16-19V12L24 4zm-2 28l-6-6 2.828-2.828L22 26.344l7.172-7.172L32 22l-10 10z" />
+                    </svg>
+                    <div class="compliance-details">
+                        <h2 class="compliance-value">91%</h2>
+                        <p class="compliance-label">Overall Compliance Score</p>
+                        <div class="compliance-trend positive">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                                <path d="M7 2L11 9H3L7 2Z" />
+                            </svg>
+                            <span>+5% from last week</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="compliance-stats">
+                    <div class="stat-item stat-red">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-content">
+                            <h3 class="stat-value">2</h3>
+                            <p class="stat-label">Very Critical</p>
+                        </div>
+                    </div>
+                    <div class="stat-item stat-orange">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-content">
+                            <h3 class="stat-value">7</h3>
+                            <p class="stat-label">Critical</p>
+                        </div>
+                    </div>
+                    <div class="stat-item stat-yellow">
+                        <div class="stat-icon">🟡</div>
+                        <div class="stat-content">
+                            <h3 class="stat-value">14</h3>
+                            <p class="stat-label">Moderate</p>
+                        </div>
+                    </div>
+                    <div class="stat-item stat-green">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <h3 class="stat-value">50</h3>
+                            <p class="stat-label">Compliant</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI Cards -->
+        <section class="kpi-section">
+            <div class="kpi-card" data-severity="red">
+                <div class="severity-badge badge-red">VERY CRITICAL</div>
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path
+                            d="M16 4L8 8v8c0 5 3 7.5 8 9.5 5-2 8-4.5 8-9.5V8l-8-4zm-2 14l-3-3 1.41-1.41L14 15.17l4.59-4.58L20 12l-6 6z" />
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value">2</h3>
+                    <p class="kpi-label">Active RED Alerts</p>
+                    <div class="kpi-details">Fire Safety, Static Discharge</div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-severity="green">
+                <div class="severity-badge badge-green">COMPLIANT</div>
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path
+                            d="M16 4c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12S22.627 4 16 4zm-2 18l-6-6 2.828-2.828L14 16.344l7.172-7.172L24 12l-10 10z" />
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value">95%</h3>
+                    <p class="kpi-label">CCTV Uptime</p>
+                    <div class="kpi-details">23 / 24 cameras operational</div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-severity="green">
+                <div class="severity-badge badge-green">COMPLIANT</div>
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path
+                            d="M16 4C9.373 4 4 9.373 4 16s5.373 12 12 12 12-5.373 12-12S22.627 4 16 4zm6 18h-4v-4h-4v-4h4v-4h4v12z" />
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value">100%</h3>
+                    <p class="kpi-label">Fuel Quality</p>
+                    <div class="kpi-details">Density: 738.2 kg/m³ ✓</div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-severity="orange">
+                <div class="severity-badge badge-orange">CRITICAL</div>
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path
+                            d="M16 4c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm8 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-16 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm8 8c-3.3 0-6 1.8-6 4v4h12v-4c0-2.2-2.7-4-6-4z" />
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value">92%</h3>
+                    <p class="kpi-label">PPE Compliance</p>
+                    <div class="kpi-details">2 violations in last hour</div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-severity="green">
+                <div class="severity-badge badge-green">NORMAL</div>
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path
+                            d="M28 8H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h24c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-12 14H4v-8h12v8zm14 0H18v-8h12v8z" />
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value">₹4.82L</h3>
+                    <p class="kpi-label">Today's Revenue</p>
+                    <div class="kpi-details">12,450 liters dispensed</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Left Column -->
+            <div class="content-left">
+                <!-- CCTV Grid -->
+                <div class="card cctv-card">
+                    <div class="card-header">
+                        <h2>Live Station Cameras</h2>
+                        <div class="header-actions">
+                            <span class="camera-count">6 of 24 cameras</span>
+                            <button class="btn-icon" id="expandCameras">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path
+                                        d="M3 3h6v2H5v4H3V3zm12 0h2v6h-2V5h-4V3h4zM3 15v-2h2v-4h2v6H3zm14-2v2h-6v-2h4v-4h2v4z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="cctv-grid" id="cctvGrid">
+                        <!-- CCTV feeds will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Fuel Operations Chart -->
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h2>Fuel Dispensing Today</h2>
+                        <div class="chart-legend">
+                            <span class="legend-item">
+                                <span class="legend-color" style="background: #8B5CF6"></span>
+                                MS (Petrol)
+                            </span>
+                            <span class="legend-item">
+                                <span class="legend-color" style="background: #10B981"></span>
+                                HSD (Diesel)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="fuelChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Compliance by Category -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Compliance by Category</h2>
+                        <span class="badge badge-success">Target: ≥ 90%</span>
+                    </div>
+                    <div class="compliance-grid">
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Safety & Compliance</span>
+                                <span class="compliance-value">88%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 88%; background: #F59E0B"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Fuel Quality & Quantity</span>
+                                <span class="compliance-value">100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%; background: #10B981"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Equipment & Asset</span>
+                                <span class="compliance-value">95%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 95%; background: #10B981"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Operational Efficiency</span>
+                                <span class="compliance-value">78%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 78%; background: #F59E0B"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Regulatory & Licensing</span>
+                                <span class="compliance-value">100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%; background: #10B981"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="content-right">
+                <!-- Real-time Alerts -->
+                <div class="card alerts-card">
+                    <div class="card-header">
+                        <h2>Active Alerts</h2>
+                        <button class="btn-text">View All (23)</button>
+                    </div>
+                    <div class="alerts-container" id="alertsContainer">
+                        <!-- Alerts will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Fuel Tank Status -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Fuel Tank Status</h2>
+                        <span class="badge badge-success">Real-time ATG</span>
+                    </div>
+                    <div class="tank-grid">
+                        <div class="tank-item">
+                            <div class="tank-header">
+                                <div class="tank-name">
+                                    <span class="tank-icon">⛽</span>
+                                    <span>MS (Petrol)</span>
+                                </div>
+                                <span class="tank-status status-good">Good</span>
+                            </div>
+                            <div class="tank-level">
+                                <div class="tank-level-bar">
+                                    <div class="tank-level-fill" style="width: 68%"></div>
+                                </div>
+                                <span class="tank-level-value">12,485 L / 18,350 L</span>
+                            </div>
+                            <div class="tank-details">
+                                <div class="tank-detail-item">
+                                    <span class="detail-label">Density:</span>
+                                    <span class="detail-value">738.2 kg/m³ ✓</span>
+                                </div>
+                                <div class="tank-detail-item">
+                                    <span class="detail-label">Water:</span>
+                                    <span class="detail-value">5mm ✓</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tank-item">
+                            <div class="tank-header">
+                                <div class="tank-name">
+                                    <span class="tank-icon">⛽</span>
+                                    <span>HSD (Diesel)</span>
+                                </div>
+                                <span class="tank-status status-good">Good</span>
+                            </div>
+                            <div class="tank-level">
+                                <div class="tank-level-bar">
+                                    <div class="tank-level-fill" style="width: 45%"></div>
+                                </div>
+                                <span class="tank-level-value">8,920 L / 20,000 L</span>
+                            </div>
+                            <div class="tank-details">
+                                <div class="tank-detail-item">
+                                    <span class="detail-label">Density:</span>
+                                    <span class="detail-value">834.1 kg/m³ ✓</span>
+                                </div>
+                                <div class="tank-detail-item">
+                                    <span class="detail-label">Water:</span>
+                                    <span class="detail-value">3mm ✓</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regulatory Compliance -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Certificate Status</h2>
+                    </div>
+                    <div class="certificate-grid">
+                        <div class="certificate-item status-valid">
+                            <div class="cert-icon">📜</div>
+                            <div class="cert-content">
+                                <p class="cert-name">PESO License</p>
+                                <p class="cert-expiry">Valid until: 15 Jun 2025</p>
+                            </div>
+                            <div class="cert-status">✓</div>
+                        </div>
+                        <div class="certificate-item status-valid">
+                            <div class="cert-icon">🔥</div>
+                            <div class="cert-content">
+                                <p class="cert-name">Fire NOC</p>
+                                <p class="cert-expiry">Valid until: 22 Aug 2025</p>
+                            </div>
+                            <div class="cert-status">✓</div>
+                        </div>
+                        <div class="certificate-item status-expiring">
+                            <div class="cert-icon">⚖️</div>
+                            <div class="cert-content">
+                                <p class="cert-name">Weight & Measures</p>
+                                <p class="cert-expiry">Expires: 18 Dec 2024</p>
+                            </div>
+                            <div class="cert-status">⚠️</div>
+                        </div>
+                        <div class="certificate-item status-valid">
+                            <div class="cert-icon">🌱</div>
+                            <div class="cert-content">
+                                <p class="cert-name">Pollution Control</p>
+                                <p class="cert-expiry">Valid until: 10 Mar 2025</p>
+                            </div>
+                            <div class="cert-status">✓</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="data.js"></script>
+    <script src="chart.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+/*
+Theme Name: CloudTuner FinOps
+Theme URI: https://cloudtuner.ai
+Author: CloudTuner AI
+Author URI: https://cloudtuner.ai
+Description: A clean, approachable FinOps theme for CloudTuner. Designed for clarity and trust.
+Version: 3.0
+License: Proprietary
+*/
+
+:root {
+    /* Clear Skies Palette */
+    --color-bg: #0F172A;
+    --color-surface: #1E293B;
+    --color-border: rgba(255, 255, 255, 0.1);
+    --color-primary: #3B82F6;
+    --color-primary-hover: #2563EB;
+    --color-secondary: #10B981;
+    --color-text: #F8FAFC;
+    --color-muted: #94A3B8;
+
+    /* Typography */
+    --font-sans: 'Inter', sans-serif;
+    --font-heading: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-hover);
+}

@@ -1,0 +1,39 @@
+# Vector Configuration - Camera Logs Pipeline
+
+data_dir = "data/vector"
+
+[sources.camera_logs]
+type = "file"
+include = ["data/logs/detection_log.json"]
+read_from = "end"
+ignore_checkpoints = true
+
+[transforms.enrich]
+type = "remap"
+inputs = ["camera_logs"]
+source = '''
+  # Parse the JSON message from the file line
+  . = parse_json!(.message)
+  .processed_at = now()
+  
+  # Clean up internal Vector fields to keep payload nested
+  del(.message)
+  del(.file)
+'''
+
+[sinks.cloud_api]
+type = "http"
+inputs = ["enrich"]
+uri = "http://192.168.0.161:8000/vector"
+method = "post"
+encoding.codec = "json"
+acknowledgements.enabled = true
+
+[sinks.console]
+type = "console"
+inputs = ["enrich"]
+encoding.codec = "json"
+
+[api]
+enabled = true
+address = "0.0.0.0:8686"

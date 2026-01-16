@@ -1,0 +1,89 @@
+# InvEye Production Pipeline Configuration
+# ==========================================
+
+# Model Configuration
+models:
+  device: "cuda:0"  # Use "cpu" for CPU-only systems
+  
+  # Face Detection Model (YOLOv11n-face)
+  # Download from: https://github.com/YapaLab/yolo-face/releases
+  face_detection_model: "models/yolov11n-face.pt"
+  
+  # Object Detection Model (trained for fire, fight, smoke, person)
+  # Use your custom trained model or base yolov11n.pt
+  object_detection_model: "models/yolov11n.pt"
+  
+  # Face Recognition Model (InsightFace)
+  # Options: buffalo_l (large), buffalo_s (small), buffalo_sc (small/compact)
+  recognition_model: "buffalo_sc"
+
+# Camera Configuration
+cameras:
+  - id: "pump_entrance"
+    source: "rtsp://admin:password@192.168.1.101:554/stream1"
+    fps_limit: 15
+    
+  - id: "pump_area_1"
+    source: "rtsp://admin:password@192.168.1.102:554/stream1"
+    fps_limit: 15
+    
+  - id: "pump_area_2"
+    source: "rtsp://admin:password@192.168.1.103:554/stream1"
+    fps_limit: 15
+    
+  - id: "cash_counter"
+    source: "rtsp://admin:password@192.168.1.104:554/stream1"
+    fps_limit: 15
+
+# Processing Intervals (every N frames)
+# Higher values = less GPU usage but slower detection
+face_detection_interval: 1      # Detect faces every frame
+object_detection_interval: 1    # Detect objects every frame  
+recognition_interval: 5         # Recognize faces every 5 frames
+
+# Detection Thresholds
+face_confidence: 0.5            # Minimum confidence for face detection
+object_confidence: 0.5          # Minimum confidence for object detection
+recognition_threshold: 0.5      # Minimum similarity for face recognition
+
+# Alert Configuration
+alert_classes:
+  - fire
+  - smoke
+  - fight
+  - violence
+  - weapon
+
+alert_unknown_faces: true       # Alert when unknown person detected
+save_alert_frames: true         # Save frame when alert triggered
+alerts_dir: "alerts"            # Directory to save alert frames
+
+# Face Database
+face_database_path: "face_database"
+
+# Output Configuration
+output_dir: "recordings"
+save_recordings: false
+max_recording_hours: 24
+
+# Logging
+log_level: "INFO"
+log_file: "logs/inveye.log"
+
+# API Server (optional)
+api:
+  enabled: false
+  host: "0.0.0.0"
+  port: 8080
+
+# MQTT/WebSocket Alerts (optional)
+notifications:
+  mqtt:
+    enabled: false
+    broker: "localhost"
+    port: 1883
+    topic: "inveye/alerts"
+  
+  webhook:
+    enabled: false
+    url: "https://your-server.com/api/alerts"

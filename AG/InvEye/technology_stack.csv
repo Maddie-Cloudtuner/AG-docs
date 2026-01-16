@@ -1,0 +1,21 @@
+Component,Technology/Tool,Purpose,Estimated Cost
+Camera Hardware,IP Cameras (HD/4K),Capture high-quality video feeds at manufacturing sites,$200-500 per camera
+Camera Hardware,Camera Management System,"Manage, configure, and monitor camera fleet","$5,000-15,000 (software license)"
+Edge Computing,NVIDIA Jetson (AGX/Nano),Run AI inference at edge for low-latency detection,"$500-2,000 per unit"
+Edge Computing,Intel NUC / Edge Servers,Local processing to reduce bandwidth and cloud costs,$300-800 per unit
+Computer Vision / AI,TensorFlow / PyTorch,Train and deploy deep learning models,Open-source (training costs variable)
+Computer Vision / AI,OpenCV,"Pre-processing, image manipulation, feature extraction",Open-source
+Computer Vision / AI,YOLO / Faster R-CNN,"Object detection, person detection, PPE detection",Open-source (pre-trained models)
+Computer Vision / AI,Custom ML Models,"Industry-specific KPI detection (e.g., uniform, gestures)","$50,000-150,000 (development)"
+Cloud Infrastructure,AWS / Azure / GCP,Host multi-tenant SaaS platform,"$2,000-10,000/month (scalable)"
+Cloud Infrastructure,Kubernetes (Container Orchestration),Deploy scalable microservices,Included in cloud costs
+Cloud Infrastructure,Load Balancer & CDN,"Handle high traffic, distribute video streams","$500-2,000/month"
+Data Storage,PostgreSQL / MongoDB,"Store metadata, KPIs, user data","$200-1,000/month"
+Data Storage,S3 / Blob Storage (Video Archive),Long-term video retention for compliance and review,$100-500/month (depends on volume)
+Analytics & Dashboard,React / Angular Dashboard,Customer-facing analytics interface,"$20,000-50,000 (development)"
+Analytics & Dashboard,Grafana / Tableau,Real-time KPI dashboards and reporting,"$500-2,000/month (licenses)"
+Integration & APIs,RESTful APIs,"Integrate with customer ERP, MES, CMMS systems","$15,000-40,000 (development)"
+Integration & APIs,WebSocket (Real-time Alerts),Push real-time alerts to customers,Included in platform development
+Security & Compliance,OAuth 2.0 / JWT Authentication,Secure user access and data privacy,Included in platform development
+Security & Compliance,AES-256 Encryption,Encrypt data at rest and in transit,"Compliance certification: $25,000-100,000"
+DevOps & Monitoring,Prometheus / Datadog,"Monitor system health, uptime, performance","$500-2,000/month"

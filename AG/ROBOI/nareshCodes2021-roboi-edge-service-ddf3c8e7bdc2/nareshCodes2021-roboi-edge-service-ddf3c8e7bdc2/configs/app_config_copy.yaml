@@ -1,0 +1,69 @@
+site_info:
+  # client_id: "invincible_ocean"
+  client_id: "nayara_energy"
+  # site_name: "head_office"
+  site_name: "royal_petroleum_ahemadabad"
+  country: "india"
+  state: "gujarat"
+  district: "ahmedabad"
+  site_id: "ro001"
+  latitude: 22.98
+  longitude: 72.47
+
+cloud_storage:
+  bucket_name: "roboi-event-captures"
+
+models:
+  primary: "models/exports/yolo11n.pt"
+  fire: "models/exports/yolo11n_fire.pt"
+  fight: "models/exports/yolo8n_fight.pt"
+
+analytics:
+  heartbeat_interval: 60.0
+  alert_cooldown: 120.0
+  snapshots_per_event: 3
+  pre_event_seconds: 3
+  post_event_seconds: 5
+  face_recognition_threshold: 0.51
+  face_detection_threshold: 0.70
+  person_detection_threshold: 0.35
+  violence_threshold: 0.85
+  fire_threshold: 0.2
+  vehicle_threshold: 0.4
+  emergency_alert_policies: ["fire_detected_critical"]
+  critical_alert_policies: ["fight_detected_critical", "crowd_policy_violation"]
+  warning_alert_policies:
+    [
+      "restricted_access_sunday",
+      "restricted_access_before_hours",
+      "restricted_access_after_hours",
+      "vehicle_crowd_policy_violation",
+    ]
+
+pipeline:
+  width: 640
+  height: 384
+
+policy:
+  crowd_controlled_zones: ["d5", "d7", "d8", "d11"]
+  boss_cabin:
+    open_hour: 6
+    close_hour: 7
+    allowlist: ["sampad", "sagar"]
+  office:
+    open_hour: 4
+    open_min: 0
+    close_hour: 12
+    close_min: 45
+
+cameras:
+  0:
+    # name: "reception_area"
+    name: "d5"
+    # Hikvision (Backup): uri: "rtsp://admin:hik%402024@192.168.0.64:554/Streaming/Channels/101"
+    # CP Plus Format: D5
+    uri: "rtsp://admin:123456@10.132.10.3:554/unicast/c1/s1/live"
+  1:
+    name: "d7"
+    # uri: "rtsp://admin:hik%402024@192.168.0.65:554/Streaming/Channels/101"
+    uri: "rtsp://admin:123456@10.132.10.4:554/unicast/c1/s1/live"

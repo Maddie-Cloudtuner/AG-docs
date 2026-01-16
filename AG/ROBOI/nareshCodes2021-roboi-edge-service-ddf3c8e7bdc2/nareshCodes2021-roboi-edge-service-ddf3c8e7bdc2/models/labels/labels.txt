@@ -1,0 +1,25 @@
+person
+bicycle
+car
+motorcycle
+bus
+truck
+fire hydrant
+dog
+backpack
+handbag
+suitcase
+bottle
+knife
+chair
+toilet
+tv
+cell phone
+clock
+scissors
+fire
+smoke
+cigarette
+du_nozzle
+license_plate
+container

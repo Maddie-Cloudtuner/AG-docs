@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts | InvEye</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #F8FAFC;
+            color: #1E293B;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            padding: 0.5rem 1rem;
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            color: #475569;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #E2E8F0;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #3B82F6;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #DC2626;
+            color: white;
+        }
+
+        .btn-success {
+            background: #22C55E;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #475569;
+            border: 1px solid #E2E8F0;
+        }
+
+        .main-content {
+            padding: 1.5rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .latest-alert {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #DC2626;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .latest-alert.clear {
+            border-left-color: #22C55E;
+        }
+
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-icon {
+            font-size: 2rem;
+        }
+
+        .alert-info h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .alert-info p {
+            font-size: 0.9rem;
+            color: #64748B;
+        }
+
+        .alert-info .meta {
+            font-size: 0.8rem;
+            color: #94A3B8;
+        }
+
+        .alert-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #E2E8F0;
+        }
+
+        .stat-card h3 {
+            font-size: 0.75rem;
+            color: #64748B;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stat-card .value.red {
+            color: #DC2626;
+        }
+
+        .stat-card .value.green {
+            color: #22C55E;
+        }
+
+        .stat-card .value.amber {
+            color: #F59E0B;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .section-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .alerts-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .alert-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-item.addressed {
+            opacity: 0.5;
+        }
+
+        .alert-item-icon {
+            font-size: 1.25rem;
+        }
+
+        .alert-item-info {
+            flex: 1;
+        }
+
+        .alert-item-info h4 {
+            font-size: 0.9rem;
+        }
+
+        .alert-item-info p {
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        .alert-item-time {
+            font-size: 0.75rem;
+            color: #94A3B8;
+        }
+
+        .alert-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .alert-item-actions .btn {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .status-badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .status-badge.critical {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .status-badge.addressed {
+            background: #DCFCE7;
+            color: #22C55E;
+        }
+
+        .no-alerts {
+            padding: 3rem;
+            text-align: center;
+            color: #64748B;
+        }
+
+        .no-alerts .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="back-btn">← Back</a>
+            <h1 class="page-title">Alerts</h1>
+        </div>
+        <button class="btn btn-secondary" onclick="exportAlerts()">📥 Export Log</button>
+    </header>
+
+    <main class="main-content">
+        <div class="latest-alert" id="latestAlert">
+            <div class="alert-content">
+                <span class="alert-icon" id="alertIcon">🚨</span>
+                <div class="alert-info">
+                    <h2 id="latestTitle">Loading...</h2>
+                    <p id="latestMessage">Checking alerts...</p>
+                    <p class="meta" id="latestMeta"></p>
+                </div>
+            </div>
+            <div class="alert-actions" id="alertActions">
+                <button class="btn btn-danger" onclick="addressAlert()">⚡ Address</button>
+                <button class="btn btn-secondary" onclick="dismissLatest()">✕ Dismiss</button>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <h3>Total</h3>
+                <div class="value" id="totalAlerts">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Critical</h3>
+                <div class="value red" id="criticalCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Addressed</h3>
+                <div class="value green" id="addressedCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <div class="value amber" id="pendingCount">0</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2>All Alerts</h2>
+                <button class="btn btn-secondary" onclick="markAllRead()">Mark All Addressed</button>
+            </div>
+            <div class="alerts-list" id="alertsList"></div>
+        </div>
+    </main>
+
+    <script>
+        let eventsData = JSON.parse(localStorage.getItem('eventsData') || '[]');
+        let addressedAlerts = new Set(JSON.parse(localStorage.getItem('addressedAlerts') || '[]'));
+
+        function init() {
+            if (eventsData.length === 0) {
+                document.getElementById('latestTitle').textContent = '✅ No Alerts';
+                document.getElementById('latestMessage').textContent = 'All systems normal';
+                document.getElementById('alertIcon').textContent = '✅';
+                document.getElementById('latestAlert').classList.add('clear');
+                document.getElementById('alertActions').style.display = 'none';
+                document.getElementById('alertsList').innerHTML = '<div class="no-alerts"><div class="icon">✅</div><p>No alerts recorded</p></div>';
+                return;
+            }
+
+            updateStats();
+            updateLatestAlert();
+            renderAlertsList();
+        }
+
+        function updateStats() {
+            const critical = eventsData.filter(e => e.meta?.status === 'CRITICAL').length;
+            document.getElementById('totalAlerts').textContent = eventsData.length;
+            document.getElementById('criticalCount').textContent = critical;
+            document.getElementById('addressedCount').textContent = addressedAlerts.size;
+            document.getElementById('pendingCount').textContent = eventsData.length - addressedAlerts.size;
+        }
+
+        function updateLatestAlert() {
+            const pending = eventsData.filter(e => !addressedAlerts.has(e.meta?.ts));
+            const latest = pending[pending.length - 1];
+
+            if (latest) {
+                const triggers = latest.event?.triggers?.join(', ').replace(/_/g, ' ') || 'Unknown';
+                document.getElementById('latestTitle').textContent = 'CRITICAL ALERT';
+                document.getElementById('latestMessage').textContent = triggers;
+                document.getElementById('latestMeta').textContent = `${latest.meta?.cam_id || ''} • ${new Date(latest.meta?.ts).toLocaleString()}`;
+                document.getElementById('alertIcon').textContent = '🚨';
+                document.getElementById('latestAlert').classList.remove('clear');
+                document.getElementById('alertActions').style.display = 'flex';
+            } else {
+                document.getElementById('latestTitle').textContent = '✅ All Clear';
+                document.getElementById('latestMessage').textContent = 'No pending alerts';
+                document.getElementById('latestMeta').textContent = '';
+                document.getElementById('alertIcon').textContent = '✅';
+                document.getElementById('latestAlert').classList.add('clear');
+                document.getElementById('alertActions').style.display = 'none';
+            }
+        }
+
+        function renderAlertsList() {
+            const list = document.getElementById('alertsList');
+            if (eventsData.length === 0) {
+                list.innerHTML = '<div class="no-alerts"><div class="icon">✅</div><p>No alerts</p></div>';
+                return;
+            }
+
+            list.innerHTML = eventsData.slice().reverse().map(event => {
+                const isAddressed = addressedAlerts.has(event.meta?.ts);
+                const triggers = event.event?.triggers?.join(', ').replace(/_/g, ' ') || 'Unknown';
+                const time = new Date(event.meta?.ts).toLocaleString();
+
+                return `
+                    <div class="alert-item ${isAddressed ? 'addressed' : ''}">
+                        <span class="alert-item-icon">${isAddressed ? '✅' : '🚨'}</span>
+                        <div class="alert-item-info">
+                            <h4>${triggers}</h4>
+                            <p>${event.meta?.cam_id || ''} • ${event.event?.people_count || 0} person(s)</p>
+                        </div>
+                        <span class="status-badge ${isAddressed ? 'addressed' : 'critical'}">${isAddressed ? 'DONE' : 'CRITICAL'}</span>
+                        <span class="alert-item-time">${time}</span>
+                        ${!isAddressed ? `<div class="alert-item-actions"><button class="btn btn-success" onclick="addressSingle('${event.meta?.ts}')">Address</button><button class="btn btn-secondary" onclick="dismissSingle('${event.meta?.ts}')">Dismiss</button></div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addressAlert() {
+            const pending = eventsData.filter(e => !addressedAlerts.has(e.meta?.ts));
+            const latest = pending[pending.length - 1];
+            if (latest) {
+                localStorage.setItem('jumpToCamera', latest.meta?.cam_id || 'CAFETERIA');
+                addressedAlerts.add(latest.meta?.ts);
+                saveAddressed();
+                window.location.href = 'index.html';
+            }
+        }
+
+        function dismissLatest() {
+            const pending = eventsData.filter(e => !addressedAlerts.has(e.meta?.ts));
+            const latest = pending[pending.length - 1];
+            if (latest) { addressedAlerts.add(latest.meta?.ts); saveAddressed(); init(); }
+        }
+
+        function addressSingle(ts) {
+            const event = eventsData.find(e => e.meta?.ts === ts);
+            localStorage.setItem('jumpToCamera', event?.meta?.cam_id || 'CAFETERIA');
+            addressedAlerts.add(ts);
+            saveAddressed();
+            window.location.href = 'index.html';
+        }
+
+        function dismissSingle(ts) { addressedAlerts.add(ts); saveAddressed(); init(); }
+        function markAllRead() { eventsData.forEach(e => addressedAlerts.add(e.meta?.ts)); saveAddressed(); init(); }
+        function saveAddressed() { localStorage.setItem('addressedAlerts', JSON.stringify([...addressedAlerts])); }
+
+        function exportAlerts() {
+            let csv = 'Time,Camera,Status,Triggers,People,Addressed\n';
+            eventsData.forEach(e => {
+                csv += `${e.meta?.ts},${e.meta?.cam_id},${e.meta?.status},"${e.event?.triggers?.join('; ') || ''}",${e.event?.people_count || 0},${addressedAlerts.has(e.meta?.ts)}\n`;
+            });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+            a.download = 'alerts.csv';
+            a.click();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

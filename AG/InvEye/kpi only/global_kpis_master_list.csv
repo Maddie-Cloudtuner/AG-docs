@@ -1,0 +1,162 @@
+KPI_ID,KPI_Name,Category,Description,Criticality,Measurement_Unit,Threshold,Compliance_Standard,Why_This_Matters
+
+SEC001,Unauthorized Zone Entry,Intrusion Detection,Person entering restricted area without clearance,CRITICAL,Event count,Any detection,Access control policies,Most common security breach
+SEC002,Tailgating at Entry,Intrusion Detection,Multiple people entering on single credential,HIGH,Event count,>1 per scan,Physical security,Bypasses all access controls
+SEC003,Perimeter Breach,Intrusion Detection,Climbing or bypassing perimeter barriers,CRITICAL,Event count,Any detection,Perimeter security,First line of defense
+
+FIRE001,Fire and Smoke Detection,Fire Safety,Visual detection of flames or smoke,CRITICAL,Binary,Any detection,Fire codes,Early warning saves lives
+FIRE002,Emergency Exit Blocked,Fire Safety,Exit path obstructed,CRITICAL,Binary,Any blockage,Building IBC codes,Blocked exits cause fatalities
+FIRE003,Fire Equipment Obstructed,Fire Safety,Extinguishers not accessible,HIGH,Compliance %,<100%,NFPA standards,Common citation in inspections
+
+PPE001,Hard Hat Compliance,Head Protection,Workers wearing hard hats in required zones,CRITICAL,Compliance %,<100%,OSHA 1926.100,Head injuries lead fatalities
+PPE002,High-Visibility Vest,Visibility Safety,Hi-vis worn in traffic or warehouse zones,HIGH,Compliance %,<100%,ANSI/ISEA 107,Vehicle-pedestrian separation
+PPE003,Safety Glasses,Eye Protection,Eye protection in hazard areas,HIGH,Compliance %,<100%,OSHA 1910.133,Eye injuries very common
+
+FALL001,Fall Protection Harness,Fall Prevention,Harness worn at elevation,CRITICAL,Compliance %,<100%,OSHA 1926.502,Falls are number one killer
+FALL002,Guardrail Present,Fall Prevention,Physical barriers at heights in place,HIGH,Compliance %,<100%,OSHA 1910.23,Passive protection critical
+FALL003,Ladder Safety,Fall Prevention,Proper ladder use and positioning,MEDIUM,Compliance %,Any unsafe use,OSHA ladder standards,Common fall source
+
+CHILD001,Child Unattended,Child Safety,Child without adult supervision,CRITICAL,Event count,Child alone >2 min,Child protection,Liability and safety
+CHILD002,Child in Hazard Zone,Child Safety,Child near dangerous area,HIGH,Binary,Any detection,Safety guidelines,Injury prevention
+
+ELDER001,Elderly Fall Detection,Elderly Care,Senior citizen fall or collapse,CRITICAL,Event count,Any fall,Healthcare duty,Higher injury severity
+ELDER002,Elderly Assistance Needed,Elderly Care,Senior showing signs of distress or confusion,MEDIUM,Event flag,Assistance indicator,Customer service,Vulnerable person care
+
+CROWD001,Occupancy Limit,Crowd Management,Headcount vs maximum capacity,HIGH,Count vs Max,>90% capacity,Fire marshal,Legal requirement
+CROWD002,Crowd Density Hotspot,Crowd Management,Dangerous compression detected,CRITICAL,Density score,Threshold exceeded,Event safety,Crush prevention
+CROWD003,Evacuation Progress,Crowd Management,Time to clear during emergency,HIGH,Time to clear,>Target time,Emergency plans,Preparedness measure
+
+SLIP001,Wet Floor Detection,Slip Hazards,Liquid on floor surface,HIGH,Binary,Any spill,OSHA housekeeping,Top injury source
+SLIP002,Trip Hazard Object,Slip Hazards,Obstacle in walkway,MEDIUM,Binary,Any obstruction,OSHA housekeeping,Preventable injury
+SLIP003,Fall Incident Detection,Slip Hazards,Person falling,HIGH,Event count,Any fall,Emergency response,Immediate assistance needed
+
+VEHICLE001,Vehicle Speed Limit,Vehicle Traffic,Speeding within premises,HIGH,Speed reading,>Posted limit,Workplace safety,Fatal accident risk
+VEHICLE002,Vehicle in Pedestrian Zone,Vehicle Traffic,Vehicle in wrong area,HIGH,Event count,Any entry,Traffic rules,Separation critical
+VEHICLE003,Wrong-Way Vehicle,Vehicle Traffic,Vehicle going against flow,MEDIUM,Event count,Any detection,Traffic management,Collision prevention
+
+FORK001,Forklift Speed Violation,Forklift Safety,Forklift speeding in shared zones,HIGH,Speed reading,>Limit,OSHA powered trucks,Leading warehouse killer
+FORK002,Forklift-Pedestrian Proximity,Forklift Safety,Dangerous close call,CRITICAL,Proximity alert,Close proximity,OSHA powered trucks,Near-miss prevention
+FORK003,Forklift Load Unstable,Forklift Safety,Improperly loaded or tilted,HIGH,Event count,Any detection,OSHA standards,Falling load hazard
+
+CRANE001,Crane Load Path Violation,Overhead Crane,Person under suspended load,CRITICAL,Event count,Anyone under,OSHA crane,Instant fatality risk
+CRANE002,Crane Signal Compliance,Overhead Crane,Proper hand signals used,MEDIUM,Compliance %,Signals missing,OSHA crane,Communication critical
+
+CONFINE001,Confined Space No Attendant,Confined Space,Entry without outside attendant,CRITICAL,Compliance %,Entry without,OSHA 1910.146,Rescuers become victims
+CONFINE002,Confined Space Equipment,Confined Space,Rescue gear in position,HIGH,Compliance %,Equipment missing,OSHA 1910.146,Rescue readiness
+
+LOTO001,LOTO Not Applied,Lockout Tagout,Energy isolation not visible,CRITICAL,Compliance %,Any maintenance without,OSHA 1910.147,Top OSHA violation
+LOTO002,LOTO Removal Check,Lockout Tagout,Proper removal procedure followed,HIGH,Compliance %,Improper removal,OSHA 1910.147,Accidental energization
+
+CHEM001,Chemical Spill Detection,Chemical Safety,Hazardous material on floor,HIGH,Binary,Any spill,EPA standards,Environmental and injury risk
+CHEM002,Chemical Label Visible,Chemical Safety,GHS labels present on containers,MEDIUM,Compliance %,Labels missing,OSHA Hazcom,Identification requirement
+CHEM003,Secondary Containment,Chemical Safety,Spill containment in use,HIGH,Compliance %,Outside containment,EPA SPCC,Spill prevention
+
+ELEC001,Electrical Panel Clearance,Electrical Safety,36 inch clearance maintained,MEDIUM,Binary,Any obstruction,NEC codes,Access for emergency shutoff
+ELEC002,Arc Flash Zone Entry,Electrical Safety,Unauthorized in arc flash boundary,CRITICAL,Event count,Any exposure,NFPA 70E,Severe burn and death risk
+
+WELD001,Hot Work Fire Watch,Welding Safety,Fire watch present during work,HIGH,Compliance %,No fire watch,Hot work permit,30% industrial fires from hot work
+WELD002,Welding Screen Present,Welding Safety,Screens protecting bystanders,HIGH,Compliance %,Flash exposure,OSHA welding,Arc eye prevention
+
+VIOLENCE001,Physical Altercation,Violence Prevention,Fighting detected,CRITICAL,Event count,Any detection,Workplace violence,Duty to protect
+VIOLENCE002,Weapon Visible,Violence Prevention,Firearm or knife detected,CRITICAL,Binary,Any detection,Security policy,Immediate lockdown
+VIOLENCE003,Aggressive Posture,Violence Prevention,Threatening behavior,HIGH,Event count,Pattern detected,De-escalation,Pre-violence warning
+
+THEFT001,Suspicious Concealment,Theft Prevention,Hiding items on person,HIGH,Event count,Any detection,Loss prevention,Direct loss prevention
+THEFT002,Abandoned Object,Theft Prevention,Unattended bag or package,HIGH,Duration,>5 min stationary,Security,Bomb threat concern
+
+ACCESS001,Credential Sharing,Access Control,Same badge multiple locations,CRITICAL,Event flag,Simultaneous use,Security policy,Stolen credentials
+ACCESS002,Forced Entry Attempt,Access Control,Physical bypass attempt,CRITICAL,Event count,Any attempt,Physical security,Pre-intrusion detection
+ACCESS003,After-Hours Presence,Access Control,Movement outside authorized hours,HIGH,Event log,Any presence,Facility security,Insurance requirement
+
+LOADING001,Unauthorized Loading Dock Access,Loading Dock,Non-personnel in dock area,MEDIUM,Event count,Unknown person,Facility security,Theft opportunity
+LOADING002,Delivery Verification,Loading Dock,Receiving procedure followed,MEDIUM,Compliance %,Steps skipped,Receiving protocol,Inventory accuracy
+LOADING003,Dock Door Left Open,Loading Dock,Overhead door open when not in use,LOW,Duration,>30 min idle open,Energy/security,Climate loss and access
+
+PARKING001,Unauthorized Vehicle,Parking Management,Unknown vehicle in restricted parking,MEDIUM,Event count,Unknown plate,Parking policy,Space control
+PARKING002,Handicap Violation,Parking Management,Non-permitted vehicle in accessible spot,MEDIUM,Event count,Any violation,ADA compliance,Accessibility requirement
+PARKING003,Fire Lane Blockage,Parking Management,Vehicle blocking fire lane,HIGH,Event count,Any blockage,Fire codes,Emergency access
+
+ADA001,Wheelchair Path Blocked,Accessibility,Accessible route obstructed,HIGH,Binary,Any obstruction,ADA requirements,Legal compliance
+ADA002,Ramp Obstruction,Accessibility,Wheelchair ramp blocked,HIGH,Binary,Any obstruction,ADA requirements,Access requirement
+
+HYGIENE001,Hand Washing Compliance,Hygiene,Hand washing performed when required,HIGH,Compliance %,<Required frequency,Health codes,Food and healthcare critical
+HYGIENE002,Cleaning Activity Verified,Hygiene,Scheduled cleaning occurred,MEDIUM,Activity detected,Missed schedule,Health regulations,Sanitation compliance
+HYGIENE003,Restroom Maintenance Check,Hygiene,Restroom condition monitoring,LOW,Compliance %,Below standard,Facility standards,Customer experience
+
+FOOD001,Food Handling PPE,Food Safety,Gloves and hair nets worn,HIGH,Compliance %,<100%,FDA food code,Contamination prevention
+FOOD002,Temperature Zone Violation,Food Safety,Staff in cold storage without PPE,MEDIUM,Compliance %,<100%,Cold storage safety,Hypothermia risk
+FOOD003,Cross-Contamination Risk,Food Safety,Raw and cooked food proximity,HIGH,Event count,Any violation,HACCP,Food safety critical
+
+WASTE001,Improper Waste Disposal,Waste Management,Wrong materials in wrong bins,LOW,Event count,Any violation,Environmental,Recycling compliance
+WASTE002,Hazardous Waste Handling,Waste Management,Hazardous materials disposed properly,HIGH,Compliance %,Improper disposal,EPA hazwaste,Environmental violation
+WASTE003,Overflowing Bins,Waste Management,Waste containers at capacity,LOW,Binary,Overflow detected,Housekeeping,Pest and hygiene issue
+
+SMOKING001,Smoking in Non-Designated Area,Smoking Policy,Smoking outside designated zones,MEDIUM,Event count,Any violation,Smoke-free policy,Fire risk and policy
+SMOKING002,Smoking Near Entrance,Smoking Policy,Smoking within distance of entrance,LOW,Event count,Within prohibited zone,Building policy,Customer experience
+
+DRESS001,Uniform Compliance,Dress Code,Correct work attire worn,LOW,Compliance %,<100%,Dress code,Brand standards
+DRESS002,ID Badge Visible,Dress Code,Employee identification displayed,MEDIUM,Compliance %,<100%,Security policy,Identity verification
+
+FATIGUE001,Operator Fatigue Detection,Fatigue Monitoring,Drowsiness in equipment operator,CRITICAL,Event count,Any fatigue signs,Safety critical,70% more accidents
+FATIGUE002,Driver Alertness,Fatigue Monitoring,Drowsiness in vehicle operator,CRITICAL,Event count,Any fatigue signs,Fleet safety,Accident prevention
+
+ERGO001,Improper Lifting Posture,Ergonomics,Unsafe lift technique detected,MEDIUM,Event count,Risky posture,OSHA ergonomics,Back injury prevention
+ERGO002,Repetitive Motion Alert,Ergonomics,Excessive repetitive movements,LOW,Pattern detection,High repetition,Ergonomic standards,Long-term injury
+
+LONE001,Lone Worker High-Risk Zone,Lone Worker,Solo work in hazardous area,CRITICAL,Presence,Solo in danger zone,Lone worker regs,No help if injured
+LONE002,Lone Worker Check-In,Lone Worker,Extended solo without verification,HIGH,Duration,>30 min no check,Lone worker policy,Welfare monitoring
+
+VISITOR001,Visitor Without Escort,Visitor Management,Unaccompanied visitor in facility,HIGH,Compliance %,Visitor alone,Security policy,Liability and control
+VISITOR002,Visitor Badge Not Worn,Visitor Management,Visitor identification not visible,MEDIUM,Compliance %,Badge hidden,Visitor policy,Identification requirement
+VISITOR003,Visitor in Restricted Area,Visitor Management,Visitor where not authorized,HIGH,Event count,Any violation,Access control,Sensitive area protection
+
+CONTRACTOR001,Contractor PPE Compliance,Contractor Safety,Outside workers meeting safety standards,HIGH,Compliance %,<100%,Site safety,Same as employee
+CONTRACTOR002,Contractor Work Zone Violation,Contractor Safety,Contractor outside authorized area,HIGH,Compliance %,Outside zone,Contract scope,Scope limitation
+
+MEETING001,Meeting Room Utilization,Space Management,Booked rooms actually used,LOW,Utilization %,<50% used,Space efficiency,Ghost booking reduction
+MEETING002,Meeting Room Overcrowding,Space Management,Exceeding room capacity,MEDIUM,Count vs capacity,>Capacity,Fire codes,Safety compliance
+
+CAFE001,Cafeteria Overcrowding,Cafeteria,Dining area over capacity,MEDIUM,Occupancy %,>90%,Building codes,Safety and comfort
+CAFE002,Food Line Queue,Cafeteria,Excessive wait in food line,LOW,Count + Time,>10 min wait,Service standards,Meal time efficiency
+
+BREAK001,Break Room Occupancy,Break Areas,Break room over capacity,LOW,Count,>Capacity,Space limits,Social distancing ready
+BREAK002,Break Duration Exceeded,Break Areas,Extended break time detected,MEDIUM,Duration,>Allowed time,HR policy,Time management
+
+ELEVATOR001,Elevator Overcrowding,Elevator Safety,Elevator at or over capacity,MEDIUM,Count,>Posted limit,Elevator codes,Safety and wear
+ELEVATOR002,Elevator Obstruction,Elevator Safety,Objects blocking elevator doors,MEDIUM,Event count,Door held >30 sec,Equipment protection,Door mechanism damage
+
+ESCALATOR001,Escalator Safety Violation,Escalator Safety,Unsafe behavior on escalator,MEDIUM,Event count,Running sitting etc,Safety rules,Fall and injury risk
+ESCALATOR002,Escalator Malfunction Detection,Escalator Safety,Escalator stoppage detected,HIGH,Binary,Any stoppage,Maintenance,Passenger safety
+
+WEATHER001,Outdoor Equipment Secured,Weather Prep,Items secured before weather event,MEDIUM,Compliance %,Items unsecured,Risk management,Property damage prevention
+WEATHER002,Wet Weather Floor Hazard,Weather Prep,Water tracked into facility,HIGH,Binary,Wet entry zones,OSHA housekeeping,Slip risk at entrances
+
+LIGHT001,Adequate Lighting,Lighting Safety,Work area illumination sufficient,MEDIUM,Brightness level,Below threshold,OSHA lighting,Work safety requirement
+LIGHT002,Emergency Lighting,Lighting Safety,Emergency lights functional,HIGH,Binary,Any failure,Building codes,Power failure readiness
+
+SIGN001,Safety Signage Visible,Signage,Safety signs unobstructed,MEDIUM,Compliance %,<100%,OSHA signage,Warning communication
+SIGN002,Exit Sign Illuminated,Signage,Exit signs functioning,HIGH,Binary,Any dark sign,Building codes,Evacuation guidance
+
+ANIMAL001,Unauthorized Animal,Animal Detection,Non-service animal in facility,LOW,Event count,Any detection,Facility policy,Health and safety
+ANIMAL002,Pest Detection,Animal Detection,Rodent or pest visible,HIGH,Event count,Any detection,Health codes,Sanitation critical
+
+DRONE001,Drone in Airspace,Aerial Security,Unauthorized drone detected,HIGH,Event count,Any detection,Aviation/privacy,Surveillance concern
+DRONE002,Drone Near Restricted Area,Aerial Security,Drone approaching sensitive zone,CRITICAL,Proximity,Near restricted,Security policy,Data and physical security
+
+PRIVACY001,Camera Obstruction Attempt,Privacy/Tampering,Intentional camera blocking,CRITICAL,Event count,Any tampering,Security,Pre-incident indicator
+PRIVACY002,Recording Equipment Detected,Privacy/Tampering,Unauthorized recording device,MEDIUM,Event count,Any detection,IP protection,Corporate espionage
+
+ENERGY001,Lights Left On,Energy Efficiency,Lighting in unoccupied areas,LOW,Duration,>30 min empty,Energy policy,Cost reduction
+ENERGY002,HVAC Waste,Energy Efficiency,Climate control with doors open,LOW,Duration,Door open + HVAC on,Energy policy,Energy waste
+
+EMERGENCY001,AED Accessibility,Emergency Equipment,Defibrillator accessible,HIGH,Binary,Any obstruction,AHA guidelines,Cardiac emergency
+EMERGENCY002,First Aid Kit Accessible,Emergency Equipment,First aid supplies available,MEDIUM,Binary,Any obstruction,OSHA first aid,Injury response
+EMERGENCY003,Emergency Shower Access,Emergency Equipment,Eye wash and shower clear,HIGH,Binary,Any obstruction,OSHA 1910.151,Chemical exposure response
+
+HEALTH001,Social Distancing,Health Protocol,Minimum distance maintained,MEDIUM,Violation count,>Threshold,Health mandates,Pandemic response activatable
+HEALTH002,Mask Compliance,Health Protocol,Face covering when required,MEDIUM,Compliance %,<Required,Health mandates,Pandemic response activatable
+HEALTH003,Temperature Screening,Health Protocol,Thermal check performed,HIGH,Screening count,Bypass detected,Health protocols,Entry screening
+
+SYSTEM001,Camera Offline,System Health,Camera feed lost,HIGH,Binary,Any offline,Audit requirements,No monitoring no evidence
+SYSTEM002,Camera Obscured,System Health,Camera view blocked,HIGH,Binary,Any obstruction,Tampering detection,Intentional or accidental
+SYSTEM003,Coverage Gap,System Health,Blind spot in coverage,MEDIUM,Coverage %,<Required,Security audit,Coverage degradation

@@ -1,0 +1,2753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvEye Analytics Dashboard | Petrol Pump Monitoring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --bg-card: #1E293B;
+            --accent-orange: #F97316;
+            --accent-blue: #3B82F6;
+            --accent-purple: #8B5CF6;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --critical: #EF4444;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --border: #334155;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary), #0F172A);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .site-info {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--success);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item {
+            padding: 1rem;
+            text-align: center;
+            border-right: 1px solid var(--border);
+        }
+
+        .stat-item:last-child {
+            border-right: none;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+        }
+
+        .stat-value.green {
+            color: var(--success);
+        }
+
+        .stat-value.red {
+            color: var(--critical);
+        }
+
+        .stat-value.orange {
+            color: var(--accent-orange);
+        }
+
+        .stat-value.blue {
+            color: var(--accent-blue);
+        }
+
+        /* Main */
+        .main {
+            padding: 1.5rem 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-badge {
+            font-size: 0.65rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-weight: 600;
+        }
+
+        .section-badge.critical {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--critical);
+        }
+
+        .section-badge.warning {
+            background: rgba(249, 115, 22, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .section-badge.success {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--bg-secondary);
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            width: fit-content;
+        }
+
+        .tab {
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .tab.active {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .grid-6 {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.75rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        /* KPI Cards */
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .kpi-card.critical::before {
+            background: var(--critical);
+        }
+
+        .kpi-card.warning::before {
+            background: var(--warning);
+        }
+
+        .kpi-card.success::before {
+            background: var(--success);
+        }
+
+        .kpi-card.info::before {
+            background: var(--accent-blue);
+        }
+
+        .kpi-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .kpi-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Charts */
+        .chart-container {
+            height: 200px;
+            position: relative;
+        }
+
+        .chart-container-lg {
+            height: 280px;
+        }
+
+        .chart-container-sm {
+            height: 160px;
+        }
+
+        /* Status Grid */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .status-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .status-item.secure {
+            border-color: var(--success);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .status-item.open {
+            border-color: var(--warning);
+            background: rgba(249, 115, 22, 0.1);
+            animation: blink 1s infinite;
+        }
+
+        .status-item.alert {
+            border-color: var(--critical);
+            background: rgba(239, 68, 68, 0.1);
+            animation: blink 0.5s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .status-icon {
+            font-size: 1.25rem;
+        }
+
+        .status-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Funnel */
+        .funnel-stage {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .funnel-bar {
+            height: 32px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .funnel-value {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Progress */
+        .progress-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-label {
+            width: 60px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding-left: 0.5rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .progress-value {
+            width: 50px;
+            text-align: right;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* FSM */
+        .fsm-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .fsm-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .fsm-info {
+            flex: 1;
+        }
+
+        .fsm-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .fsm-time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
+        .fsm-badge {
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+
+        .fsm-badge.present {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .fsm-badge.absent {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--critical);
+        }
+
+        /* Plates */
+        .plate-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+        }
+
+        .plate-number {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Heatmap */
+        .heatmap {
+            display: grid;
+            grid-template-columns: 60px repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .heatmap-header {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 0.25rem;
+        }
+
+        .heatmap-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+        }
+
+        .heatmap-cell.safe {
+            background: var(--success);
+            opacity: 0.3;
+        }
+
+        .heatmap-cell.low {
+            background: var(--success);
+        }
+
+        .heatmap-cell.med {
+            background: var(--warning);
+        }
+
+        .heatmap-cell.high {
+            background: var(--critical);
+        }
+
+        /* Alerts */
+        .alert-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid var(--critical);
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-icon {
+            font-size: 1.25rem;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-text {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .alert-meta {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .alert-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Camera */
+        .camera-feed {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #1E293B, #334155);
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .camera-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .camera-icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0.5rem 0.75rem;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            display: flex;
+            justify-content: space-between;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .cam-label {
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .cam-status {
+            font-size: 0.7rem;
+        }
+
+        .cam-status.safe {
+            color: var(--success);
+        }
+
+        .cam-status.critical {
+            color: var(--critical);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            background: var(--bg-secondary);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Org Tree */
+        .org-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .org-level {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .org-level.fsm-level {
+            max-width: 100%;
+        }
+
+        .org-connector {
+            width: 2px;
+            height: 20px;
+            background: var(--border);
+        }
+
+        .org-node {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 100px;
+        }
+
+        .org-node:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-orange);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+        }
+
+        .org-node.manager {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1));
+            border-color: var(--accent-purple);
+        }
+
+        .org-node.supervisor {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+            border-color: var(--accent-blue);
+        }
+
+        .org-node.fsm {
+            padding: 0.4rem 0.6rem;
+        }
+
+        .org-node.violation {
+            border-color: var(--critical);
+            animation: pulse-warning 2s infinite;
+        }
+
+        @keyframes pulse-warning {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+            }
+        }
+
+        .org-avatar {
+            font-size: 1.25rem;
+        }
+
+        .org-node.fsm .org-avatar {
+            font-size: 1rem;
+        }
+
+        .org-info {
+            flex: 1;
+        }
+
+        .org-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .org-node.fsm .org-name {
+            font-size: 0.65rem;
+        }
+
+        .org-role {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+
+        .org-status {
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .org-status.present {
+            color: var(--success);
+        }
+
+        .org-status.absent {
+            color: var(--critical);
+        }
+
+        .org-status.violation {
+            color: var(--warning);
+        }
+
+        /* AI Chatbot */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chat-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .chat-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .chat-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 0.75rem;
+            max-width: 85%;
+        }
+
+        .chat-message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .chat-message.bot {
+            align-self: flex-start;
+        }
+
+        .msg-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .chat-message.bot .msg-avatar {
+            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+        }
+
+        .chat-message.user .msg-avatar {
+            background: var(--accent-orange);
+        }
+
+        .msg-bubble {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .chat-message.bot .msg-bubble {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-message.user .msg-bubble {
+            background: var(--accent-orange);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+
+        .chat-send {
+            padding: 0.75rem 1.5rem;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.05);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .quick-btn {
+            padding: 0.4rem 0.75rem;
+            border-radius: 16px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: var(--accent-purple);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+
+        @media (max-width: 1200px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid-6 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">⛽</span>
+            <div>
+                <div class="brand">InvEye Analytics</div>
+                <div class="site-info">Nayara Energy - Andheri West • Morning Shift</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="live-badge"><span class="live-dot"></span> LIVE</div>
+            <a href="report.html" class="btn btn-outline">📊 Report</a>
+            <a href="alerts.html" class="btn btn-outline">🔔 Alerts</a>
+            <button class="btn btn-primary">⬇️ Export</button>
+        </div>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-label">Cameras</div>
+            <div class="stat-value blue" id="totalCameras">12</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Active Alerts</div>
+            <div class="stat-value red" id="activeAlerts">5</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Vehicles Today</div>
+            <div class="stat-value" id="vehiclesToday">156</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Conversion Rate</div>
+            <div class="stat-value green" id="conversionRate">82.1%</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">FSM Present</div>
+            <div class="stat-value orange" id="fsmPresent">4/5</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Compliance</div>
+            <div class="stat-value green" id="compliance">81.8%</div>
+        </div>
+    </div>
+
+    <main class="main">
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
+            <div class="tab" onclick="showTab('safety')">🔥 Safety</div>
+            <div class="tab" onclick="showTab('operations')">⛽ Operations</div>
+            <div class="tab" onclick="showTab('staff')">👥 Staff</div>
+            <div class="tab" onclick="showTab('customers')">🚗 Customers</div>
+            <div class="tab" onclick="showTab('cameras')">📹 Cameras</div>
+            <div class="tab" onclick="showTab('ai')"
+                style="background: linear-gradient(135deg, #8B5CF6, #EC4899); color: white;">🤖 PetrolGPT</div>
+            <div class="tab" onclick="showTab('heatmap')"
+                style="background: linear-gradient(135deg, #EF4444, #F97316); color: white;">🔥 Heatmap</div>
+        </div>
+
+        <!-- OVERVIEW TAB -->
+        <div id="tab-overview" class="tab-content active">
+            <div class="grid-4" style="margin-bottom: 1.5rem;">
+                <div class="kpi-card critical">
+                    <div class="kpi-icon">🔥</div>
+                    <div class="kpi-label">Safety Incidents</div>
+                    <div class="kpi-value" style="color: var(--critical);">5</div>
+                    <div class="kpi-sub">Fire: 0 | Smoke: 1 | Smoking: 4</div>
+                </div>
+                <div class="kpi-card warning">
+                    <div class="kpi-icon">🧪</div>
+                    <div class="kpi-label">5L Testing</div>
+                    <div class="kpi-value" style="color: var(--warning);">81.8%</div>
+                    <div class="kpi-sub">18 of 22 completed</div>
+                </div>
+                <div class="kpi-card success">
+                    <div class="kpi-icon">🔒</div>
+                    <div class="kpi-label">Equipment Secure</div>
+                    <div class="kpi-value" style="color: var(--success);">7/9</div>
+                    <div class="kpi-sub">2 items need attention</div>
+                </div>
+                <div class="kpi-card info">
+                    <div class="kpi-icon">🚗</div>
+                    <div class="kpi-label">Vehicle Conversion</div>
+                    <div class="kpi-value" style="color: var(--accent-blue);">82.1%</div>
+                    <div class="kpi-sub">128 of 156 fueled</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📈 Hourly Traffic</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container"><canvas id="trafficChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🚨 Live Alerts</h3><span style="font-size: 0.75rem; color: var(--critical);">5 Active</span>
+                    </div>
+                    <div class="card-body" id="alertsList"></div>
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top: 1.5rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>⛽ Pump Utilization</h3>
+                    </div>
+                    <div class="card-body" id="pumpUtilization"></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🧹 Cleanliness Score</h3><span
+                            style="font-size: 0.75rem; color: var(--warning);">78/100</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container"><canvas id="cleanlinessChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🎯 SOP Compliance</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container"><canvas id="sopRadar"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SAFETY TAB -->
+        <div id="tab-safety" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🔥 Safety & Compliance</h2><span class="section-badge critical">P0
+                    CRITICAL</span>
+            </div>
+
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🔥 Incident Heatmap</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="heatmap" id="safetyHeatmap"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🧪 5L Testing Gauge</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container-sm"><canvas id="testingGauge"></canvas></div>
+                        <div
+                            style="display: flex; justify-content: space-around; margin-top: 1rem; text-align: center;">
+                            <div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">18</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Completed</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--warning);">4</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Pending</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-blue);">88.9%
+                                </div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Return Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🔐 Equipment Status</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">DU Covers</div>
+                        <div class="status-grid" id="duStatus"></div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin: 1rem 0 0.5rem;">Manholes</div>
+                        <div class="status-grid" id="manholeStatus"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Daily Violation Trend</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container-lg"><canvas id="violationChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📋 Today's Violations</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="grid-2" style="gap: 0.75rem;">
+                            <div class="kpi-card critical" style="text-align: center; padding: 1rem;">
+                                <div style="font-size: 1.5rem;">🚫</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--critical);">2</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Fuel in Plastic</div>
+                            </div>
+                            <div class="kpi-card warning" style="text-align: center; padding: 1rem;">
+                                <div style="font-size: 1.5rem;">🗑️</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);">5</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Clutter</div>
+                            </div>
+                            <div class="kpi-card success" style="text-align: center; padding: 1rem;">
+                                <div style="font-size: 1.5rem;">👥</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">0</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Mob Gathering</div>
+                            </div>
+                            <div class="kpi-card info" style="text-align: center; padding: 1rem;">
+                                <div style="font-size: 1.5rem;">🔓</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-blue);">1</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Unauthorized</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OPERATIONS TAB -->
+        <div id="tab-operations" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">⛽ Operational Efficiency</h2><span class="section-badge warning">P1</span>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Vehicle Conversion Funnel</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="funnelChart"></div>
+                        <div
+                            style="margin-top: 1rem; padding: 0.75rem; background: rgba(239,68,68,0.1); border-radius: 8px; border-left: 3px solid var(--critical);">
+                            <span style="font-size: 0.75rem;">⚠️ <strong>28 vehicles</strong> left without fueling
+                                (17.9% drop-off)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>⛽ Pump Sessions</h3>
+                    </div>
+                    <div class="card-body" id="pumpSessions"></div>
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top: 1.5rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>⏱️ Wait Time Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container"><canvas id="waitTimeChart"></canvas></div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.75rem;">Avg Wait: <strong
+                                style="color: var(--success);">3.2 min</strong></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🌬️ Air Filling Station</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container"><canvas id="airFillingChart"></canvas></div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.75rem;">Manned Rate: <strong
+                                style="color: var(--success);">84.4%</strong></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📈 Peak Hours</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container"><canvas id="peakHoursChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STAFF TAB -->
+        <div id="tab-staff" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">👥 Leadership & Staff</h2><span class="section-badge success">ORG CHART</span>
+            </div>
+
+            <div class="grid-2">
+                <!-- Org Hierarchy -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🏢 Organization Hierarchy</h3>
+                        <span style="font-size: 0.7rem; color: var(--text-muted);">Click to view details</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="org-tree">
+                            <!-- Level 1: Station Manager -->
+                            <div class="org-level">
+                                <div class="org-node manager" onclick="showStaffDetails('SM001')">
+                                    <div class="org-avatar">👔</div>
+                                    <div class="org-info">
+                                        <div class="org-name">Rajesh Sharma</div>
+                                        <div class="org-role">Station Manager</div>
+                                    </div>
+                                    <div class="org-status present">✓</div>
+                                </div>
+                            </div>
+                            <div class="org-connector"></div>
+                            <!-- Level 2: Supervisors -->
+                            <div class="org-level">
+                                <div class="org-node supervisor" onclick="showStaffDetails('SUP001')">
+                                    <div class="org-avatar">👨‍💼</div>
+                                    <div class="org-info">
+                                        <div class="org-name">Priya Patel</div>
+                                        <div class="org-role">Day Supervisor</div>
+                                    </div>
+                                    <div class="org-status present">✓</div>
+                                </div>
+                                <div class="org-node supervisor" onclick="showStaffDetails('SUP002')">
+                                    <div class="org-avatar">👩‍💼</div>
+                                    <div class="org-info">
+                                        <div class="org-name">Amit Kumar</div>
+                                        <div class="org-role">Night Supervisor</div>
+                                    </div>
+                                    <div class="org-status absent">✗</div>
+                                </div>
+                                <div class="org-node supervisor" onclick="showStaffDetails('SUP003')">
+                                    <div class="org-avatar">👨‍💼</div>
+                                    <div class="org-info">
+                                        <div class="org-name">Sneha Gupta</div>
+                                        <div class="org-role">Safety Officer</div>
+                                    </div>
+                                    <div class="org-status present">✓</div>
+                                </div>
+                            </div>
+                            <div class="org-connector"></div>
+                            <!-- Level 3: FSMs -->
+                            <div class="org-level fsm-level">
+                                <div class="org-node fsm" onclick="showStaffDetails('FSM001')">
+                                    <div class="org-avatar">👷</div>
+                                    <div class="org-info">
+                                        <div class="org-name">Vikram</div>
+                                        <div class="org-role">FSM - P1</div>
+                                    </div>
+                                    <div class="org-status present">✓</div>
+                                </div>
+                                <div class="org-node fsm" onclick="showStaffDetails('FSM002')">
+                                    <div class="org-avatar">👷</div>
+                                    <div class="org-info">
+                                        <div class="org-name">Anita</div>
+                                        <div class="org-role">FSM - P2</div>
+                                    </div>
+                                    <div class="org-status present">✓</div>
+                                </div>
+                                <div class="org-node fsm violation" onclick="showStaffDetails('FSM003')">
+                                    <div class="org-avatar">👷</div>
+                                    <div class="org-info">
+                                        <div class="org-name">Suresh</div>
+                                        <div class="org-role">FSM - P3</div>
+                                    </div>
+                                    <div class="org-status violation">⚠</div>
+                                </div>
+                                <div class="org-node fsm" onclick="showStaffDetails('FSM004')">
+                                    <div class="org-avatar">👷</div>
+                                    <div class="org-info">
+                                        <div class="org-name">Meena</div>
+                                        <div class="org-role">FSM - P4</div>
+                                    </div>
+                                    <div class="org-status present">✓</div>
+                                </div>
+                                <div class="org-node fsm" onclick="showStaffDetails('FSM005')">
+                                    <div class="org-avatar">👷</div>
+                                    <div class="org-info">
+                                        <div class="org-name">Raju</div>
+                                        <div class="org-role">FSM - P5</div>
+                                    </div>
+                                    <div class="org-status absent">✗</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Staff Details Panel -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📋 Staff Details</h3>
+                        <span id="staffDetailsName" style="font-size: 0.75rem; color: var(--accent-orange);">Select a
+                            staff member</span>
+                    </div>
+                    <div class="card-body" id="staffDetailsPanel">
+                        <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
+                            <div>Click on any staff member in the hierarchy to view their details</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOP Compliance Summary -->
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🎯 SOP Compliance by Role</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container-lg"><canvas id="sopRadar2"></canvas></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Staff Metrics Today</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="grid-2" style="gap: 1rem;">
+                            <div class="kpi-card success" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">✅</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">7/9</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Present Today</div>
+                            </div>
+                            <div class="kpi-card warning" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">⚠️</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);">2</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Violations</div>
+                            </div>
+                            <div class="kpi-card info" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">⏱️</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-blue);">06:05</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Avg Check-in</div>
+                            </div>
+                            <div class="kpi-card success" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">👔</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">91%</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Uniform Score</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CUSTOMERS TAB -->
+        <div id="tab-customers" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🚗 Customer Analytics</h2><span class="section-badge success">P2</span>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🔄 Repeat Customers (ANPR)</h3>
+                    </div>
+                    <div class="card-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="chart-container"><canvas id="repeatCustomerChart"></canvas></div>
+                        <div>
+                            <div style="font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem;">Top Plates</div>
+                            <div id="topPlates"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Customer Segments</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="grid-3" style="text-align: center; gap: 1rem;">
+                            <div>
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--accent-blue);">67</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">New</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--success);">52</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Returning</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--accent-purple);">31</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Loyal (6+)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAMERAS TAB -->
+        <div id="tab-cameras" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">📹 Live Camera Feeds</h2><span class="section-badge success">12 ONLINE</span>
+            </div>
+
+            <div class="grid-4" id="cameraGrid"></div>
+        </div>
+
+        <!-- AI CHATBOT TAB -->
+        <div id="tab-ai" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🤖 PetrolGPT - AI Assistant</h2><span class="section-badge"
+                    style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(236,72,153,0.2)); color: #EC4899;">BETA</span>
+            </div>
+
+            <div class="grid-2">
+                <div class="card" style="grid-column: span 2;">
+                    <div class="card-body">
+                        <div class="chat-container">
+                            <div class="chat-header">
+                                <div class="chat-avatar">🤖</div>
+                                <div>
+                                    <div class="chat-title">PetrolGPT</div>
+                                    <div class="chat-subtitle">Your AI-powered petrol pump analytics assistant</div>
+                                </div>
+                            </div>
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="chat-message bot">
+                                    <div class="msg-avatar">🤖</div>
+                                    <div class="msg-bubble">
+                                        👋 Hello! I'm <strong>PetrolGPT</strong>, your AI assistant for this petrol
+                                        pump. I have access to all real-time data including safety incidents, vehicle
+                                        analytics, staff performance, and equipment status.<br><br>
+                                        Try asking me questions like:<br>
+                                        • "How many vehicles did we serve today?"<br>
+                                        • "Are there any safety incidents?"<br>
+                                        • "Which pump has the highest utilization?"<br>
+                                        • "Is Suresh at work today?"
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="quick-actions">
+                                <button class="quick-btn" onclick="askQuickQuestion('How many vehicles today?')">🚗
+                                    Vehicles Today</button>
+                                <button class="quick-btn" onclick="askQuickQuestion('Any safety incidents?')">🔥 Safety
+                                    Check</button>
+                                <button class="quick-btn" onclick="askQuickQuestion('Staff attendance summary')">👥
+                                    Staff Status</button>
+                                <button class="quick-btn" onclick="askQuickQuestion('Pump utilization report')">⛽ Pump
+                                    Status</button>
+                                <button class="quick-btn" onclick="askQuickQuestion('Today violations')">⚠️
+                                    Violations</button>
+                                <button class="quick-btn" onclick="askQuickQuestion('5L testing compliance')">🧪
+                                    Testing</button>
+                            </div>
+                            <div class="chat-input-area">
+                                <input type="text" class="chat-input" id="chatInput"
+                                    placeholder="Ask anything about the pump..."
+                                    onkeypress="if(event.key==='Enter')sendChat()">
+                                <button class="chat-send" onclick="sendChat()">Send →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top: 1.5rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Data PetrolGPT Knows</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                            <div style="margin-bottom: 0.5rem;">✅ Safety Incidents (5 today)</div>
+                            <div style="margin-bottom: 0.5rem;">✅ Vehicle Analytics (156 vehicles)</div>
+                            <div style="margin-bottom: 0.5rem;">✅ Staff Attendance (7/9 present)</div>
+                            <div style="margin-bottom: 0.5rem;">✅ Pump Utilization (6 pumps)</div>
+                            <div style="margin-bottom: 0.5rem;">✅ Equipment Status (DU/Manholes)</div>
+                            <div style="margin-bottom: 0.5rem;">✅ Cleanliness Scores</div>
+                            <div style="margin-bottom: 0.5rem;">✅ Violations Log</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>💡 Sample Queries</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                            <div
+                                style="padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 0.5rem;">
+                                "Show me FSM003's performance"</div>
+                            <div
+                                style="padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 0.5rem;">
+                                "What's our conversion rate?"</div>
+                            <div
+                                style="padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 0.5rem;">
+                                "Peak hours today?"</div>
+                            <div style="padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 8px;">"Equipment
+                                that needs attention"</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🎯 Insights Summary</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="font-size: 0.8rem;">
+                            <div
+                                style="padding: 0.5rem; background: rgba(239,68,68,0.1); border-left: 3px solid var(--critical); margin-bottom: 0.5rem;">
+                                ⚠️ 28 vehicles left without fueling</div>
+                            <div
+                                style="padding: 0.5rem; background: rgba(249,115,22,0.1); border-left: 3px solid var(--warning); margin-bottom: 0.5rem;">
+                                🧪 4 pending 5L tests</div>
+                            <div
+                                style="padding: 0.5rem; background: rgba(34,197,94,0.1); border-left: 3px solid var(--success);">
+                                ✅ 82.1% conversion rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HEATMAP GENERATOR TAB -->
+        <div id="tab-heatmap" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">🔥 Live Detection Heatmap</h2>
+                <span class="section-badge"
+                    style="background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(249,115,22,0.2)); color: #F97316;">REAL-TIME</span>
+            </div>
+
+            <div class="grid-2">
+                <!-- Camera Selector -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📹 Select Camera Feed</h3>
+                        <select id="heatmapCameraSelect" onchange="updateHeatmapCamera()"
+                            style="padding: 0.4rem 0.75rem; border-radius: 6px; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-primary); font-size: 0.8rem;">
+                            <option value="CAFETERIA">Cafeteria</option>
+                            <option value="EMPLOYEE_AREA">Employee Area</option>
+                            <option value="RECEPTION_AREA">Reception Area</option>
+                            <option value="PUMP_1">Pump 1</option>
+                            <option value="PUMP_2">Pump 2</option>
+                            <option value="ENTRY_GATE">Entry Gate</option>
+                        </select>
+                    </div>
+                    <div class="card-body" style="position: relative;">
+                        <canvas id="heatmapCanvas" width="640" height="480"
+                            style="width: 100%; border-radius: 8px; background: #0a0a0a;"></canvas>
+                        <div style="position: absolute; top: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem;">
+                            <button onclick="clearHeatmap()"
+                                style="padding: 0.4rem 0.75rem; border-radius: 6px; background: rgba(239,68,68,0.2); border: 1px solid var(--critical); color: var(--critical); font-size: 0.7rem; cursor: pointer;">Clear</button>
+                            <button onclick="simulateDetections()"
+                                style="padding: 0.4rem 0.75rem; border-radius: 6px; background: rgba(34,197,94,0.2); border: 1px solid var(--success); color: var(--success); font-size: 0.7rem; cursor: pointer;">+
+                                Simulate</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Heatmap Stats -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Detection Analytics</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="grid-2" style="gap: 1rem; margin-bottom: 1rem;">
+                            <div class="kpi-card info" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">👥</div>
+                                <div id="heatmapPeopleCount"
+                                    style="font-size: 1.75rem; font-weight: 700; color: var(--accent-blue);">0</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">People Detected</div>
+                            </div>
+                            <div class="kpi-card warning" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">🔥</div>
+                                <div id="heatmapHotspots"
+                                    style="font-size: 1.75rem; font-weight: 700; color: var(--warning);">0</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Active Hotspots</div>
+                            </div>
+                            <div class="kpi-card success" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">📍</div>
+                                <div id="heatmapDetections"
+                                    style="font-size: 1.75rem; font-weight: 700; color: var(--success);">0</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Total Detections</div>
+                            </div>
+                            <div class="kpi-card critical" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">⚠️</div>
+                                <div id="heatmapAlerts"
+                                    style="font-size: 1.75rem; font-weight: 700; color: var(--critical);">0</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Zone Alerts</div>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Legend</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.3rem;"><span
+                                    style="width: 12px; height: 12px; border-radius: 50%; background: rgba(34,197,94,0.6);"></span>
+                                Low</div>
+                            <div style="display: flex; align-items: center; gap: 0.3rem;"><span
+                                    style="width: 12px; height: 12px; border-radius: 50%; background: rgba(249,115,22,0.7);"></span>
+                                Medium</div>
+                            <div style="display: flex; align-items: center; gap: 0.3rem;"><span
+                                    style="width: 12px; height: 12px; border-radius: 50%; background: rgba(239,68,68,0.8);"></span>
+                                High</div>
+                        </div>
+
+                        <div
+                            style="margin-top: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Latest
+                                Detections</div>
+                            <div id="latestDetectionsList"
+                                style="font-size: 0.7rem; max-height: 150px; overflow-y: auto;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone Configuration -->
+            <div class="grid-3" style="margin-top: 1.5rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🎯 Zone Configuration</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="font-size: 0.8rem;">
+                            <div
+                                style="display:flex; justify-content:space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Entry Zone</span><span style="color: var(--success);">Active</span>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Queue Zone</span><span style="color: var(--success);">Active</span>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Pump Zone</span><span style="color: var(--warning);">⚠️ 3 people</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; padding: 0.5rem 0;">
+                                <span>Restricted Zone</span><span style="color: var(--critical);">🚫 Alert</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>⏱️ Dwell Time Alerts</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="font-size: 0.8rem;">
+                            <div
+                                style="padding: 0.5rem; background: rgba(239,68,68,0.1); border-left: 3px solid var(--critical); margin-bottom: 0.5rem; border-radius: 4px;">
+                                ⏰ Person at Entry >2min</div>
+                            <div
+                                style="padding: 0.5rem; background: rgba(249,115,22,0.1); border-left: 3px solid var(--warning); margin-bottom: 0.5rem; border-radius: 4px;">
+                                ⏰ Loitering at Pump 3</div>
+                            <div
+                                style="padding: 0.5rem; background: rgba(34,197,94,0.1); border-left: 3px solid var(--success); border-radius: 4px;">
+                                ✅ No queue congestion</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📈 Traffic Flow</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-around; text-align: center;">
+                            <div>
+                                <div style="font-size: 1.5rem;">→</div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">42</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Entries</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem;">←</div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-blue);">38</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Exits</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem;">👥</div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--warning);">4</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Inside Now</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HEATMAP GENERATOR TAB -->
+        <div id="tab-heatmap" class="tab-content">
+            <div class="section-header" style="margin-bottom: 1.5rem;">
+                <h2 class="section-title">🔥 Live Detection Heatmap</h2>
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                    <span class="section-badge"
+                        style="background: linear-gradient(135deg, rgba(239,68,68,0.3), rgba(249,115,22,0.3)); color: #F97316; padding: 0.4rem 1rem;">
+                        <span id="captureStatus" style="margin-right: 0.5rem;">⏸</span> CONTINUOUS CAPTURE
+                    </span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Dec 16-30, 2025 • 2,424 events</span>
+                </div>
+            </div>
+
+            <!-- Playback Controls -->
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem; align-items: center; flex-wrap: wrap;">
+                <button id="playBtn" onclick="toggleContinuousCapture()"
+                    style="padding: 0.5rem 1.25rem; border-radius: 8px; background: linear-gradient(135deg, #22C55E, #16A34A); border: none; color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                    <span id="playIcon">▶</span> Start Capture
+                </button>
+                <div
+                    style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-secondary); padding: 0.4rem 1rem; border-radius: 8px; border: 1px solid var(--border);">
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Speed:</span>
+                    <select id="captureSpeed"
+                        style="background: transparent; border: none; color: var(--text-primary); font-size: 0.8rem; cursor: pointer;">
+                        <option value="2000">Slow</option>
+                        <option value="1000" selected>Normal</option>
+                        <option value="500">Fast</option>
+                        <option value="200">Very Fast</option>
+                    </select>
+                </div>
+                <div
+                    style="background: var(--bg-secondary); padding: 0.4rem 1rem; border-radius: 8px; border: 1px solid var(--border); font-size: 0.75rem;">
+                    Batch: <span id="batchNumber" style="color: var(--accent-orange); font-weight: 600;">0</span>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <!-- Camera Heatmap -->
+                <div class="card"
+                    style="background: linear-gradient(135deg, var(--bg-card), rgba(239,68,68,0.05)); border-color: rgba(249,115,22,0.3);">
+                    <div class="card-header"
+                        style="background: linear-gradient(90deg, rgba(239,68,68,0.1), rgba(249,115,22,0.1));">
+                        <h3>📹 Detection Heatmap</h3>
+                        <select id="heatmapCameraSelect" onchange="updateHeatmapCamera()"
+                            style="padding: 0.4rem 0.75rem; border-radius: 6px; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-primary); font-size: 0.8rem;">
+                            <option value="ALL">All Cameras</option>
+                            <option value="BOSS_CABIN">Boss Cabin (347)</option>
+                            <option value="EMPLOYEE_AREA">Employee Area (1,152)</option>
+                            <option value="CAFETERIA">Cafeteria (525)</option>
+                            <option value="RECEPTION_AREA">Reception Area (400)</option>
+                        </select>
+                    </div>
+                    <div class="card-body" style="position: relative; padding: 1rem;">
+                        <canvas id="heatmapCanvas" width="640" height="480"
+                            style="width: 100%; border-radius: 12px; background: linear-gradient(135deg, #0a0a0a, #1a1a2e); box-shadow: 0 8px 32px rgba(0,0,0,0.4);"></canvas>
+                        <div style="position: absolute; top: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem;">
+                            <button onclick="clearHeatmap()"
+                                style="padding: 0.5rem 1rem; border-radius: 8px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.5); color: var(--critical); font-size: 0.75rem; cursor: pointer; backdrop-filter: blur(8px);">🗑
+                                Clear</button>
+                            <button onclick="loadNextBatch()"
+                                style="padding: 0.5rem 1rem; border-radius: 8px; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.5); color: var(--success); font-size: 0.75rem; cursor: pointer; backdrop-filter: blur(8px);">+
+                                Add Batch</button>
+                        </div>
+                        <!-- Live indicator -->
+                        <div id="liveIndicator"
+                            style="position: absolute; top: 1.5rem; left: 1.5rem; display: none; align-items: center; gap: 0.5rem; background: rgba(239,68,68,0.2); padding: 0.4rem 0.75rem; border-radius: 6px; backdrop-filter: blur(8px);">
+                            <span
+                                style="width: 8px; height: 8px; background: #EF4444; border-radius: 50%; animation: pulse 1s infinite;"></span>
+                            <span style="font-size: 0.7rem; color: #EF4444; font-weight: 600;">LIVE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Heatmap Stats -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Detection Analytics</h3>
+                        <span style="font-size: 0.7rem; color: var(--text-muted);">From CSV: 2,426 events</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="grid-2" style="gap: 1rem; margin-bottom: 1rem;">
+                            <div class="kpi-card info" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">👥</div>
+                                <div id="heatmapPeopleCount"
+                                    style="font-size: 1.75rem; font-weight: 700; color: var(--accent-blue);">0</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">People Detected</div>
+                            </div>
+                            <div class="kpi-card warning" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">🔥</div>
+                                <div id="heatmapHotspots"
+                                    style="font-size: 1.75rem; font-weight: 700; color: var(--warning);">0</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Active Hotspots</div>
+                            </div>
+                            <div class="kpi-card success" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">📍</div>
+                                <div id="heatmapDetections"
+                                    style="font-size: 1.75rem; font-weight: 700; color: var(--success);">0</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Total Detections</div>
+                            </div>
+                            <div class="kpi-card critical" style="text-align: center;">
+                                <div style="font-size: 1.5rem;">⚠️</div>
+                                <div id="heatmapAlerts"
+                                    style="font-size: 1.75rem; font-weight: 700; color: var(--critical);">0</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Critical Events</div>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Heat Level Legend
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.3rem;"><span
+                                    style="width: 12px; height: 12px; border-radius: 50%; background: rgba(34,197,94,0.6);"></span>
+                                Low</div>
+                            <div style="display: flex; align-items: center; gap: 0.3rem;"><span
+                                    style="width: 12px; height: 12px; border-radius: 50%; background: rgba(249,115,22,0.7);"></span>
+                                Medium</div>
+                            <div style="display: flex; align-items: center; gap: 0.3rem;"><span
+                                    style="width: 12px; height: 12px; border-radius: 50%; background: rgba(239,68,68,0.8);"></span>
+                                High</div>
+                        </div>
+
+                        <div
+                            style="margin-top: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Latest
+                                Detections</div>
+                            <div id="latestDetectionsList"
+                                style="font-size: 0.7rem; max-height: 150px; overflow-y: auto;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone & Camera Stats -->
+            <div class="grid-3" style="margin-top: 1.5rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📍 Camera Activity</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="font-size: 0.8rem;">
+                            <div
+                                style="display:flex; justify-content:space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span>BOSS_CABIN</span><span id="camBoss" style="color: var(--success);">0 events</span>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span>EMPLOYEE_AREA</span><span id="camEmployee" style="color: var(--warning);">0
+                                    events</span>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span>CAFETERIA</span><span id="camCafe" style="color: var(--accent-blue);">0
+                                    events</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; padding: 0.5rem 0;">
+                                <span>RECEPTION_AREA</span><span id="camReception" style="color: var(--text-muted);">0
+                                    events</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>⏱️ Event Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="font-size: 0.8rem;">
+                            <div
+                                style="padding: 0.5rem; background: rgba(239,68,68,0.1); border-left: 3px solid var(--critical); margin-bottom: 0.5rem; border-radius: 4px;">
+                                🔴 CRITICAL: <span id="eventCritical">0</span></div>
+                            <div
+                                style="padding: 0.5rem; background: rgba(249,115,22,0.1); border-left: 3px solid var(--warning); margin-bottom: 0.5rem; border-radius: 4px;">
+                                🟡 EVENT: <span id="eventWarning">0</span></div>
+                            <div
+                                style="padding: 0.5rem; background: rgba(34,197,94,0.1); border-left: 3px solid var(--success); border-radius: 4px;">
+                                🟢 SAFE: <span id="eventSafe">0</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📈 Object Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-around; text-align: center;">
+                            <div>
+                                <div style="font-size: 1.5rem;">👤</div>
+                                <div id="objPerson"
+                                    style="font-size: 1.25rem; font-weight: 700; color: var(--success);">0</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Person</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem;">💺</div>
+                                <div id="objChair"
+                                    style="font-size: 1.25rem; font-weight: 700; color: var(--accent-blue);">0</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Chair</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem;">💻</div>
+                                <div id="objLaptop"
+                                    style="font-size: 1.25rem; font-weight: 700; color: var(--warning);">0</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Laptop</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day-wise Activity -->
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="card" style="background: linear-gradient(135deg, var(--bg-card), rgba(59,130,246,0.05));">
+                    <div class="card-header"
+                        style="background: linear-gradient(90deg, rgba(59,130,246,0.1), transparent);">
+                        <h3>📅 Day-wise Activity (Dec 16-30)</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: flex; align-items: flex-end; gap: 0.5rem; height: 120px;">
+                            <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                                <div
+                                    style="width: 100%; background: linear-gradient(180deg, #3B82F6, #1E40AF); height: 2px; border-radius: 4px;">
+                                </div>
+                                <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 0.5rem;">Dec
+                                    16</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: var(--accent-blue);">5</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                                <div
+                                    style="width: 100%; background: linear-gradient(180deg, #3B82F6, #1E40AF); height: 1px; border-radius: 4px;">
+                                </div>
+                                <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 0.5rem;">Dec
+                                    26</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: var(--accent-blue);">1</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                                <div
+                                    style="width: 100%; background: linear-gradient(180deg, #F97316, #EA580C); height: 100px; border-radius: 4px;">
+                                </div>
+                                <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 0.5rem;">Dec
+                                    29</span>
+                                <span
+                                    style="font-size: 0.7rem; font-weight: 600; color: var(--accent-orange);">2,084</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                                <div
+                                    style="width: 100%; background: linear-gradient(180deg, #22C55E, #16A34A); height: 16px; border-radius: 4px;">
+                                </div>
+                                <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 0.5rem;">Dec
+                                    30</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: var(--success);">334</span>
+                            </div>
+                        </div>
+                        <div
+                            style="margin-top: 1rem; padding: 0.75rem; background: rgba(249,115,22,0.1); border-radius: 8px; border-left: 3px solid var(--accent-orange);">
+                            <span style="font-size: 0.75rem;">🔥 <strong>Peak Activity:</strong> Dec 29 with 2,084
+                                events (86% of total)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="background: linear-gradient(135deg, var(--bg-card), rgba(139,92,246,0.05));">
+                    <div class="card-header"
+                        style="background: linear-gradient(90deg, rgba(139,92,246,0.1), transparent);">
+                        <h3>📊 Camera Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="font-size: 0.8rem;">
+                            <div style="margin-bottom: 0.75rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                    <span>EMPLOYEE_AREA</span>
+                                    <span style="color: var(--warning);">48%</span>
+                                </div>
+                                <div
+                                    style="height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden;">
+                                    <div
+                                        style="width: 48%; height: 100%; background: linear-gradient(90deg, #F97316, #FB923C); border-radius: 4px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.75rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                    <span>CAFETERIA</span>
+                                    <span style="color: var(--accent-blue);">22%</span>
+                                </div>
+                                <div
+                                    style="height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden;">
+                                    <div
+                                        style="width: 22%; height: 100%; background: linear-gradient(90deg, #3B82F6, #60A5FA); border-radius: 4px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.75rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                    <span>RECEPTION_AREA</span>
+                                    <span style="color: var(--accent-purple);">16%</span>
+                                </div>
+                                <div
+                                    style="height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden;">
+                                    <div
+                                        style="width: 16%; height: 100%; background: linear-gradient(90deg, #8B5CF6, #A78BFA); border-radius: 4px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                    <span>BOSS_CABIN</span>
+                                    <span style="color: var(--success);">14%</span>
+                                </div>
+                                <div
+                                    style="height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden;">
+                                    <div
+                                        style="width: 14%; height: 100%; background: linear-gradient(90deg, #22C55E, #4ADE80); border-radius: 4px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">© 2024 InvEye by Invincible Ocean • Petrol Pump Analytics v2.0</footer>
+
+    <script>
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        // Sample data
+        const data = {
+            hourlyTraffic: [12, 28, 35, 22, 18, 25, 16],
+            hours: ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00'],
+            pumps: [{ id: 'P1', sessions: 28, idle: 15 }, { id: 'P2', sessions: 32, idle: 8 }, { id: 'P3', sessions: 25, idle: 22 }, { id: 'P4', sessions: 30, idle: 12 }, { id: 'P5', sessions: 22, idle: 28 }, { id: 'P6', sessions: 19, idle: 35 }],
+            duCovers: [{ id: 'DU1', status: 'secure' }, { id: 'DU2', status: 'open' }, { id: 'DU3', status: 'secure' }, { id: 'DU4', status: 'secure' }, { id: 'DU5', status: 'secure' }, { id: 'DU6', status: 'secure' }],
+            manholes: [{ id: 'MH1', status: 'secure' }, { id: 'MH2', status: 'secure' }, { id: 'MH3', status: 'alert' }],
+            fsm: [{ name: 'Rajesh Kumar', time: '06:02', score: 95, present: true }, { name: 'Priya Sharma', time: '06:15', score: 88, present: true }, { name: 'Suresh Patil', time: null, score: null, present: false }, { name: 'Anita Desai', time: '06:05', score: 92, present: true }, { name: 'Vikram Singh', time: '06:08', score: 90, present: true }],
+            plates: [{ plate: 'MH02AB1234', visits: 15 }, { plate: 'MH04CD5678', visits: 12 }, { plate: 'MH01EF9012', visits: 10 }, { plate: 'MH03GH3456', visits: 9 }, { plate: 'MH12IJ7890', visits: 8 }],
+            cleanliness: [{ t: '06:30', s: 92 }, { t: '07:00', s: 88 }, { t: '07:30', s: 85 }, { t: '08:00', s: 82 }, { t: '08:30', s: 78 }, { t: '09:00', s: 75 }, { t: '09:30', s: 88 }, { t: '10:00', s: 85 }, { t: '10:30', s: 80 }, { t: '11:00', s: 76 }, { t: '11:30', s: 72 }, { t: '12:00', s: 78 }],
+            violations: [{ d: '25', f: 1, c: 3, m: 0, o: 2 }, { d: '26', f: 0, c: 4, m: 1, o: 1 }, { d: '27', f: 2, c: 2, m: 0, o: 0 }, { d: '28', f: 1, c: 5, m: 0, o: 1 }, { d: '29', f: 0, c: 3, m: 0, o: 2 }, { d: '30', f: 2, c: 5, m: 0, o: 1 }],
+            cameras: ['Pump 1', 'Pump 2', 'Pump 3', 'Pump 4', 'Pump 5', 'Pump 6', 'Tank Area', 'Air Station', 'Entry Gate', 'Exit Gate', 'Office', 'Forecourt']
+        };
+
+        // Render functions
+        function renderAll() {
+            renderTrafficChart();
+            renderAlerts();
+            renderPumpUtilization();
+            renderCleanlinessChart();
+            renderSOPRadar('sopRadar');
+            renderHeatmap();
+            renderTestingGauge();
+            renderEquipmentStatus();
+            renderViolationChart();
+            renderFunnel();
+            renderPumpSessions();
+            renderWaitTimeChart();
+            renderAirFillingChart();
+            renderPeakHoursChart();
+            renderFSMAttendance();
+            renderSOPRadar('sopRadar2');
+            renderRepeatCustomers();
+            renderTopPlates();
+            renderCameraGrid();
+        }
+
+        function renderTrafficChart() {
+            new Chart(document.getElementById('trafficChart'), {
+                type: 'line',
+                data: { labels: data.hours, datasets: [{ data: data.hourlyTraffic, borderColor: '#F97316', backgroundColor: 'rgba(249,115,22,0.1)', fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#F97316' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#94A3B8' } }, y: { grid: { color: '#334155' }, ticks: { color: '#94A3B8' } } } }
+            });
+        }
+
+        function renderAlerts() {
+            const alerts = [{ text: 'Smoking detected - Pump 2', cam: 'CAM_02', time: '11:45' }, { text: 'DU Cover Open > 5 min', cam: 'CAM_02', time: '11:32' }, { text: 'Manhole Alert - Tank Area', cam: 'CAM_07', time: '11:15' }, { text: 'Clutter detected - Forecourt', cam: 'CAM_12', time: '10:58' }, { text: 'Unauthorized access attempt', cam: 'CAM_11', time: '10:42' }];
+            document.getElementById('alertsList').innerHTML = alerts.map(a => `<div class="alert-item"><span class="alert-icon">🚨</span><div class="alert-content"><div class="alert-text">${a.text}</div><div class="alert-meta">${a.cam}</div></div><span class="alert-time">${a.time}</span></div>`).join('');
+        }
+
+        function renderPumpUtilization() {
+            const max = Math.max(...data.pumps.map(p => p.sessions));
+            document.getElementById('pumpUtilization').innerHTML = data.pumps.map(p => `<div class="progress-row"><span class="progress-label">${p.id}</span><div class="progress-track"><div class="progress-fill" style="width: ${(p.sessions / max) * 100}%; background: linear-gradient(90deg, #3B82F6, #22C55E);">${p.sessions}</div></div><span class="progress-value" style="color: ${p.idle > 25 ? '#EF4444' : '#22C55E'};">${p.idle}%</span></div>`).join('');
+        }
+
+        function renderCleanlinessChart() {
+            new Chart(document.getElementById('cleanlinessChart'), {
+                type: 'line',
+                data: { labels: data.cleanliness.map(c => c.t), datasets: [{ data: data.cleanliness.map(c => c.s), borderColor: '#22C55E', backgroundColor: 'rgba(34,197,94,0.1)', fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: data.cleanliness.map(c => c.s >= 80 ? '#22C55E' : c.s >= 70 ? '#F59E0B' : '#EF4444') }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#94A3B8', font: { size: 9 } } }, y: { min: 50, max: 100, grid: { color: '#334155' }, ticks: { color: '#94A3B8' } } } }
+            });
+        }
+
+        function renderSOPRadar(id) {
+            new Chart(document.getElementById(id), {
+                type: 'radar',
+                data: { labels: ['Greeting', 'Show Zero', 'Uniform', 'Cleanliness', 'Response'], datasets: [{ data: [66, 92, 80, 78, 58], backgroundColor: 'rgba(249,115,22,0.2)', borderColor: '#F97316', pointBackgroundColor: '#F97316', pointRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { beginAtZero: true, max: 100, grid: { color: '#334155' }, angleLines: { color: '#334155' }, pointLabels: { color: '#94A3B8', font: { size: 9 } }, ticks: { display: false } } } }
+            });
+        }
+
+        function renderHeatmap() {
+            const zones = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'AIR', 'TANK'];
+            let html = '<div class="heatmap-header"></div>';
+            data.hours.forEach(h => html += `<div class="heatmap-header">${h}</div>`);
+            zones.forEach(z => {
+                html += `<div class="heatmap-label">${z}</div>`;
+                data.hours.forEach(() => {
+                    const v = Math.floor(Math.random() * 4);
+                    const cls = v === 0 ? 'safe' : v === 1 ? 'low' : v === 2 ? 'med' : 'high';
+                    html += `<div class="heatmap-cell ${cls}">${v || ''}</div>`;
+                });
+            });
+            document.getElementById('safetyHeatmap').innerHTML = html;
+        }
+
+        function renderTestingGauge() {
+            new Chart(document.getElementById('testingGauge'), {
+                type: 'doughnut',
+                data: { datasets: [{ data: [81.8, 18.2], backgroundColor: ['#F97316', '#334155'], borderWidth: 0, circumference: 180, rotation: 270 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+            });
+        }
+
+        function renderEquipmentStatus() {
+            document.getElementById('duStatus').innerHTML = data.duCovers.map(d => `<div class="status-item ${d.status}"><div class="status-icon">${d.status === 'secure' ? '✅' : '⚠️'}</div><div class="status-label">${d.id}</div></div>`).join('');
+            document.getElementById('manholeStatus').innerHTML = data.manholes.map(m => `<div class="status-item ${m.status}"><div class="status-icon">${m.status === 'secure' ? '✅' : '🚨'}</div><div class="status-label">${m.id}</div></div>`).join('');
+        }
+
+        function renderViolationChart() {
+            new Chart(document.getElementById('violationChart'), {
+                type: 'bar',
+                data: { labels: data.violations.map(v => 'Dec ' + v.d), datasets: [{ label: 'Fuel', data: data.violations.map(v => v.f), backgroundColor: '#EF4444' }, { label: 'Clutter', data: data.violations.map(v => v.c), backgroundColor: '#F59E0B' }, { label: 'Mob', data: data.violations.map(v => v.m), backgroundColor: '#8B5CF6' }, { label: 'Other', data: data.violations.map(v => v.o), backgroundColor: '#6B7280' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', usePointStyle: true, padding: 10 } } }, scales: { x: { stacked: true, grid: { display: false }, ticks: { color: '#94A3B8' } }, y: { stacked: true, grid: { color: '#334155' }, ticks: { color: '#94A3B8' } } } }
+            });
+        }
+
+        function renderFunnel() {
+            const stages = [{ l: 'Entered Site', v: 156, c: '#3B82F6' }, { l: 'Queued at Pump', v: 142, c: '#6366F1' }, { l: 'Started Fueling', v: 128, c: '#8B5CF6' }, { l: 'Completed', v: 125, c: '#22C55E' }];
+            document.getElementById('funnelChart').innerHTML = stages.map(s => `<div class="funnel-stage"><div class="funnel-bar" style="width: ${(s.v / 156) * 100}%; background: ${s.c};">${s.l}</div><span class="funnel-value">${s.v}</span></div>`).join('');
+        }
+
+        function renderPumpSessions() {
+            const max = Math.max(...data.pumps.map(p => p.sessions));
+            document.getElementById('pumpSessions').innerHTML = data.pumps.map(p => `<div class="progress-row"><span class="progress-label">${p.id}</span><div class="progress-track"><div class="progress-fill" style="width: ${(p.sessions / max) * 100}%; background: linear-gradient(90deg, #3B82F6, #22C55E);">${p.sessions} sessions</div></div><span class="progress-value" style="color: ${p.idle > 25 ? '#EF4444' : '#22C55E'};">${p.idle}% idle</span></div>`).join('');
+        }
+
+        function renderWaitTimeChart() {
+            new Chart(document.getElementById('waitTimeChart'), {
+                type: 'bar',
+                data: { labels: ['0-2 min', '2-5 min', '5-10 min', '10+ min'], datasets: [{ data: [45, 52, 25, 6], backgroundColor: ['#22C55E', '#3B82F6', '#F59E0B', '#EF4444'], borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#94A3B8' } }, y: { grid: { color: '#334155' }, ticks: { color: '#94A3B8' } } } }
+            });
+        }
+
+        function renderAirFillingChart() {
+            new Chart(document.getElementById('airFillingChart'), {
+                type: 'doughnut',
+                data: { labels: ['Manned', 'Unmanned'], datasets: [{ data: [38, 7], backgroundColor: ['#22C55E', '#EF4444'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', usePointStyle: true, padding: 10 } } } }
+            });
+        }
+
+        function renderPeakHoursChart() {
+            new Chart(document.getElementById('peakHoursChart'), {
+                type: 'bar',
+                data: { labels: data.hours, datasets: [{ data: data.hourlyTraffic, backgroundColor: data.hourlyTraffic.map(v => v === Math.max(...data.hourlyTraffic) ? '#F97316' : '#3B82F6'), borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#94A3B8' } }, y: { grid: { color: '#334155' }, ticks: { color: '#94A3B8' } } } }
+            });
+        }
+
+        function renderFSMAttendance() {
+            document.getElementById('fsmAttendance').innerHTML = data.fsm.map(f => `<div class="fsm-item"><div class="fsm-avatar">👤</div><div class="fsm-info"><div class="fsm-name">${f.name}</div><div class="fsm-time">${f.present ? 'Check-in: ' + f.time : 'Not checked in'}</div></div><span class="fsm-badge ${f.present ? 'present' : 'absent'}">${f.present ? '✓' : '✗'}</span>${f.score ? `<span style="font-size: 0.75rem; font-weight: 600; color: var(--accent-orange);">${f.score}%</span>` : ''}</div>`).join('');
+        }
+
+        function renderRepeatCustomers() {
+            new Chart(document.getElementById('repeatCustomerChart'), {
+                type: 'pie',
+                data: { labels: ['New', 'Returning', 'Loyal'], datasets: [{ data: [67, 52, 31], backgroundColor: ['#3B82F6', '#22C55E', '#8B5CF6'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', usePointStyle: true, padding: 8, font: { size: 10 } } } } }
+            });
+        }
+
+        function renderTopPlates() {
+            document.getElementById('topPlates').innerHTML = data.plates.map(p => `<div class="plate-item"><span class="plate-number">${p.plate}</span><span>${p.visits} visits</span></div>`).join('');
+        }
+
+        function renderCameraGrid() {
+            document.getElementById('cameraGrid').innerHTML = data.cameras.map((c, i) => `<div class="card"><div class="camera-feed"><div class="camera-placeholder"><span class="camera-icon">📹</span><span style="font-size: 0.8rem;">${c}</span></div><div class="camera-overlay"><span class="cam-label">CAM_${String(i + 1).padStart(2, '0')}</span><span class="cam-status ${i === 1 || i === 6 ? 'critical' : 'safe'}">● ${i === 1 || i === 6 ? 'ALERT' : 'SAFE'}</span></div></div></div>`).join('');
+        }
+
+        // Staff Details Data
+        const staffData = {
+            'SM001': { name: 'Rajesh Sharma', role: 'Station Manager', checkIn: '05:55', present: true, uniformScore: 98, violations: [], shifts: 28, performance: 95 },
+            'SUP001': { name: 'Priya Patel', role: 'Day Supervisor', checkIn: '06:02', present: true, uniformScore: 94, violations: [], shifts: 26, performance: 92 },
+            'SUP002': { name: 'Amit Kumar', role: 'Night Supervisor', checkIn: null, present: false, uniformScore: null, violations: ['Late arrival (3 days)'], shifts: 24, performance: 78 },
+            'SUP003': { name: 'Sneha Gupta', role: 'Safety Officer', checkIn: '06:00', present: true, uniformScore: 96, violations: [], shifts: 27, performance: 94 },
+            'FSM001': { name: 'Vikram Singh', role: 'FSM - Pump 1', checkIn: '06:08', present: true, uniformScore: 90, violations: [], shifts: 25, performance: 88 },
+            'FSM002': { name: 'Anita Desai', role: 'FSM - Pump 2', checkIn: '06:05', present: true, uniformScore: 92, violations: [], shifts: 26, performance: 91 },
+            'FSM003': { name: 'Suresh Patil', role: 'FSM - Pump 3', checkIn: '06:45', present: true, uniformScore: 75, violations: ['Late arrival today', 'Uniform incomplete'], shifts: 22, performance: 68 },
+            'FSM004': { name: 'Meena Kumari', role: 'FSM - Pump 4', checkIn: '06:03', present: true, uniformScore: 88, violations: [], shifts: 27, performance: 86 },
+            'FSM005': { name: 'Raju Yadav', role: 'FSM - Pump 5', checkIn: null, present: false, uniformScore: null, violations: ['Absent without notice'], shifts: 18, performance: 62 }
+        };
+
+        function showStaffDetails(staffId) {
+            const staff = staffData[staffId];
+            if (!staff) return;
+            document.getElementById('staffDetailsName').textContent = staff.name;
+            const panel = document.getElementById('staffDetailsPanel');
+            const violationsHtml = staff.violations.length > 0
+                ? staff.violations.map(v => `<div style="padding: 0.4rem 0.6rem; background: rgba(239,68,68,0.1); border-left: 2px solid var(--critical); margin-bottom: 0.3rem; font-size: 0.75rem;">⚠️ ${v}</div>`).join('')
+                : `<div style="padding: 0.4rem 0.6rem; background: rgba(34,197,94,0.1); border-left: 2px solid var(--success); font-size: 0.75rem;">✅ No violations this month</div>`;
+            panel.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #8B5CF6, #3B82F6); display: flex; align-items: center; justify-content: center; font-size: 1.75rem;">👤</div>
+                    <div>
+                        <div style="font-size: 1.1rem; font-weight: 700;">${staff.name}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">${staff.role}</div>
+                        <div style="margin-top: 0.25rem;"><span style="padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: 600; background: ${staff.present ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}; color: ${staff.present ? 'var(--success)' : 'var(--critical)'};">${staff.present ? '✓ PRESENT' : '✗ ABSENT'}</span></div>
+                    </div>
+                </div>
+                <div class="grid-2" style="gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-blue);">${staff.checkIn || '--:--'}</div>
+                        <div style="font-size: 0.65rem; color: var(--text-muted);">Check-in Time</div>
+                    </div>
+                    <div style="padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: ${staff.uniformScore >= 85 ? 'var(--success)' : 'var(--warning)'};">${staff.uniformScore || '--'}%</div>
+                        <div style="font-size: 0.65rem; color: var(--text-muted);">Uniform Score</div>
+                    </div>
+                    <div style="padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-orange);">${staff.shifts}</div>
+                        <div style="font-size: 0.65rem; color: var(--text-muted);">Shifts This Month</div>
+                    </div>
+                    <div style="padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: ${staff.performance >= 80 ? 'var(--success)' : 'var(--critical)'};">${staff.performance}%</div>
+                        <div style="font-size: 0.65rem; color: var(--text-muted);">Performance</div>
+                    </div>
+                </div>
+                <div style="font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem;">Violations & Notes</div>
+                ${violationsHtml}
+            `;
+        }
+
+        // PetrolGPT Chatbot
+        function sendChat() {
+            const input = document.getElementById('chatInput');
+            const query = input.value.trim();
+            if (!query) return;
+            addChatMessage(query, 'user');
+            input.value = '';
+            setTimeout(() => { addChatMessage(getAIResponse(query), 'bot'); }, 500);
+        }
+
+        function askQuickQuestion(question) {
+            addChatMessage(question, 'user');
+            setTimeout(() => { addChatMessage(getAIResponse(question), 'bot'); }, 500);
+        }
+
+        function addChatMessage(text, type) {
+            const container = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = `chat-message ${type}`;
+            msg.innerHTML = `<div class="msg-avatar">${type === 'bot' ? '🤖' : '👤'}</div><div class="msg-bubble">${text}</div>`;
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function getAIResponse(query) {
+            const q = query.toLowerCase();
+            if (q.includes('vehicle') || q.includes('car') || q.includes('traffic')) {
+                return `📊 <strong>Vehicle Analytics Today:</strong><br>• Total vehicles entered: <strong>156</strong><br>• Successfully fueled: <strong>128</strong> (82.1%)<br>• Left without fueling: <strong>28</strong> (17.9%)<br>• Peak hour: <strong>08:00</strong> with 35 vehicles<br>• Avg wait time: <strong>3.2 minutes</strong>`;
+            }
+            if (q.includes('safety') || q.includes('incident') || q.includes('fire') || q.includes('smoke')) {
+                return `🔥 <strong>Safety Status:</strong><br>• Total incidents today: <strong>5</strong><br>• Fire: <strong>0</strong> ✅<br>• Smoke: <strong>1</strong> ⚠️<br>• Smoking violations: <strong>4</strong><br>• Violence: <strong>0</strong> ✅<br><br>⚠️ 1 smoking incident at Pump 2 at 11:45`;
+            }
+            if (q.includes('staff') || q.includes('attendance') || q.includes('fsm') || q.includes('employee')) {
+                return `👥 <strong>Staff Attendance:</strong><br>• Present: <strong>7/9</strong> (78%)<br>• Station Manager: ✅ Present (05:55)<br>• Supervisors: 2/3 Present<br>• FSMs: 4/5 Present<br><br>❌ Absent: Amit Kumar (Night Supervisor), Raju Yadav (FSM-P5)<br>⚠️ Suresh Patil arrived late (06:45)`;
+            }
+            if (q.includes('pump') || q.includes('utilization')) {
+                return `⛽ <strong>Pump Utilization:</strong><br>• P1: 28 sessions (15% idle)<br>• P2: 32 sessions (8% idle) ⭐ Best<br>• P3: 25 sessions (22% idle)<br>• P4: 30 sessions (12% idle)<br>• P5: 22 sessions (28% idle)<br>• P6: 19 sessions (35% idle) ⚠️ Low<br><br>💡 Consider reallocating FSM from P5 to P6`;
+            }
+            if (q.includes('violation') || q.includes('issue')) {
+                return `⚠️ <strong>Today's Violations:</strong><br>• Fuel in plastic: <strong>2</strong> 🚫<br>• Clutter detected: <strong>5</strong><br>• Mob gathering: <strong>0</strong> ✅<br>• Unauthorized access: <strong>1</strong><br><br>Most violations occurred between 10:00-12:00`;
+            }
+            if (q.includes('5l') || q.includes('testing') || q.includes('compliance')) {
+                return `🧪 <strong>5L Testing Compliance:</strong><br>• Completed: <strong>18/22</strong> (81.8%)<br>• Pending: <strong>4</strong> tests<br>• Return to tank rate: <strong>88.9%</strong><br>• Last test: 11:45:23<br><br>⚠️ 4 tests pending before shift end`;
+            }
+            if (q.includes('conversion') || q.includes('rate')) {
+                return `📈 <strong>Conversion Rate:</strong><br>• Current: <strong>82.1%</strong><br>• Entered: 156 → Queued: 142 → Fueled: 128<br>• Drop-off: 28 vehicles<br><br>🎯 Target: 85% | Gap: -2.9%`;
+            }
+            if (q.includes('suresh')) {
+                return `👤 <strong>Suresh Patil (FSM003):</strong><br>• Status: ⚠️ Present but flagged<br>• Check-in: <strong>06:45</strong> (45 min late)<br>• Uniform Score: <strong>75%</strong><br>• Violations: Late arrival, Uniform incomplete<br>• Performance: 68%<br><br>📋 Action: Counseling recommended`;
+            }
+            return `🤔 I understood your question about "${query}". Based on the current data:<br><br>• Vehicles: 156 today (82.1% conversion)<br>• Safety: 5 incidents<br>• Staff: 7/9 present<br>• Equipment: 7/9 secure<br><br>Would you like more details on any specific area?`;
+        }
+
+        // ==================== HEATMAP GENERATOR ====================
+        const heatmapGrid = new Array(24).fill(null).map(() => new Array(32).fill(0));
+        let totalDetections = 0;
+        let detectionLog = [];
+        let batchIndex = 0;
+
+        // Camera event counters
+        const cameraEventCounts = { BOSS_CABIN: 0, EMPLOYEE_AREA: 0, CAFETERIA: 0, RECEPTION_AREA: 0 };
+        const eventStatusCounts = { CRITICAL: 0, EVENT: 0, SAFE: 0 };
+        const objectCounts = { person: 0, chair: 0, laptop: 0 };
+
+        // Real detection data extracted from CSV (camera_events_202512301202.csv)
+        const sampleDetections = {
+            ALL: [
+                // BOSS_CABIN detections
+                { label: "person", bbox: { top: 0, left: 34, width: 51, height: 86 }, camera: "BOSS_CABIN", status: "CRITICAL" },
+                { label: "person", bbox: { top: 90, left: 120, width: 68, height: 140 }, camera: "BOSS_CABIN", status: "CRITICAL" },
+                { label: "book", bbox: { top: 225, left: 248, width: 56, height: 54 }, camera: "BOSS_CABIN", status: "CRITICAL" },
+                // EMPLOYEE_AREA detections - high activity zone
+                { label: "person", bbox: { top: 133, left: 430, width: 65, height: 113 }, camera: "EMPLOYEE_AREA", status: "CRITICAL" },
+                { label: "person", bbox: { top: 100, left: 418, width: 54, height: 75 }, camera: "EMPLOYEE_AREA", status: "CRITICAL" },
+                { label: "person", bbox: { top: 75, left: 157, width: 32, height: 60 }, camera: "EMPLOYEE_AREA", status: "EVENT" },
+                { label: "person", bbox: { top: 106, left: 189, width: 62, height: 100 }, camera: "EMPLOYEE_AREA", status: "CRITICAL" },
+                { label: "person", bbox: { top: 152, left: 255, width: 57, height: 97 }, camera: "EMPLOYEE_AREA", status: "CRITICAL" },
+                { label: "chair", bbox: { top: 207, left: 243, width: 51, height: 74 }, camera: "EMPLOYEE_AREA", status: "SAFE" },
+                { label: "chair", bbox: { top: 160, left: 341, width: 56, height: 91 }, camera: "EMPLOYEE_AREA", status: "SAFE" },
+                { label: "laptop", bbox: { top: 109, left: 304, width: 26, height: 32 }, camera: "EMPLOYEE_AREA", status: "SAFE" },
+                { label: "laptop", bbox: { top: 182, left: 462, width: 108, height: 72 }, camera: "EMPLOYEE_AREA", status: "SAFE" },
+                { label: "tv", bbox: { top: 42, left: 248, width: 25, height: 20 }, camera: "EMPLOYEE_AREA", status: "SAFE" },
+                { label: "tv", bbox: { top: 52, left: 482, width: 31, height: 29 }, camera: "EMPLOYEE_AREA", status: "SAFE" },
+                { label: "tv", bbox: { top: 181, left: 437, width: 191, height: 188 }, camera: "EMPLOYEE_AREA", status: "SAFE" },
+                { label: "clock", bbox: { top: 10, left: 136, width: 18, height: 22 }, camera: "EMPLOYEE_AREA", status: "SAFE" },
+                // CAFETERIA detections - medium activity
+                { label: "person", bbox: { top: 107, left: 69, width: 49, height: 121 }, camera: "CAFETERIA", status: "CRITICAL" },
+                { label: "person", bbox: { top: 125, left: 35, width: 43, height: 121 }, camera: "CAFETERIA", status: "CRITICAL" },
+                { label: "person", bbox: { top: 170, left: 95, width: 75, height: 200 }, camera: "CAFETERIA", status: "EVENT" },
+                { label: "person", bbox: { top: 250, left: 350, width: 171, height: 139 }, camera: "CAFETERIA", status: "EVENT" },
+                { label: "chair", bbox: { top: 242, left: 367, width: 101, height: 141 }, camera: "CAFETERIA", status: "SAFE" },
+                { label: "chair", bbox: { top: 223, left: 302, width: 76, height: 158 }, camera: "CAFETERIA", status: "SAFE" },
+                { label: "chair", bbox: { top: 205, left: 251, width: 61, height: 145 }, camera: "CAFETERIA", status: "SAFE" },
+                { label: "bottle", bbox: { top: 124, left: 333, width: 11, height: 41 }, camera: "CAFETERIA", status: "SAFE" },
+                // RECEPTION_AREA detections - low activity
+                { label: "umbrella", bbox: { top: 117, left: 593, width: 46, height: 31 }, camera: "RECEPTION_AREA", status: "SAFE" },
+                { label: "potted plant", bbox: { top: 221, left: 448, width: 45, height: 45 }, camera: "RECEPTION_AREA", status: "SAFE" }
+            ],
+            BOSS_CABIN: [
+                { label: "person", bbox: { top: 0, left: 34, width: 51, height: 86 }, status: "CRITICAL" },
+                { label: "person", bbox: { top: 90, left: 120, width: 68, height: 140 }, status: "CRITICAL" },
+                { label: "book", bbox: { top: 225, left: 248, width: 56, height: 54 }, status: "CRITICAL" },
+                { label: "person", bbox: { top: 10, left: 50, width: 60, height: 100 }, status: "CRITICAL" },
+                { label: "person", bbox: { top: 150, left: 180, width: 50, height: 120 }, status: "EVENT" }
+            ],
+            EMPLOYEE_AREA: [
+                { label: "person", bbox: { top: 133, left: 430, width: 65, height: 113 }, status: "CRITICAL" },
+                { label: "person", bbox: { top: 100, left: 418, width: 54, height: 75 }, status: "CRITICAL" },
+                { label: "person", bbox: { top: 75, left: 157, width: 32, height: 60 }, status: "EVENT" },
+                { label: "person", bbox: { top: 106, left: 189, width: 62, height: 100 }, status: "CRITICAL" },
+                { label: "person", bbox: { top: 152, left: 255, width: 57, height: 97 }, status: "CRITICAL" },
+                { label: "person", bbox: { top: 182, left: 30, width: 109, height: 181 }, status: "CRITICAL" },
+                { label: "person", bbox: { top: 270, left: 603, width: 37, height: 112 }, status: "EVENT" },
+                { label: "person", bbox: { top: 94, left: 337, width: 68, height: 133 }, status: "CRITICAL" },
+                { label: "chair", bbox: { top: 207, left: 243, width: 51, height: 74 }, status: "SAFE" },
+                { label: "chair", bbox: { top: 160, left: 341, width: 56, height: 91 }, status: "SAFE" },
+                { label: "laptop", bbox: { top: 109, left: 304, width: 26, height: 32 }, status: "SAFE" },
+                { label: "laptop", bbox: { top: 182, left: 462, width: 108, height: 72 }, status: "SAFE" },
+                { label: "tv", bbox: { top: 42, left: 248, width: 25, height: 20 }, status: "SAFE" },
+                { label: "tv", bbox: { top: 181, left: 437, width: 191, height: 188 }, status: "SAFE" }
+            ],
+            CAFETERIA: [
+                { label: "person", bbox: { top: 107, left: 69, width: 49, height: 121 }, status: "CRITICAL" },
+                { label: "person", bbox: { top: 125, left: 35, width: 43, height: 121 }, status: "CRITICAL" },
+                { label: "person", bbox: { top: 170, left: 95, width: 75, height: 200 }, status: "EVENT" },
+                { label: "person", bbox: { top: 250, left: 350, width: 171, height: 139 }, status: "EVENT" },
+                { label: "person", bbox: { top: 115, left: 25, width: 22, height: 97 }, status: "CRITICAL" },
+                { label: "chair", bbox: { top: 242, left: 367, width: 101, height: 141 }, status: "SAFE" },
+                { label: "chair", bbox: { top: 223, left: 302, width: 76, height: 158 }, status: "SAFE" },
+                { label: "chair", bbox: { top: 205, left: 251, width: 61, height: 145 }, status: "SAFE" },
+                { label: "bottle", bbox: { top: 124, left: 333, width: 11, height: 41 }, status: "SAFE" }
+            ],
+            RECEPTION_AREA: [
+                { label: "umbrella", bbox: { top: 117, left: 593, width: 46, height: 31 }, status: "SAFE" },
+                { label: "potted plant", bbox: { top: 221, left: 448, width: 45, height: 45 }, status: "SAFE" },
+                { label: "person", bbox: { top: 200, left: 300, width: 60, height: 150 }, status: "EVENT" }
+            ]
+        };
+
+        function processDetection(detection, canvasWidth, canvasHeight) {
+            const centerX = detection.bbox.left + detection.bbox.width / 2;
+            const centerY = detection.bbox.top + detection.bbox.height / 2;
+            const gridX = Math.floor((centerX / 640) * 32);
+            const gridY = Math.floor((centerY / 480) * 24);
+            if (gridX >= 0 && gridX < 32 && gridY >= 0 && gridY < 24) {
+                heatmapGrid[gridY][gridX] += 1;
+                // Add spread for smoother heatmap
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        const ny = gridY + dy, nx = gridX + dx;
+                        if (ny >= 0 && ny < 24 && nx >= 0 && nx < 32 && (dx !== 0 || dy !== 0)) {
+                            heatmapGrid[ny][nx] += 0.3;
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawHeatmap() {
+            const canvas = document.getElementById('heatmapCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const cellW = canvas.width / 32;
+            const cellH = canvas.height / 24;
+
+            // Clear canvas
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw grid cells
+            let maxVal = 1;
+            for (let y = 0; y < 24; y++) {
+                for (let x = 0; x < 32; x++) {
+                    if (heatmapGrid[y][x] > maxVal) maxVal = heatmapGrid[y][x];
+                }
+            }
+
+            for (let y = 0; y < 24; y++) {
+                for (let x = 0; x < 32; x++) {
+                    const val = heatmapGrid[y][x];
+                    if (val > 0) {
+                        const intensity = Math.min(val / maxVal, 1);
+                        let color;
+                        if (intensity < 0.3) {
+                            color = `rgba(34, 197, 94, ${intensity * 2})`; // Green
+                        } else if (intensity < 0.6) {
+                            color = `rgba(249, 115, 22, ${0.3 + intensity * 0.5})`; // Orange
+                        } else {
+                            color = `rgba(239, 68, 68, ${0.5 + intensity * 0.5})`; // Red
+                        }
+                        ctx.fillStyle = color;
+                        ctx.beginPath();
+                        ctx.arc(x * cellW + cellW / 2, y * cellH + cellH / 2, cellW * intensity * 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Draw zone overlays
+            ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.strokeRect(10, 10, 150, 100); // Entry zone
+            ctx.strokeRect(200, 150, 200, 150); // Queue zone
+            ctx.setLineDash([]);
+
+            // Labels
+            ctx.font = '10px Inter';
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.7)';
+            ctx.fillText('Entry', 15, 25);
+            ctx.fillText('Queue', 205, 165);
+        }
+
+        function updateHeatmapStats() {
+            let hotspots = 0;
+            for (let y = 0; y < 24; y++) {
+                for (let x = 0; x < 32; x++) {
+                    if (heatmapGrid[y][x] > 3) hotspots++;
+                }
+            }
+            const peopleCount = detectionLog.filter(d => d.label === 'person').length;
+            const criticalCount = detectionLog.filter(d => d.status === 'CRITICAL').length;
+
+            // Main stats
+            document.getElementById('heatmapPeopleCount').textContent = peopleCount;
+            document.getElementById('heatmapHotspots').textContent = hotspots;
+            document.getElementById('heatmapDetections').textContent = totalDetections;
+            document.getElementById('heatmapAlerts').textContent = criticalCount;
+
+            // Camera activity
+            const bossCount = detectionLog.filter(d => d.camera === 'BOSS_CABIN').length;
+            const empCount = detectionLog.filter(d => d.camera === 'EMPLOYEE_AREA').length;
+            const cafeCount = detectionLog.filter(d => d.camera === 'CAFETERIA').length;
+            const recCount = detectionLog.filter(d => d.camera === 'RECEPTION_AREA').length;
+            if (document.getElementById('camBoss')) document.getElementById('camBoss').textContent = bossCount + ' events';
+            if (document.getElementById('camEmployee')) document.getElementById('camEmployee').textContent = empCount + ' events';
+            if (document.getElementById('camCafe')) document.getElementById('camCafe').textContent = cafeCount + ' events';
+            if (document.getElementById('camReception')) document.getElementById('camReception').textContent = recCount + ' events';
+
+            // Event distribution
+            const critCount = detectionLog.filter(d => d.status === 'CRITICAL').length;
+            const eventCount = detectionLog.filter(d => d.status === 'EVENT').length;
+            const safeCount = detectionLog.filter(d => d.status === 'SAFE').length;
+            if (document.getElementById('eventCritical')) document.getElementById('eventCritical').textContent = critCount;
+            if (document.getElementById('eventWarning')) document.getElementById('eventWarning').textContent = eventCount;
+            if (document.getElementById('eventSafe')) document.getElementById('eventSafe').textContent = safeCount;
+
+            // Object distribution
+            const personObjCount = detectionLog.filter(d => d.label === 'person').length;
+            const chairObjCount = detectionLog.filter(d => d.label === 'chair').length;
+            const laptopObjCount = detectionLog.filter(d => d.label === 'laptop').length;
+            if (document.getElementById('objPerson')) document.getElementById('objPerson').textContent = personObjCount;
+            if (document.getElementById('objChair')) document.getElementById('objChair').textContent = chairObjCount;
+            if (document.getElementById('objLaptop')) document.getElementById('objLaptop').textContent = laptopObjCount;
+
+            // Update detection list
+            const list = document.getElementById('latestDetectionsList');
+            if (list) {
+                list.innerHTML = detectionLog.slice(-10).reverse().map(d =>
+                    `<div style="padding: 0.3rem 0; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between;">
+                        <span>${d.label === 'person' ? '👤' : d.label === 'chair' ? '💺' : '📦'} ${d.label}</span>
+                        <span style="color: ${d.status === 'CRITICAL' ? 'var(--critical)' : d.status === 'EVENT' ? 'var(--warning)' : 'var(--success)'};">${d.status || 'SAFE'}</span>
+                    </div>`
+                ).join('');
+            }
+        }
+
+        function loadNextBatch() {
+            simulateDetections();
+            simulateDetections();
+        }
+
+        function simulateDetections() {
+            const camId = document.getElementById('heatmapCameraSelect').value;
+            const detections = sampleDetections[camId] || [];
+            detections.forEach(det => {
+                // Add random offset for variation
+                const modDet = {
+                    ...det,
+                    bbox: {
+                        ...det.bbox,
+                        left: det.bbox.left + Math.floor(Math.random() * 40 - 20),
+                        top: det.bbox.top + Math.floor(Math.random() * 40 - 20)
+                    }
+                };
+                processDetection(modDet, 640, 480);
+                detectionLog.push(modDet);
+                totalDetections++;
+            });
+            drawHeatmap();
+            updateHeatmapStats();
+        }
+
+        function clearHeatmap() {
+            for (let y = 0; y < 24; y++) {
+                for (let x = 0; x < 32; x++) {
+                    heatmapGrid[y][x] = 0;
+                }
+            }
+            totalDetections = 0;
+            detectionLog = [];
+            batchIndex = 0;
+            if (document.getElementById('batchNumber')) document.getElementById('batchNumber').textContent = '0';
+            drawHeatmap();
+            updateHeatmapStats();
+        }
+
+        function updateHeatmapCamera() {
+            clearHeatmap();
+            simulateDetections();
+        }
+
+        // Continuous Capture functionality
+        let captureInterval = null;
+        let isCapturing = false;
+
+        function toggleContinuousCapture() {
+            if (isCapturing) {
+                stopContinuousCapture();
+            } else {
+                startContinuousCapture();
+            }
+        }
+
+        function startContinuousCapture() {
+            isCapturing = true;
+            const speed = parseInt(document.getElementById('captureSpeed').value);
+
+            // Update UI
+            document.getElementById('playBtn').style.background = 'linear-gradient(135deg, #EF4444, #DC2626)';
+            document.getElementById('playBtn').innerHTML = '<span>⏸</span> Stop Capture';
+            document.getElementById('captureStatus').textContent = '▶';
+            document.getElementById('liveIndicator').style.display = 'flex';
+
+            captureInterval = setInterval(() => {
+                simulateDetections();
+                batchIndex++;
+                if (document.getElementById('batchNumber')) document.getElementById('batchNumber').textContent = batchIndex;
+            }, speed);
+        }
+
+        function stopContinuousCapture() {
+            isCapturing = false;
+            if (captureInterval) {
+                clearInterval(captureInterval);
+                captureInterval = null;
+            }
+
+            // Update UI
+            document.getElementById('playBtn').style.background = 'linear-gradient(135deg, #22C55E, #16A34A)';
+            document.getElementById('playBtn').innerHTML = '<span>▶</span> Start Capture';
+            document.getElementById('captureStatus').textContent = '⏸';
+            document.getElementById('liveIndicator').style.display = 'none';
+        }
+
+        // Update speed while running
+        document.addEventListener('DOMContentLoaded', () => {
+            const speedSelector = document.getElementById('captureSpeed');
+            if (speedSelector) {
+                speedSelector.addEventListener('change', () => {
+                    if (isCapturing) {
+                        stopContinuousCapture();
+                        startContinuousCapture();
+                    }
+                });
+            }
+        });
+
+
+        // Initialize heatmap on load
+        function initHeatmap() {
+            simulateDetections();
+            simulateDetections(); // Run twice for initial data
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAll();
+            setTimeout(initHeatmap, 500);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,301 @@
+# Default values for kubecost-integration
+global:
+  imageRegistry: index.docker.io
+  imagePullPolicy: IfNotPresent
+  imageTag: v1.3.0
+
+# Kubecost configuration
+kubecost:
+  enabled: true
+  
+  # CloudTuner integration settings
+  cloudtuner:
+    enabled: true
+    endpoint: "https://dev.dashboard.cloudtuner.ai"
+    storage:
+      influxdb: "http://influxdb.default.svc.cluster.local"
+      clickhouse: "http://clickhouse.default.svc.cluster.local:8123"
+    auth:
+      username: kubecost
+      password: kubecost@123
+    
+  # Prometheus remote write configuration
+  prometheus:
+    server:
+      enabled: true
+      retention: "15d"
+      remoteWrite:
+        - url: "https://dev.dashboard.cloudtuner.ai/storage/api/v2/write"
+          name: cloudtuner
+          headers:
+            Cloud-Account-Id: "bc55eb8c-5db2-4c32-b976-2df0edb0619a"
+          basic_auth:
+            username: kubecost
+            password: kubecost@123
+          tls_config:
+            insecure_skip_verify: true
+          write_relabel_configs:
+          - source_labels: [__name__]
+            regex: '(kubecost_.*|cloudtuner_kubecost_.*|container_.*|kube_.*|node_.*|pod_pvc_.*|pv_.*|up)'
+            action: keep
+    # Persist scrape jobs for allocation exporter and kube-state-metrics
+    extraScrapeConfigs: |
+        # Scrape Kubecost cost-model metrics (pricing, infra, etc.)
+        - job_name: kubecost
+          honor_labels: true
+          scrape_interval: 1m
+          scrape_timeout: 60s
+          metrics_path: /metrics
+          scheme: http
+          dns_sd_configs:
+          - names:
+            - {{ template "cost-analyzer.serviceName" . }}
+            type: 'A'
+            port: 9003
+
+        # Scrape Allocation Exporter metrics (allocation costs, efficiencies)
+        - job_name: kubecost-allocation-exporter
+          honor_labels: true
+          scrape_interval: 60s
+          scrape_timeout: 30s
+          metrics_path: /metrics
+          scheme: http
+          kubernetes_sd_configs:
+          - role: endpoints
+          relabel_configs:
+          - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+            action: keep
+            regex: kubecost-allocation-exporter
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: metrics
+        - job_name: 'kube-state-metrics'
+          honor_labels: true
+          scrape_interval: 60s
+          scrape_timeout: 30s
+          metrics_path: /metrics
+          scheme: http
+          static_configs:
+          - targets:
+            - kube-state-metrics.kube-state-metrics.svc.cluster.local:8080
+
+  # Custom pricing configuration (bypasses AWS API requirement)
+  # Use this for development/testing when AWS credentials are not available
+  kubecostModel:
+    customPricesEnabled: true
+    defaultModelPricing:
+      enabled: true
+      CPU: "28.0"           # Monthly cost per CPU core
+      spotCPU: "4.86"       # Monthly cost per spot CPU core
+      RAM: "3.09"           # Monthly cost per GB of RAM
+      spotRAM: "0.65"       # Monthly cost per GB of spot RAM
+      GPU: "693.50"         # Monthly cost per GPU
+      spotGPU: "225.0"      # Monthly cost per spot GPU
+      storage: "0.04"       # Monthly cost per GB of storage
+      zoneNetworkEgress: "0.01"      # Cost per GB for same-zone egress
+      regionNetworkEgress: "0.01"    # Cost per GB for same-region egress
+      internetNetworkEgress: "0.12"  # Cost per GB for internet egress
+    clusterProfile: development  # Options: development, production, high-availability
+
+
+# Data extraction components (DEPRECATED - replaced by allocation exporter)
+extractor:
+  enabled: false
+  name: kubecost-extractor
+  replicaCount: 1
+  
+  image:
+    repository: alpine/curl
+    tag: latest
+    pullPolicy: IfNotPresent
+    
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+      
+  schedule:
+    allocation: "0 */1 * * *"  # Every hour
+    assets: "0 0 * * *"        # Daily
+    cleanup: "0 2 * * *"       # Daily cleanup at 2 AM
+    
+  config:
+    kubecostEndpoint: ""
+    batchSize: 1000
+    timeout: 300s
+    retries: 3
+
+# Metrics processor - using Kubecost's cost-model image
+metricsProcessor:
+  enabled: true
+  name: metrics-processor
+  replicaCount: 1
+  
+  image:
+    repository: gcr.io/kubecost1/cost-model
+    tag: prod-2.8.0
+    pullPolicy: IfNotPresent
+    
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+      
+  config:
+    prometheusUrl: "http://kubecost-prometheus-server.kubecost.svc.cluster.local"
+    scrapeInterval: 60s
+    bufferSize: 10000
+
+# Cost aggregator (DEPRECATED - replaced by allocation exporter)
+costAggregator:
+  enabled: false
+  name: cost-aggregator
+  replicaCount: 1
+  
+  image:
+    repository: gcr.io/kubecost1/cost-model
+    tag: prod-2.8.0
+    pullPolicy: IfNotPresent
+    
+  resources:
+    requests:
+      cpu: 300m
+      memory: 1Gi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+      
+  schedule: "*/15 * * * *"  # Every 15 minutes
+  
+  config:
+    aggregationWindows: ["1h", "1d", "7d", "30d"]
+    costThresholds:
+      spike: 0.5      # 50% increase
+      anomaly: 0.3    # 30% deviation
+
+# Allocation Exporter - exposes Kubecost allocation costs as Prometheus metrics
+# for remote_write to CloudTuner (Phase 2)
+allocationExporter:
+  enabled: true
+  name: kubecost-allocation-exporter
+  replicaCount: 1
+
+  image:
+    repository: invincibledocker24/kubecost-allocation-exporter
+    tag: v1.4.0-dev-k8s1
+    pullPolicy: IfNotPresent
+
+  port: 9103
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+  config:
+    # Kubecost URL is auto-generated from Release.Name and Release.Namespace
+    # Pattern: http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local:9090
+    # This ensures the exporter always queries the Kubecost instance deployed by this chart
+    # (Set in deployment template, not used from values)
+
+    # Scrape interval in seconds
+    scrapeInterval: 120
+    # Max random jitter added to scrape interval (seconds)
+    scrapeJitterMax: 10
+
+    # Aggregation level: namespace (default) or pod
+    aggregationLevel: namespace
+
+    # Time window for allocation query
+    # Using 24h window to ensure Kubecost has complete historical data
+    # The current hour often returns null as data is still being collected
+    window: "24h"
+
+    # Control time series vs aggregate window
+    timeSeries: false
+    step: "1h"
+    accumulate: true
+
+    # Include and share idle costs across groups
+    includeIdle: true
+    shareIdle: weighted  # none|even|weighted
+
+    # Metric output mode: 'rate' (hourly) or 'total' (window total)
+    metricMode: rate
+
+    # Tenant ID (Cloud Account ID) for multi-tenancy
+    # CRITICAL: Must match Cloud-Account-Id in remote_write headers!
+    tenantId: "bc55eb8c-5db2-4c32-b976-2df0edb0619a"
+
+    # Cluster name (used in metric labels)
+    clusterName: "k8s-kubecost"
+
+    # Currency for cost metrics
+    currency: "USD"
+
+    # Enable pod-level metrics (high cardinality, use with caution)
+    enablePodMetrics: false
+
+    # If pod metrics enabled, limit to top N pods by cost
+    topNPods: 50
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: http
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+rbac:
+  create: true
+
+# Monitoring configuration
+monitoring:
+  enabled: true
+  
+  serviceMonitor:
+    enabled: false
+    namespace: monitoring
+    
+  prometheusRule:
+    enabled: false
+    rules:
+    - alert: KubecostDataExtractionFailed
+      expr: increase(kubecost_extraction_failures_total[5m]) > 5
+      labels:
+        severity: warning
+      annotations:
+        summary: "Kubecost data extraction failing"
+        
+    - alert: KubecostDataStale
+      expr: (time() - kubecost_last_successful_extraction_timestamp) > 14400
+      labels:
+        severity: critical
+      annotations:
+        summary: "Kubecost data is stale (>4h)"
+
+# Security configuration
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 2000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+    - ALL

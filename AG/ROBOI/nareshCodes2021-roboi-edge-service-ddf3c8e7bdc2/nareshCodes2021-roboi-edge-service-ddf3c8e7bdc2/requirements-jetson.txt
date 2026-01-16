@@ -1,0 +1,19 @@
+# --- JETSON ARM64 REQUIREMENTS ---
+# Note: Torch, Torchvision, and ONNXRuntime-GPU MUST be installed via NVIDIA wheels.
+# See README.md for the installation guide.
+
+numpy>=1.23.5,<2.0.0
+PyYAML>=6.0
+psutil>=5.9.4
+requests>=2.31.0
+scipy>=1.10.1
+pillow>=9.5.0
+matplotlib>=3.7.1
+polars>=0.17.0
+opencv-python-headless  # Use system CV2 if possible, this is a fallback
+
+# Machine Learning & Tracking
+ultralytics>=8.0.0
+# face_recognition removed - now using Native OpenCV DNN
+filterpy>=1.4.5
+scikit-learn>=1.2.2

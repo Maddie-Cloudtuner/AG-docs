@@ -1,0 +1,97 @@
+{{- if .Values.allocationExporter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.allocationExporter.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.allocationExporter.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/component: allocation-exporter
+    app.kubernetes.io/part-of: kubecost-integration
+spec:
+  replicas: {{ .Values.allocationExporter.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.allocationExporter.name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.allocationExporter.name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: allocation-exporter
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.allocationExporter.port }}"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: {{ include "kubecost-integration.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Values.allocationExporter.name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+        image: "{{ .Values.global.imageRegistry }}/{{ .Values.allocationExporter.image.repository }}:{{ .Values.allocationExporter.image.tag | default .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.allocationExporter.image.pullPolicy | default .Values.global.imagePullPolicy }}
+        ports:
+        - name: metrics
+          containerPort: {{ .Values.allocationExporter.port }}
+          protocol: TCP
+        env:
+        - name: KUBECOST_URL
+          value: {{ printf "http://%s.%s.svc.cluster.local:9090" .Release.Name .Release.Namespace | quote }}
+        - name: EXPORTER_PORT
+          value: {{ .Values.allocationExporter.port | quote }}
+        - name: SCRAPE_INTERVAL
+          value: {{ .Values.allocationExporter.config.scrapeInterval | quote }}
+        - name: SCRAPE_JITTER_MAX
+          value: {{ .Values.allocationExporter.config.scrapeJitterMax | quote }}
+        - name: AGGREGATION_LEVEL
+          value: {{ .Values.allocationExporter.config.aggregationLevel | quote }}
+        - name: WINDOW
+          value: {{ .Values.allocationExporter.config.window | quote }}
+        - name: TIME_SERIES
+          value: {{ .Values.allocationExporter.config.timeSeries | quote }}
+        - name: STEP
+          value: {{ .Values.allocationExporter.config.step | quote }}
+        - name: ACCUMULATE
+          value: {{ .Values.allocationExporter.config.accumulate | quote }}
+        - name: INCLUDE_IDLE
+          value: {{ .Values.allocationExporter.config.includeIdle | quote }}
+        - name: SHARE_IDLE
+          value: {{ .Values.allocationExporter.config.shareIdle | quote }}
+        - name: METRIC_MODE
+          value: {{ .Values.allocationExporter.config.metricMode | quote }}
+        - name: TENANT_ID
+          value: {{ .Values.allocationExporter.config.tenantId | quote }}
+        - name: CLUSTER_NAME
+          value: {{ .Values.allocationExporter.config.clusterName | quote }}
+        - name: CURRENCY
+          value: {{ .Values.allocationExporter.config.currency | quote }}
+        - name: ENABLE_POD_METRICS
+          value: {{ .Values.allocationExporter.config.enablePodMetrics | quote }}
+        - name: TOP_N_PODS
+          value: {{ .Values.allocationExporter.config.topNPods | quote }}
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          {{- toYaml .Values.allocationExporter.resources | nindent 10 }}
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+{{- end }}

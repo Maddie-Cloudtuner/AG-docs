@@ -1,0 +1,99 @@
+{
+    "site_name": "HEAD_OFFICE",
+    "date": "2026-01-05",
+    "zones": {
+        "EMPLOYEE_AREA": {
+            "peak": 8,
+            "events": 17,
+            "intensity": "high"
+        },
+        "RECEPTION_AREA": {
+            "peak": 6,
+            "events": 312,
+            "intensity": "medium"
+        },
+        "CAFETERIA": {
+            "peak": 2,
+            "events": 16,
+            "intensity": "low"
+        },
+        "BOSS_CABIN": {
+            "peak": 4,
+            "events": 89,
+            "intensity": "medium"
+        }
+    },
+    "hourly": [
+        {
+            "hour": 6,
+            "count": 1,
+            "intensity": "low"
+        },
+        {
+            "hour": 7,
+            "count": 2,
+            "intensity": "low"
+        },
+        {
+            "hour": 8,
+            "count": 4,
+            "intensity": "medium"
+        },
+        {
+            "hour": 9,
+            "count": 6,
+            "intensity": "medium"
+        },
+        {
+            "hour": 10,
+            "count": 8,
+            "intensity": "high"
+        },
+        {
+            "hour": 11,
+            "count": 7,
+            "intensity": "high"
+        },
+        {
+            "hour": 12,
+            "count": 5,
+            "intensity": "medium"
+        },
+        {
+            "hour": 13,
+            "count": 3,
+            "intensity": "low"
+        },
+        {
+            "hour": 14,
+            "count": 6,
+            "intensity": "medium"
+        },
+        {
+            "hour": 15,
+            "count": 8,
+            "intensity": "high"
+        },
+        {
+            "hour": 16,
+            "count": 7,
+            "intensity": "high"
+        },
+        {
+            "hour": 17,
+            "count": 4,
+            "intensity": "medium"
+        },
+        {
+            "hour": 18,
+            "count": 2,
+            "intensity": "low"
+        }
+    ],
+    "critical_events": {
+        "UNAUTHORIZED_STRANGER": 23,
+        "RESTRICTED_ACCESS": 18,
+        "CROWD_VIOLATION": 3,
+        "total_events": 2844
+    }
+}

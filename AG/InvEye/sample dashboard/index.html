@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvEye - Employee Tracking Dashboard</title>
+    <meta name="description" content="Real-time employee tracking and productivity monitoring dashboard powered by AI-driven CCTV analytics">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="url(#gradient1)"/>
+                            <path d="M16 8L22 12V20L16 24L10 20V12L16 8Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                            <circle cx="16" cy="16" r="3" fill="white"/>
+                            <defs>
+                                <linearGradient id="gradient1" x1="0" y1="0" x2="32" y2="32">
+                                    <stop offset="0%" stop-color="#3B82F6"/>
+                                    <stop offset="100%" stop-color="#8B5CF6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1>InvEye</h1>
+                        <span>Employee Analytics</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-center">
+                <div class="location-selector">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2C6.686 2 4 4.686 4 8c0 5.25 6 10 6 10s6-4.75 6-10c0-3.314-2.686-6-6-6zm0 8c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2z"/>
+                    </svg>
+                    <select id="locationSelect">
+                        <option>HQ - Mumbai</option>
+                        <option>Branch - Delhi</option>
+                        <option>Branch - Bangalore</option>
+                    </select>
+                </div>
+                
+                <div class="date-selector">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M6 2v2H5C3.895 2 3 2.895 3 4v12c0 1.105.895 2 2 2h10c1.105 0 2-.895 2-2V4c0-1.105-.895-2-2-2h-1V2h-2v2H8V2H6zm-1 6h10v8H5V8z"/>
+                    </svg>
+                    <select id="dateSelect">
+                        <option>Today</option>
+                        <option>Yesterday</option>
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="live-status">
+                    <span class="pulse-dot"></span>
+                    <span>LIVE</span>
+                </div>
+                
+                <button class="notification-btn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2C8.895 2 8 2.895 8 4v.5C6.067 5.468 5 7.109 5 9v4l-2 2v1h14v-1l-2-2V9c0-1.891-1.067-3.532-3-4.5V4c0-1.105-.895-2-2-2zm-1 16h2c0 .552-.448 1-1 1s-1-.448-1-1z"/>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </button>
+                
+                <div class="user-menu">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-info">
+                        <span class="user-name">Admin User</span>
+                        <span class="user-role">System Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- KPI Cards -->
+        <section class="kpi-section">
+            <div class="kpi-card" data-color="blue">
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M16 4c-3.314 0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6zm0 14c-6.627 0-12 3.373-12 8v2h24v-2c0-4.627-5.373-8-12-8z"/>
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value" id="presentCount">145</h3>
+                    <p class="kpi-label">Employees Present</p>
+                    <div class="kpi-trend positive">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M6 2L10 8H2L6 2Z"/>
+                        </svg>
+                        <span>+5 from yesterday</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-color="green">
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M12 22L4 14l2.828-2.828L12 16.344l11.172-11.172L26 8l-14 14z"/>
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value" id="complianceRate">92%</h3>
+                    <p class="kpi-label">Compliance Rate</p>
+                    <div class="kpi-trend negative">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M6 10L2 4H10L6 10Z"/>
+                        </svg>
+                        <span>-2% from target</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-color="amber">
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M16 2L4 28h24L16 2zm0 8l4.5 12h-9L16 10z"/>
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value" id="activeAlerts">3</h3>
+                    <p class="kpi-label">Active Alerts</p>
+                    <div class="kpi-trend neutral">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M2 6h8"/>
+                        </svg>
+                        <span>Same as yesterday</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-color="purple">
+                <div class="kpi-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M16 8v8l4 4"/>
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <h3 class="kpi-value" id="avgTime">7.2h</h3>
+                    <p class="kpi-label">Avg Time on Premises</p>
+                    <div class="kpi-trend neutral">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <circle cx="6" cy="6" r="2"/>
+                        </svg>
+                        <span>On target</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Left Column: CCTV & Charts -->
+            <div class="content-left">
+                <!-- Live CCTV Grid -->
+                <div class="card cctv-card">
+                    <div class="card-header">
+                        <h2>Live CCTV Feeds</h2>
+                        <div class="header-actions">
+                            <span class="camera-count">4 of 16 cameras</span>
+                            <button class="btn-icon" id="expandCameras">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M3 3h6v2H5v4H3V3zm12 0h2v6h-2V5h-4V3h4zM3 15v-2h2v-4h2v6H3zm14-2v2h-6v-2h4v-4h2v4z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="cctv-grid" id="cctvGrid">
+                        <!-- CCTV feeds will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Attendance Trend Chart -->
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h2>Attendance Trend</h2>
+                        <div class="chart-legend">
+                            <span class="legend-item">
+                                <span class="legend-color" style="background: #3B82F6"></span>
+                                Present
+                            </span>
+                            <span class="legend-item">
+                                <span class="legend-color" style="background: #8B5CF6"></span>
+                                Target
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- PPE Compliance -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>PPE Compliance Rate</h2>
+                        <span class="badge badge-success">Within Threshold</span>
+                    </div>
+                    <div class="compliance-grid">
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Hard Hat</span>
+                                <span class="compliance-value">97%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 97%; background: #10B981"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Safety Vest</span>
+                                <span class="compliance-value">99%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 99%; background: #10B981"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Gloves</span>
+                                <span class="compliance-value">87%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 87%; background: #F59E0B"></div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-header">
+                                <span class="compliance-name">Safety Shoes</span>
+                                <span class="compliance-value">95%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 95%; background: #10B981"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Alerts & Employee List -->
+            <div class="content-right">
+                <!-- Real-time Alerts -->
+                <div class="card alerts-card">
+                    <div class="card-header">
+                        <h2>Real-time Alerts</h2>
+                        <button class="btn-text">View All (24)</button>
+                    </div>
+                    <div class="alerts-container" id="alertsContainer">
+                        <!-- Alerts will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Employee Quick List -->
+                <div class="card employee-list-card">
+                    <div class="card-header">
+                        <h2>Employees on Site</h2>
+                        <input type="text" placeholder="Search employees..." class="search-input" id="employeeSearch">
+                    </div>
+                    <div class="employee-list" id="employeeList">
+                        <!-- Employee list will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

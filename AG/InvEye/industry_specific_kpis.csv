@@ -1,0 +1,61 @@
+Industry,KPI Category,KPI Name,Description,Target,Video Analytics Method
+Petroleum & Fuel Stations,Quality & Quantity Control,Uniform Compliance Rate,% of time attendants wear proper uniform,≥95%,"Uniform detection, logo recognition"
+Petroleum & Fuel Stations,Quality & Quantity Control,Customer Service Score,"Quality of customer interaction (greeting, assistance)",≥90%,"Gesture recognition, interaction time analysis"
+Petroleum & Fuel Stations,Safety & Compliance,Safety Protocol Adherence,"% compliance with no-smoking, spill response protocols",100%,"Smoking detection, spill response time tracking"
+Petroleum & Fuel Stations,Safety & Compliance,Conflict Incident Rate,Number of customer-employee conflicts per month,0,"Aggressive behavior detection, crowd analysis"
+Petroleum & Fuel Stations,Operational Efficiency,Nozzle Usage Time,Average time per fuel dispensing,3-5 min,Activity duration tracking
+Petroleum & Fuel Stations,Operational Efficiency,Station Cleanliness Index,Housekeeping score based on visual inspection,≥90%,"Debris detection, surface cleanliness analysis"
+Food & Beverage Manufacturing,Hygiene & Compliance,PPE Compliance Rate,"% of workers wearing hairnets, gloves, aprons",100%,"PPE detection (hairnet, gloves, apron)"
+Food & Beverage Manufacturing,Hygiene & Compliance,Handwashing Compliance,% of workers following handwashing protocols,≥98%,Action recognition at wash stations
+Food & Beverage Manufacturing,Quality Control,Foreign Object Detection Rate,Incidents of foreign objects detected per batch,0,Object detection on conveyor belts
+Food & Beverage Manufacturing,Quality Control,Equipment Cleaning Frequency,Cleaning cycles completed per shift,Per SOP,"Activity recognition, time-lapse verification"
+Food & Beverage Manufacturing,Safety & Environment,Temperature Zone Compliance,% time workers follow cold/hot zone protocols,100%,Zone occupancy tracking with thermal overlay
+Food & Beverage Manufacturing,Operational Efficiency,Line Throughput,Units produced per hour,Target rate,Product counting on conveyor
+Pharmaceutical Manufacturing,GMP Compliance,Gowning Compliance Rate,% proper gowning sequence followed,100%,Sequential action recognition
+Pharmaceutical Manufacturing,GMP Compliance,Airlock Procedure Adherence,% correct airlock entry/exit procedures,100%,Multi-step procedure verification
+Pharmaceutical Manufacturing,Quality Assurance,Batch Documentation Accuracy,Visual verification of batch labels and tags,100%,OCR and label verification
+Pharmaceutical Manufacturing,Quality Assurance,Equipment Sterilization Verification,% equipment properly sterilized before use,100%,Cleaning procedure tracking
+Pharmaceutical Manufacturing,Safety & Environment,Cleanroom Contamination Events,Unauthorized item entry into cleanroom,0,Object detection in restricted zones
+Pharmaceutical Manufacturing,Operational Efficiency,Process Deviation Rate,Deviations from SOP per 1000 batches,<5,Activity sequence monitoring
+Automotive Assembly,Quality Control,Assembly Accuracy Rate,% parts correctly placed on first attempt,≥99%,Part positioning verification
+Automotive Assembly,Quality Control,Torque Sequence Compliance,% correct bolt tightening sequence followed,100%,Tool tracking and sequence analysis
+Automotive Assembly,Safety & Compliance,PPE Compliance (Safety Glasses),% workers wearing safety glasses in designated zones,100%,PPE detection
+Automotive Assembly,Safety & Compliance,Ergonomic Posture Score,% workers maintaining proper lifting posture,≥90%,Pose estimation and ergonomic analysis
+Automotive Assembly,Operational Efficiency,Line Balance Efficiency,Distribution of work across stations,≥85%,Work time analysis per station
+Automotive Assembly,Operational Efficiency,Cycle Time Variance,Deviation from standard cycle time,±5%,Activity duration tracking
+Textile & Garment Manufacturing,Safety Compliance,Machine Guard Usage,% machines operated with guards in place,100%,Guard position detection
+Textile & Garment Manufacturing,Safety Compliance,Worker Fatigue Detection,Detection of fatigue-related behaviors,Alert>threshold,Behavioral pattern analysis
+Textile & Garment Manufacturing,Quality Control,Fabric Defect Detection Rate,Defects detected per 100 meters,<2,Surface defect detection
+Textile & Garment Manufacturing,Quality Control,Stitching Quality Score,% garments passing visual inspection,≥95%,Seam inspection
+Textile & Garment Manufacturing,Operational Efficiency,Machine Utilization Rate,% time machines actively operating,≥80%,Motion detection on machines
+Textile & Garment Manufacturing,Operational Efficiency,Production Rate Consistency,Variance in output per shift,±10%,Product counting over time
+Electronics Manufacturing,Quality Control,Component Placement Accuracy,% components placed within tolerance,≥99.9%,High-precision position verification
+Electronics Manufacturing,Quality Control,Solder Joint Quality,% joints passing visual inspection,≥99.5%,Micro-defect detection
+Electronics Manufacturing,Safety & ESD Compliance,ESD Wristband Compliance,% workers wearing ESD protection,100%,Wristband detection
+Electronics Manufacturing,Safety & ESD Compliance,ESD Zone Violation Rate,Unauthorized entries into ESD zones,0,Zone access monitoring
+Electronics Manufacturing,Operational Efficiency,Pick-and-Place Throughput,Components placed per minute,Target rate,Component counting
+Electronics Manufacturing,Operational Efficiency,Rework Rate,% products requiring rework,<1%,Product tracking through rework stations
+Chemical Processing,Safety Compliance,Respirator/Suit Compliance,% workers in protective gear in hazardous zones,100%,"PPE detection (full suit, respirator)"
+Chemical Processing,Safety Compliance,Emergency Shower Accessibility,% time emergency equipment unobstructed,100%,Zone obstruction detection
+Chemical Processing,Operational Safety,Leak Detection Response Time,Time from leak detection to response,<2 min,"Vapor/liquid detection, personnel response tracking"
+Chemical Processing,Operational Safety,Valve Position Verification,% critical valves in correct position,100%,Valve position recognition
+Chemical Processing,Environmental Monitoring,Spill Incident Rate,Number of spills per month,0,Liquid spill detection
+Chemical Processing,Compliance,Restricted Area Violations,Unauthorized access to hazardous zones,0,"Perimeter monitoring, access control"
+Steel & Metal Fabrication,Safety Compliance,Heat-Resistant PPE Compliance,% workers wearing heat-resistant gear,100%,"PPE detection (helmet, gloves, apron)"
+Steel & Metal Fabrication,Safety Compliance,Heat Zone Safety Distance,% workers maintaining safe distance from furnaces,100%,Distance measurement from heat sources
+Steel & Metal Fabrication,Quality Control,Weld Quality Inspection,% welds passing visual inspection,≥95%,Weld seam analysis
+Steel & Metal Fabrication,Quality Control,Surface Defect Detection,Defects detected per 100 sq meters,<5,Surface anomaly detection
+Steel & Metal Fabrication,Operational Efficiency,Material Handling Compliance,% proper lifting and stacking procedures,≥90%,"Action recognition, posture analysis"
+Steel & Metal Fabrication,Operational Efficiency,Equipment Maintenance Timeliness,% scheduled maintenance completed on time,≥95%,Maintenance activity verification
+Warehouse & Logistics,Safety Compliance,Forklift Speed Compliance,% forklifts operating within speed limits,100%,Vehicle speed estimation
+Warehouse & Logistics,Safety Compliance,Pedestrian-Vehicle Separation,Violations of designated walkways,0,Zone violation detection
+Warehouse & Logistics,Operational Efficiency,Loading Efficiency Score,% optimal space utilization in loading,≥85%,Loading pattern analysis
+Warehouse & Logistics,Operational Efficiency,Dock Door Utilization,% time dock doors actively in use,≥70%,Occupancy and activity tracking
+Warehouse & Logistics,Inventory Management,Stockout Detection Accuracy,% empty locations correctly identified,≥95%,Shelf occupancy detection
+Warehouse & Logistics,Quality Control,Package Damage Detection Rate,Damaged packages detected per 1000,Alert all,Damage detection on packages
+Retail Stores,Staff Compliance,Uniform & Badge Compliance,% staff wearing proper uniform and ID badge,≥95%,"Uniform detection, badge recognition"
+Retail Stores,Customer Experience,Customer Service Responsiveness,Average time to customer acknowledgment,<30 sec,Customer-staff interaction tracking
+Retail Stores,Customer Experience,Queue Wait Time,Average customer wait time at checkout,<5 min,Queue length and time analysis
+Retail Stores,Loss Prevention,Suspicious Behavior Detection,Alerts for potential theft behaviors,All detected,Behavioral anomaly detection
+Retail Stores,Operations,Shelf Stock Availability,% shelves adequately stocked,≥90%,Shelf occupancy monitoring
+Retail Stores,Operations,Foot Traffic Heatmap,Customer movement patterns for layout optimization,Analysis data,Crowd tracking and heatmap generation

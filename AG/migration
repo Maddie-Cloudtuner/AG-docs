@@ -1,0 +1,256 @@
+# Microsoft 365 Business Basic to Google Workspace Business Starter Migration Guide
+
+## Executive Summary
+
+**Objective**: Migrate from **Microsoft 365 Business Basic** to **Google Workspace Business Starter**.
+
+> [!WARNING]
+> **CRITICAL STORAGE CHECK**: 
+> *   **Microsoft 365 Business Basic**: Includes **50 GB** for Email + **1 TB** for OneDrive.
+> *   **Google Workspace Business Starter**: Includes only **30 GB TOTAL** (Email + Drive combined) per user.
+> *   **Risk**: If any user has more than 30GB of data combined in Outlook and OneDrive, **migration will fail or fill the account immediately**. You MUST audit storage usage before proceeding.
+
+## Cost Analysis (Important Business Decision)
+
+### Current vs Proposed Pricing
+
+| Plan | Provider | Cost (INR/user/month) | Storage | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **Microsoft 365 Business Basic** | GoDaddy | ₹180 | 50GB Email + 1TB Drive | Current plan |
+| **Google Workspace Business Starter** | Google (Direct) | ₹160 (first 20 users)<br>₹270 (21+ users) | 30GB Total | Proposed plan |
+
+### Cost Comparison by Team Size
+
+| Team Size | Microsoft Cost/Month | Google Cost/Month | Difference |
+| :--- | :--- | :--- | :--- |
+| **10 users** | ₹1,800 | ₹1,600 | **Save ₹200** ✅ |
+| **20 users** | ₹3,600 | ₹3,200 | **Save ₹400** ✅ |
+| **30 users** | ₹5,400 | ₹5,900 | **Pay ₹500 MORE** ❌ |
+| **50 users** | ₹9,000 | ₹11,300 | **Pay ₹2,300 MORE** ❌ |
+
+> [!IMPORTANT]
+> **Break-even Point**: If you have **MORE than 20 users**, Google Workspace becomes **significantly more expensive**.
+> 
+> **Should you still migrate?** Consider these factors:
+> *   **Ecosystem**: If you're heavily using Google services (Docs, Sheets, Meet), the integration is seamless.
+> *   **Collaboration**: Google Workspace has superior real-time collaboration features.
+> *   **Future Growth**: If you plan to stay under 20 users, Google is cheaper.
+> *   **Hybrid Option**: Keep some VIP users on Google Business Standard (₹680/month for 2TB) and others on Starter.
+
+---
+
+## Migration Decision Framework
+
+**Migrate to Google if:**
+- [ ] You have ≤20 users (or plan to stay there)
+- [ ] Your team prefers Google Docs/Sheets over Office apps
+- [ ] You value real-time collaboration over cost
+- [ ] Your storage usage is consistently <25GB per user
+
+**Stay with Microsoft if:**
+- [ ] You have >25 users
+- [ ] You rely on Excel macros or Outlook desktop client
+- [ ] You need the extra storage (1TB OneDrive)
+- [ ] You have custom integrations with Microsoft APIs
+
+---
+
+*   **Difficulty Level**: **Moderate**.
+*   **Estimated Time**: 
+    *   **Setup**: 1-2 days.
+    *   **Data Migration**: ~0.5 GB/hour/user.
+*   **Downtime**: **Near Zero**.
+*   **Data Loss Risk**: **Low**, provided storage limits are respected.
+
+---
+
+## Phase 1: Preparation (The "Measure Twice" Phase)
+
+### 1. Audit Your Current Environment (CRITICAL STEP)
+*   **Why this is urgent**: You are moving from a **1000 GB** capacity (OneDrive) to a **30 GB** capacity (Google).
+*   **Step-by-Step Storage Audit**:
+    1.  Log in to the [Microsoft 365 Admin Center](https://admin.microsoft.com).
+    2.  In the left sidebar, go to **Reports** > **Usage**.
+    3.  **Check Email Usage**:
+        *   Scroll down to the "Exchange" card and click **View more**.
+        *   Go to the **Mailbox usage** tab.
+        *   Look at the table below the graph. You will see a column for **Item count** and **Storage used (MB/GB)**.
+        *   *Export*: Click the "Export" link to get a CSV file.
+    4.  **Check OneDrive Usage**:
+        *   Go back to **Reports** > **Usage**.
+        *   Scroll to the "OneDrive" card and click **View more**.
+        *   Look at the **Storage** column for each user.
+        *   *Export*: Click "Export" to get a CSV.
+    5.  **Calculate Total**:
+        *   Open both CSVs.
+        *   For each user, add `Exchange Storage` + `OneDrive Storage`.
+        *   **IF Total > 25 GB** (leaving 5GB buffer): Mark this user as "High Risk".
+*   **Action Plan for High Risk Users**:
+    *   **Option A (Clean up)**: Ask user to delete large attachments or old files.
+    *   **Option B (Archive)**: Export old emails to a local PST file and delete them from the server *before* migration.
+    *   **Option C (Upgrade)**: Buy a **Business Standard** license ($12/mo) for just these specific users to get 2TB storage.
+
+### 2. Prepare Google Workspace
+1.  **Sign Up & Verify Domain**: Create your Google Workspace account and verify domain ownership (usually via DNS TXT record).
+2.  **Create Users**: 
+    *   **Crucial**: Create user accounts in Google Workspace that match the O365 usernames (e.g., `john@startup.com` -> `john@startup.com`).
+    *   *Tip*: You can bulk upload users via CSV.
+
+### 3. Prepare Office 365 (The Technical Part)
+To allow Google to "pull" data, you need a service account with specific rights.
+1.  **Create a Migration Admin User** in O365 (or use your Global Admin).
+2.  **Grant "ApplicationImpersonation" Rights**:
+    *   Go to **Exchange Admin Center** > **Permissions** > **Admin Roles**.
+    *   Click **+** to create a new role (e.g., "GoogleMigration").
+    *   Add the **ApplicationImpersonation** role to this group.
+    *   Add your migration admin user as a **Member**.
+    *   *Wait*: Allow 1-2 hours for this permission to propagate.
+
+---
+
+## Phase 2: The Migration Process (Using Data Migration Service)
+
+We will use Google's **Data Migration Service (DMS)** which is built-in, free, and cloud-based.
+
+### Step 1: Configure DMS
+1.  Log in to **Google Admin Console** (admin.google.com).
+2.  Go to **Data** > **Data Import & Migration** > **Data Migration**.
+3.  Click **Set Up Data Migration**.
+4.  **Source**: Select **Microsoft Office 365**.
+5.  **Data Type**: Select **Email** (You will repeat this setup for **Contacts** and **Calendar** later if needed, or do them in parallel if the tool allows).
+6.  **Connection Protocol**: Choose **Automatic User** (Recommended) or manual connection if prompted. You will sign in with the O365 Migration Admin credentials.
+
+### Step 2: Add Users
+1.  **Start Date**: Choose how far back to migrate (e.g., "Past 1 year" or "All time").
+2.  **Migration Options**: check "Migrate deleted items" or "Migrate junk mail" if desired.
+3.  **Select Users**:
+    *   Click **Add User**.
+    *   **Source Email**: `john@startup.com` (O365)
+    *   **Destination Email**: `john@startup.com` (Google)
+    *   *Bulk Option*: Upload a CSV file mapping O365 emails to Google emails.
+
+### Step 3: Start Migration
+*   Click **Start**. Google will now begin copying emails from O365 to Gmail.
+*   **Monitor**: Watch the progress bar. Errors usually indicate permission issues (Step 3 in Phase 1).
+*   *Note*: This is a "Copy" operation. Emails are NOT deleted from Outlook.
+
+---
+
+## Phase 3: The Cutover (Going Live)
+
+Once the initial data sync is at 90-100% or completed:
+
+### 1. Update MX Records (The Switch)
+This tells the internet to deliver *new* emails to Google instead of Outlook.
+1.  Log in to your Domain Host (GoDaddy, Namecheap, AWS Route53, etc.).
+2.  Find your **MX Records**.
+3.  **Delete** existing O365 MX records.
+4.  **Add** Google MX records:
+    *   Priority: `1`, Value: `SMTP.GOOGLE.COM`
+5.  *Propagation*: It can take 1-48 hours, but usually happens in minutes.
+
+### 2. Final Delta Sync
+*   Go back to the **Data Migration Service**.
+*   Run a "Delta" or final sync to catch any emails that arrived in Outlook while you were changing the MX records.
+
+---
+
+## Data Loss Prevention Checklist (The "Safety Net")
+
+Use this checklist to supervise the migration and ensure nothing gets left behind.
+
+### Phase A: Before You Start (Pre-Flight)
+*   [ ] **The "Storage Trap" Audit**: (As mentioned above) Confirm NO user > 30GB total.
+*   [ ] **Item Count Snapshot**: 
+    *   Pick 3-5 "VIP" users (CEO, Sales Head).
+    *   Go to their Outlook > Right-click "Inbox" > Properties > **Show total number of items**.
+    *   Write this number down. You will compare it with Gmail later.
+*   [ ] **Disable "Litigation Hold"**: If you have any retention policies in O365 that "lock" data, they might slow down or block migration.
+*   [ ] **Communicate**: Tell users: *"Do not move or reorganize folders during the migration week."*
+
+### Phase B: During Migration (In-Flight)
+*   [ ] **Monitor the "Skipped" Count**: 
+    *   In the Google Migration dashboard, look for a column called "Skipped items". 
+    *   **Goal**: 0 skipped items. 
+    *   *Common Cause*: oversized attachments (>25MB) or corrupted calendar entries.
+*   [ ] **Watch for Throttling**: 
+    *   If speed drops to near zero, Microsoft might be throttling the connection. 
+    *   *Fix*: Pause for 12 hours and resume.
+*   [ ] **Do NOT Change Passwords**: Ensure no one changes their O365 password during this week.
+
+### Phase C: Verification (Post-Flight)
+*   [ ] **The "Sent Items" Check**: 
+    *   This is the #1 place data is lost. Open a VIP's Gmail > "Sent". 
+    *   Verify emails from last week and last year are there.
+*   [ ] **Calendar Timezones**: 
+    *   Check a recurring meeting (e.g., "Weekly Standup"). Ensure it hasn't shifted by an hour due to timezone confusion.
+*   [ ] **The "Delta" Run**: 
+    *   **Crucial**: After you switch the MX records (Phase 3), you **MUST** run the migration tool one last time ("Delta Sync"). 
+    *   This catches the emails that arrived during the 1-2 hours you were switching settings.
+
+### Phase D: The Ultimate Backup
+*   [ ] **The 30-Day Rule**: 
+    *   **DO NOT CANCEL** your Microsoft 365 subscription immediately.
+    *   Remove the licenses if you want to save money, but keep the account active or convert mailboxes to "Shared Mailboxes" (which are free in O365 and preserve data).
+    *   Keep the O365 access for **30 days** as a read-only archive.
+
+---
+
+## Phase 4: Post-Migration & End User Guide
+
+### For the End User (Non-Technical)
+**Subject: Welcome to your new Inbox!**
+
+Hi Team,
+
+We have successfully moved our email system to Google Workspace. Here is what you need to know:
+
+*   **Where is my mail?**
+    *   Go to [gmail.com](https://gmail.com) and log in with your work email.
+    *   Your old emails, folders (labels), and calendar events should already be there.
+*   **What about Outlook?**
+    *   Please **stop using Outlook** for work email. It will no longer receive new messages.
+    *   You can uninstall Outlook or keep it as a read-only archive for a few weeks.
+*   **Mobile Access**:
+    *   Download the **Gmail App** and **Google Calendar App** on your phone. Log in with your work credentials.
+*   **Slack**:
+    *   Your Slack login remains unchanged. You can now integrate Google Drive with Slack for easier file sharing.
+
+### Frequently Asked Questions
+*   **Did I lose any data?** No, all data was copied. If you can't find an email, check the "All Mail" folder or use the search bar.
+*   **Where are my folders?** In Gmail, folders are called "Labels". They work similarly but are more powerful (an email can have multiple labels).
+
+---
+
+## Technical Appendix: Risks & Mitigations
+
+| Risk | Probability | Mitigation |
+| :--- | :--- | :--- |
+| **Downtime** | Low | Perform MX record switch on Friday evening. |
+| **Missing Emails** | Low | Run a final "Delta Sync" 24 hours after cutover. |
+| **Calendar Glitches** | Medium | Recurring meetings sometimes detach from the series. Users should double-check critical recurring meetings. |
+| **Contacts Sync** | Low | If contacts fail, users can export CSV from Outlook and import to Google Contacts manually. |
+
+**Note on OneDrive**: This guide covers **Email, Calendar, and Contacts**. Migrating files from OneDrive/SharePoint to Google Drive requires a different tool (like *Google Workspace Migrate* or *Movebot*) and is a separate project.
+
+---
+
+## Folders, Labels & Rules (Important!)
+
+One of the biggest changes for users is moving from "Folders" to "Labels".
+
+### 1. Folders -> Labels (Automatic)
+*   **Good News**: The migration tool **automatically** converts your Outlook folders into Gmail Labels.
+*   **Structure**: If you had a folder structure like `Projects > 2024 > Marketing`, Gmail will create a label named `Projects/2024/Marketing`.
+*   **Emails**: All emails inside those folders will be tagged with that label automatically. You won't lose your organization.
+
+### 2. Outlook Rules -> Gmail Filters (Manual)
+*   **Bad News**: Outlook "Rules" (e.g., "If email is from @client.com, move to Client folder") **DO NOT migrate**.
+*   **Action Required**: Users must recreate these rules in Gmail (called "Filters").
+*   **How to do it**:
+    1.  Open Gmail.
+    2.  Click the **Show search options** icon (sliders) in the search bar.
+    3.  Enter criteria (e.g., From: `@client.com`).
+    4.  Click **Create filter**.
+    5.  Choose action: **Apply the label** -> Choose "Client".
+    *   *Tip*: You can check "Also apply filter to matching conversations" to organize old emails instantly.

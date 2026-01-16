@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nayara Energy | Petrol Pump Analytics Dashboard</title>
+    <meta name="description"
+        content="Real-time video analytics dashboard for Nayara Energy petrol pumps - Powered by InvEye">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="16" r="14" fill="#1E40AF" />
+                        <path d="M16 8L22 16L16 24L10 16L16 8Z" fill="white" />
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="brand-name">NAYARA</span>
+                    <span class="brand-tagline">Admin Side</span>
+                </div>
+            </div>
+            <div class="header-subtitle">
+                Video Analytics · 72000+ Pumps · Real-Time AI
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-avatar">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                        clip-rule="evenodd" />
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="#">← Back</a>
+        <span class="separator">·</span>
+        <span>NE-RO-1001 / ANPR</span>
+        <span class="separator">·</span>
+        <span>Captured Vehicles</span>
+        <button class="btn-anpr">ANPR Vehicles</button>
+    </div>
+
+    <!-- Station Info -->
+    <div class="station-info">
+        <h1 class="station-name">NE-MU-RO-1001</h1>
+        <span class="station-location">Pump 27 - Viman Nagar | Today - Local time 09:41</span>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Active Cameras</div>
+            <div class="stat-value" id="stat-cameras">18</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Staff On-Site</div>
+            <div class="stat-value" id="stat-staff">7</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Cars in Queue</div>
+            <div class="stat-value" id="stat-queue">3</div>
+        </div>
+        <div class="stat-card stat-alert">
+            <div class="stat-label">Fire Alerts(24h)</div>
+            <div class="stat-value" id="stat-fire">1</div>
+        </div>
+        <div class="stat-card stat-warning">
+            <div class="stat-label">SOP Violations(24h)</div>
+            <div class="stat-value" id="stat-sop">4</div>
+        </div>
+        <div class="stat-card stat-danger">
+            <div class="stat-label">Active Alerts</div>
+            <div class="stat-value" id="stat-alerts">2</div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="main-grid">
+        <!-- Live CCTV Section -->
+        <div class="card cctv-card">
+            <div class="card-header">
+                <span class="live-indicator"></span>
+                <h2>Live CCTV</h2>
+            </div>
+            <div class="cctv-grid" id="cctv-grid">
+                <div class="cctv-feed" data-camera="1">
+                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop"
+                        alt="Camera 1">
+                    <div class="camera-label">Pump Bay 1</div>
+                </div>
+                <div class="cctv-feed" data-camera="2">
+                    <img src="https://images.unsplash.com/photo-1545459720-aac8509eb02c?w=400&h=300&fit=crop"
+                        alt="Camera 2">
+                    <div class="camera-label">Entrance</div>
+                </div>
+                <div class="cctv-feed" data-camera="3">
+                    <img src="https://images.unsplash.com/photo-1567449303183-ae0d6ed1498e?w=400&h=300&fit=crop"
+                        alt="Camera 3">
+                    <div class="camera-label">Pump Bay 2</div>
+                </div>
+                <div class="cctv-feed featured" data-camera="4">
+                    <img src="https://images.unsplash.com/photo-1531685250784-7569952593d2?w=400&h=300&fit=crop"
+                        alt="Camera 4">
+                    <div class="camera-label">Forecourt Overview</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Alerts -->
+        <div class="card alerts-card">
+            <div class="card-header">
+                <h2>Recent Alerts</h2>
+            </div>
+            <div class="alerts-list" id="alerts-list">
+                <div class="alert-item alert-uniform">
+                    <div class="alert-icon">👔</div>
+                    <div class="alert-content">
+                        <span class="alert-message">Uniform is currently unaccounted for at Bay 2.</span>
+                        <span class="alert-meta">Today 8:30 AM • Pump 2</span>
+                    </div>
+                </div>
+                <div class="alert-item alert-fire">
+                    <div class="alert-icon">🔥</div>
+                    <div class="alert-content">
+                        <span class="alert-message">Fire extinguisher is missing at Pump #3.</span>
+                        <span class="alert-meta">Today 11:45 AM • Pump 3</span>
+                    </div>
+                </div>
+                <div class="alert-item alert-queue">
+                    <div class="alert-icon">🚗</div>
+                    <div class="alert-content">
+                        <span class="alert-message">There are five vehicles queued at Queue 1.</span>
+                        <span class="alert-meta">Today 6:30 PM • Pump 5</span>
+                    </div>
+                </div>
+                <div class="alert-item alert-theft">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        <span class="alert-message">A theft has occurred here.</span>
+                        <span class="alert-meta">Today 9:15 AM • Pump 4</span>
+                    </div>
+                </div>
+                <div class="alert-item alert-tank">
+                    <div class="alert-icon">⛽</div>
+                    <div class="alert-content">
+                        <span class="alert-message">Tank 1 is depleted.</span>
+                        <span class="alert-meta">Today 2:45 PM • Pump 1</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-grid">
+        <div class="card chart-card">
+            <div class="card-header">
+                <h2>Incidents by Category (last 30 days)</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+        <div class="card chart-card">
+            <div class="card-header">
+                <h2>Incidents by Category (last 30 days)</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="incidentLineChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footfall Chart -->
+    <div class="card footfall-card">
+        <div class="card-header">
+            <h2>Hourly Footfall (People vs Vehicles)</h2>
+        </div>
+        <div class="chart-container-wide">
+            <canvas id="footfallChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span>Powered by InvEye × CloudTuner.ai</span>
+        <span>© 2024 Nayara Energy. All rights reserved.</span>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

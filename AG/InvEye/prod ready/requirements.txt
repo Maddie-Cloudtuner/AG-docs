@@ -1,0 +1,36 @@
+# Requirements for InvEye Production Pipeline
+# ============================================
+# Install with: pip install -r requirements.txt
+
+# Core Dependencies
+ultralytics>=8.3.0          # YOLO models
+opencv-python>=4.8.0        # Video processing
+numpy>=1.24.0               # Array operations
+PyYAML>=6.0                 # Config parsing
+
+# Face Recognition
+insightface>=0.7.3          # ArcFace/buffalo models
+onnxruntime-gpu>=1.16.0     # ONNX runtime with GPU
+
+# Optional: For API server
+# fastapi>=0.104.0
+# uvicorn>=0.24.0
+# python-multipart>=0.0.6
+
+# Optional: For MQTT alerts
+# paho-mqtt>=1.6.1
+
+# Optional: For webhook alerts
+# requests>=2.31.0
+
+# Optional: For tracking
+# supervision>=0.16.0
+
+# Jetson-specific (install separately on Jetson)
+# tensorrt (pre-installed on JetPack)
+# pycuda (for custom CUDA operations)
+
+# Development
+# pytest>=7.4.0
+# black>=23.0.0
+# flake8>=6.0.0

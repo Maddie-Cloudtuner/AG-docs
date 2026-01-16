@@ -1,0 +1,199 @@
+# NAYARA FUEL STATION KPI - SEVERITY CLASSIFICATION
+
+Quick Reference Guide for AI-powered CCTV Analytics
+
+---
+
+## 🔥 VERY CRITICAL KPIs (RED CATEGORY)
+**Impact**: Human safety, legal compliance, fuel integrity, major financial/reputational damage
+**Response Time**: IMMEDIATE (< 1 min)
+**Auto-Alert**: Yes (Station Manager + Regional Manager + Security)
+
+### 1️⃣ Safety & Compliance  
+✓ Fire extinguisher availability, pressure & expiry compliance  
+✓ Emergency shutdown & fire assembly compliance  
+✓ Electrical panel safety (open wires, short circuit risks)  
+✓ PPE non-compliance for critical staff (near DU, tanker unloading)  
+✓ No smoking violations  
+✓ Emergency exit blocked  
+✓ Mock drill not conducted for > 90 days  
+✓ Tanker unloading SOP violation  
+✓ Static discharge procedure not followed  
+
+### 2️⃣ Fuel Quality & Quantity  
+✓ Density mismatch beyond tolerance  
+✓ Wrong density entry / missing density register  
+✓ Tank dip variance beyond allowable limit  
+✓ Calibration failure of dispensing units  
+✓ DU manipulation or tampering  
+✓ Auto-cut manipulation  
+✓ Nozzle fraud / short delivery  
+✓ Filter paper test failure  
+✓ Tank contamination risk (water in tank)  
+
+### 3️⃣ Equipment & Asset  
+✓ CCTV uptime below safety threshold (< 70%)  
+✓ DVR not recording / data missing (legal violation)  
+✓ ATG malfunction (no real-time tank status)  
+✓ DU malfunction leading to wrong delivery  
+✓ Air pressure machine failure (critical for safety)  
+
+### 4️⃣ Fraud Prevention  
+✓ Any evidence of nozzle or DU tampering  
+✓ Unauthorized fuel diversion  
+✓ Short billing / double billing  
+✓ Fuel theft from tank, pipeline  
+✓ Unauthorized payments / POS failure causing manipulation  
+
+### 5️⃣ Regulatory & Licensing  
+✓ Fire NOC expired  
+✓ PESO license expired  
+✓ Pollution control certificate expired  
+✓ Weights & Measures certificate expired  
+✓ Staff without police verification (serious compliance breach)  
+
+**Total RED KPIs: 32**
+
+---
+
+## ⚠️ CRITICAL KPIs (ORANGE CATEGORY)
+**Impact**: Operational errors, customer dissatisfaction, internal audit issues, moderate safety risk
+**Response Time**: < 15 minutes
+**Auto-Alert**: Yes (Station Manager)
+
+### 1️⃣ Forecourt & Operations  
+✓ Queue mismanagement  
+✓ Staff uniform/grooming non-compliance  
+✓ Vehicle stop line violation  
+✓ Housekeeping not maintained  
+✓ Water/Restroom cleanliness failure  
+✓ Unauthorized personnel inside dispensing area  
+✓ Spill management missing (without ignition source)  
+
+### 2️⃣ Customer Service  
+✓ Billing issues / wrong bill  
+✓ Delay in fueling operations  
+✓ Suggestive selling non-compliance  
+✓ Low customer satisfaction score (CSS)  
+✓ Slow resolution of complaints  
+
+### 3️⃣ Financial & Inventory  
+✓ Minor stock mismatch (within tolerance limits)  
+✓ Daily cash settlement deviation  
+✓ Price update delayed  
+✓ Inventory mismatch (lubricants, accessories)  
+✓ Credit sale approval delays  
+
+### 4️⃣ Equipment & Asset  
+✓ Generator not maintained  
+✓ Lighting not fully functional (canopy/periphery)  
+✓ POS machine downtime  
+✓ VRS malfunction (where applicable)  
+✓ Nozzle flow rate slightly below desired level  
+
+### 5️⃣ Documentation  
+✓ Daily checklist not updated  
+✓ Tanker unloading register incomplete  
+✓ Delay in audit closure  
+✓ Training log missing for 1–2 staff  
+✓ Biometric attendance mismatch  
+
+**Total ORANGE KPIs: 27**
+
+---
+
+## 🟡 MODERATE KPIs (YELLOW CATEGORY)
+**Impact**: General improvements, branding, routine compliance
+**Response Time**: < 4 hours
+**Auto-Alert**: Alert log only (daily summary)
+
+### 1️⃣ Housekeeping & Maintenance  
+✓ Forecourt cleanliness below standard  
+✓ Branding/Signage faded or dusty  
+✓ Incomplete plantation or green zone maintenance  
+✓ Trash overflow in bins  
+
+### 2️⃣ HR & Staff  
+✓ Grooming not fully up to standards  
+✓ Minor delay in shift handover  
+✓ Staff attrition trends  
+✓ Training refreshers pending  
+
+### 3️⃣ Environmental  
+✓ Minor STP deviations  
+✓ Rainwater harvesting maintenance overdue  
+✓ Plastic disposal compliance lapses (non-hazardous)  
+
+### 4️⃣ Documentation  
+✓ Logbook incomplete but not critical  
+✓ Missing minor signatures  
+✓ Reports delayed (non-safety related)  
+
+**Total YELLOW KPIs: 14**
+
+---
+
+## TOTAL KPIs: 73
+
+**Breakdown**:
+- 🔥 RED (VERY CRITICAL): 32 KPIs - 44%  
+- ⚠️ ORANGE (CRITICAL): 27 KPIs - 37%  
+- 🟡 YELLOW (MODERATE): 14 KPIs - 19%  
+
+---
+
+## DETECTION METHODS (AI/CCTV)
+
+**Computer Vision Models Required**:
+- PPE Detection (helmet, gloves, uniform, safety shoes)
+- Smoking Detection
+- Fire/Smoke Detection
+- Nozzle Tampering Detection (anomaly detection)
+- Queue Length Estimation
+- Occupancy Monitoring (restricted zones)
+- License Plate Recognition (tanker verification)
+- Spill Detection (liquid on ground)
+- Personnel Identification (unauthorized access)
+- Activity Recognition (tanker unloading procedures, handwashing)
+
+**Integration Requirements**:
+- ATG System API (tank levels, density, temperature)
+- DU Calibration Logs (fuel dispensing accuracy)
+- POS System (billing, payment data)
+- Certificate Management System (license expiry tracking)
+- Biometric Attendance System
+- Fire Panel Integration (alarm status)
+
+---
+
+## ALERT ESCALATION MATRIX
+
+| Severity | Station Manager | Regional Manager | Safety Team | Corporate |
+|:---------|:----------------|:-----------------|:------------|:----------|
+| 🔥 RED   | Instant SMS + App | Instant SMS + App | Instant SMS | Email Digest |
+| ⚠️ ORANGE | App Push + Dashboard | Daily Summary | Daily Summary | Weekly Report |
+| 🟡 YELLOW | Dashboard Alert | Weekly Report | - | Monthly Report |
+
+---
+
+## NEXT STEPS
+
+📄 **Detailed Documentation**: See the following files in this folder
+1. `NAYARA_KPI_SEVERITY_CLASSIFICATION.md` - Complete KPI breakdown with detection methods
+2. `NAYARA_WORKFLOW.md` - End-to-end workflow from CCTV to dashboard
+3. `NAYARA_ARCHITECTURE_DIAGRAM.md` - System architecture and integration diagrams
+
+📊 **Implementation Roadmap**:
+- Phase 1: Deploy edge AI devices (NVIDIA Jetson) at fuel station
+- Phase 2: Configure camera zones and AI models
+- Phase 3: Integrate with ATG, POS, and fuel management systems
+- Phase 4: Deploy cloudtuner.ai dashboard for station managers
+- Phase 5: Train staff and go live
+
+---
+
+**System**: InvEye (Nayara Edition)  
+**Edge Processing**: maigic.ai  
+**Dashboard**: cloudtuner.ai  
+**Version**: 1.0  
+**Last Updated**: December 8, 2024

@@ -1,0 +1,89 @@
+# InvEye Petrol Pump Configuration - Plug & Play
+# ================================================
+
+# ============================================
+# STEP 1: Configure your cameras here
+# ============================================
+cameras:
+  - id: "pump_entrance"
+    source: "rtsp://admin:password@192.168.1.101:554/stream1"
+    fps_limit: 15
+    zone: "entrance"
+    
+  - id: "pump_area_1"
+    source: "rtsp://admin:password@192.168.1.102:554/stream1"
+    fps_limit: 15
+    zone: "forecourt"
+    
+  - id: "pump_area_2"
+    source: "rtsp://admin:password@192.168.1.103:554/stream1"
+    fps_limit: 15
+    zone: "forecourt"
+    
+  - id: "cash_counter"
+    source: "rtsp://admin:password@192.168.1.104:554/stream1"
+    fps_limit: 15
+    zone: "office"
+
+# ============================================
+# STEP 2: Model paths (auto-downloaded if missing)
+# ============================================
+face_model: "models/yolov11n-face.pt"
+object_model: "models/yolov11n.pt"
+recognition_model: "buffalo_sc"
+
+# ============================================
+# STEP 3: Detection settings
+# ============================================
+# How often to run detection (every N frames)
+face_detection_interval: 1      # Every frame
+object_detection_interval: 1    # Every frame
+recognition_interval: 3         # Every 3rd frame (saves GPU)
+
+# Confidence thresholds
+face_confidence: 0.5
+object_confidence: 0.5
+recognition_threshold: 0.5      # For matching faces
+
+# ============================================
+# STEP 4: Output configuration
+# ============================================
+json_output: "analytics_output.json"
+analytics_interval: 5           # Update JSON every 5 seconds
+incidents_dir: "incidents"      # Save incident frames here
+
+# ============================================
+# KPI Alert Configuration
+# ============================================
+# Which detections trigger alerts
+alert_on:
+  - fire
+  - smoke
+  - fight
+  - violence
+  - phone
+  - cigarette
+  - child
+
+# Alert unknown faces (not in employee database)
+alert_unknown_faces: true
+
+# ============================================
+# Face Database
+# ============================================
+face_database: "face_database"
+revisit_window_hours: 24        # Consider "returning" after this time
+
+# ============================================
+# Logging
+# ============================================
+log_level: "INFO"
+log_file: "logs/petrol_pump.log"
+
+# ============================================
+# API (future feature)
+# ============================================
+api:
+  enabled: false
+  host: "0.0.0.0"
+  port: 8080

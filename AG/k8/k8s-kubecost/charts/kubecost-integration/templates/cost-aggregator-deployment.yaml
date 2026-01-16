@@ -1,0 +1,134 @@
+{{- if .Values.costAggregator.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.costAggregator.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.costAggregator.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/component: aggregator
+    app.kubernetes.io/part-of: kubecost-integration
+spec:
+  replicas: {{ .Values.costAggregator.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.costAggregator.name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.costAggregator.name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: aggregator
+    spec:
+      serviceAccountName: {{ include "kubecost-integration.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Values.costAggregator.name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+        image: "{{ .Values.global.imageRegistry }}/{{ .Values.costAggregator.image.repository }}:{{ .Values.costAggregator.image.tag | default .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.costAggregator.image.pullPolicy | default .Values.global.imagePullPolicy }}
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: CLOUDTUNER_INFLUXDB_URL
+          value: {{ .Values.kubecost.cloudtuner.storage.influxdb | quote }}
+        - name: CLOUDTUNER_CLICKHOUSE_URL
+          value: {{ .Values.kubecost.cloudtuner.storage.clickhouse | quote }}
+        - name: AGGREGATION_WINDOWS
+          value: {{ .Values.costAggregator.config.aggregationWindows | toJson | quote }}
+        - name: SPIKE_THRESHOLD
+          value: {{ .Values.costAggregator.config.costThresholds.spike | quote }}
+        - name: ANOMALY_THRESHOLD
+          value: {{ .Values.costAggregator.config.costThresholds.anomaly | quote }}
+        - name: LOG_LEVEL
+          value: "INFO"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          {{- toYaml .Values.costAggregator.resources | nindent 10 }}
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: var-run
+          mountPath: /var/run
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: var-run
+        emptyDir: {}
+{{- end }}
+---
+{{- if .Values.costAggregator.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.costAggregator.name }}-scheduler
+  labels:
+    app.kubernetes.io/name: {{ .Values.costAggregator.name }}-scheduler
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/component: aggregator-cron
+    app.kubernetes.io/part-of: kubecost-integration
+spec:
+  schedule: {{ .Values.costAggregator.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: {{ .Values.costAggregator.name }}-scheduler
+            app.kubernetes.io/instance: {{ .Release.Name }}
+            app.kubernetes.io/component: aggregator-cron
+        spec:
+          serviceAccountName: {{ include "kubecost-integration.serviceAccountName" . }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
+          containers:
+          - name: cost-aggregator
+            securityContext:
+              {{- toYaml .Values.securityContext | nindent 14 }}
+            image: "{{ .Values.global.imageRegistry }}/{{ .Values.costAggregator.image.repository }}:{{ .Values.costAggregator.image.tag | default .Values.global.imageTag }}"
+            imagePullPolicy: {{ .Values.costAggregator.image.pullPolicy | default .Values.global.imagePullPolicy }}
+            command: ["python", "aggregate_costs.py"]
+            env:
+            - name: CLOUDTUNER_INFLUXDB_URL
+              value: {{ .Values.kubecost.cloudtuner.storage.influxdb | quote }}
+            - name: CLOUDTUNER_CLICKHOUSE_URL
+              value: {{ .Values.kubecost.cloudtuner.storage.clickhouse | quote }}
+            - name: AGGREGATION_WINDOWS
+              value: {{ .Values.costAggregator.config.aggregationWindows | toJson | quote }}
+            - name: SPIKE_THRESHOLD
+              value: {{ .Values.costAggregator.config.costThresholds.spike | quote }}
+            - name: ANOMALY_THRESHOLD
+              value: {{ .Values.costAggregator.config.costThresholds.anomaly | quote }}
+            - name: LOG_LEVEL
+              value: "INFO"
+            resources:
+              {{- toYaml .Values.costAggregator.resources | nindent 14 }}
+            volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          volumes:
+          - name: tmp
+            emptyDir: {}
+          restartPolicy: OnFailure
+{{- end }}

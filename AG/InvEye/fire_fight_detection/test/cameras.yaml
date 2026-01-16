@@ -1,0 +1,162 @@
+# InvEye Multi-Camera Configuration
+# Edit this file with your camera RTSP URLs and settings
+
+device_id: inveye-orin-001
+
+# ============================================================
+# CAMERA SOURCES (4 cameras for office monitoring)
+# ============================================================
+cameras:
+  - id: cam_entrance
+    name: Entrance Camera
+    rtsp_url: rtsp://admin:password@192.168.1.101:554/stream1
+    type: indoor
+    location: Main entrance
+    
+  - id: cam_office1
+    name: Office Area 1
+    rtsp_url: rtsp://admin:password@192.168.1.102:554/stream1
+    type: indoor
+    location: Open office space
+    
+  - id: cam_office2
+    name: Office Area 2
+    rtsp_url: rtsp://admin:password@192.168.1.103:554/stream1
+    type: indoor
+    location: Conference/meeting area
+    
+  - id: cam_parking
+    name: Parking Area
+    rtsp_url: rtsp://admin:password@192.168.1.104:554/stream1
+    type: outdoor
+    location: Parking lot
+
+# ============================================================
+# YOLO11 MODEL CONFIGURATION
+# ============================================================
+model:
+  # Path to TensorRT engine file (exported from YOLO11)
+  engine_path: yolo11s_fire_fight.engine
+  
+  # Input dimensions
+  width: 640
+  height: 640
+  
+  # Batch size (match number of cameras)
+  batch_size: 4
+  
+  # Detection threshold
+  confidence_threshold: 0.5
+  nms_threshold: 0.45
+
+# DeepStream nvinfer config file path
+nvinfer_config: config_infer_yolo11.txt
+
+# ============================================================
+# DETECTION CLASSES
+# ============================================================
+# These should match your trained model's class IDs
+detection_classes:
+  # Standard COCO classes
+  0: person
+  1: bicycle
+  2: car
+  3: motorcycle
+  5: bus
+  7: truck
+  
+  # Custom fire/fight classes (added during fine-tuning)
+  80: fire
+  81: smoke
+  82: fighting
+
+# Classes that trigger alerts
+alert_classes:
+  - fire
+  - smoke
+  - fighting
+
+# ============================================================
+# OBJECT TRACKING
+# ============================================================
+tracking:
+  enabled: true
+  tracker_type: NvDCF  # Options: NvSORT, NvDCF, NvDeepSORT
+  max_age: 30           # Frames before track is removed
+  min_hits: 3           # Minimum detections before tracking
+
+# ============================================================
+# CLOUD INTEGRATION
+# ============================================================
+# Upload detection metadata (NOT video) to cloud
+upload_interval: 90  # Every 90 frames (~3 seconds at 30fps)
+
+cloud_api:
+  url: https://api.cloudtuner.ai/v1/inveye/detections
+  key: your-api-key-here
+  
+  # Backup local logging
+  local_log: detection_log.json
+  log_rotation: daily
+
+# ============================================================
+# ALERT CONFIGURATION
+# ============================================================
+alerts:
+  # Minimum seconds between same alert type
+  alert_cooldown: 30
+  
+  # Confidence threshold for alerts
+  min_confidence: 0.6
+  
+  # Notification endpoints
+  webhook_url: https://hooks.slack.com/your-webhook
+  
+  # Email notifications (optional)
+  email:
+    enabled: false
+    smtp_server: smtp.gmail.com
+    smtp_port: 587
+    from: alerts@inveye.ai
+    to:
+      - admin@yourcompany.com
+
+# ============================================================
+# DISPLAY/OUTPUT OPTIONS
+# ============================================================
+display:
+  # Show live video on connected monitor
+  enabled: true
+  
+  # Tiled display layout (2x2 for 4 cameras)
+  rows: 2
+  columns: 2
+  width: 1920
+  height: 1080
+  
+  # Show OSD (on-screen display)
+  show_labels: true
+  show_fps: true
+  show_tracking: true
+
+# RTSP output stream (optional - view remotely)
+rtsp_output:
+  enabled: false
+  port: 8554
+  path: /inveye
+
+# ============================================================
+# PERFORMANCE TUNING
+# ============================================================
+performance:
+  # GPU memory allocation
+  gpu_id: 0
+  
+  # Batch processing timeout (microseconds)
+  batched_push_timeout: 40000
+  
+  # Frame rate control (0 = max FPS)
+  max_fps: 30
+  
+  # Enable FP16 inference (faster on Jetson)
+  fp16: true

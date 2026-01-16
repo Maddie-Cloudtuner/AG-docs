@@ -1,0 +1,11 @@
+name,resource_type,service_name,region,cloud_resource_id,name_has_prod,name_has_dev,name_has_staging,name_has_test,name_has_api,name_has_ml,name_has_data,name_length,name_word_count,label
+,Volume,AmazonEC2,ap-south-1,vol-009b1bf0f4baedaf3,0,0,0,0,0,0,0,0,0,EC2-BASTION
+PROD-TRULOG-APIS-APPLICATION-1ST,Instance,AmazonEC2,ap-south-1,i-075a8ce63cb15d4e9,1,0,0,0,1,0,0,32,5,PROD-EMPTRA-APIS
+PROD-INVINCIBLE-OCEAN-WEB-NEW,Instance,AmazonEC2,ap-south-1,i-0c5701d433e9edea5,1,0,0,0,0,0,0,29,5,PROD-INVINCIBLE-OCEAN-WEB-NEW
+EC2-BASTION,Instance,,ap-south-1,i-00ba4c416a01fc2cf,0,0,0,0,0,0,0,11,2,EC2-BASTION
+EC2-BASTION-BACKUP,Instance,,ap-south-1,i-08d5b023503e9d64c,0,0,0,0,0,0,0,18,3,EC2-BASTION
+EC2-BASTION,Instance,,ap-south-1,i-00ba4c416a01fc2cf,0,0,0,0,0,0,0,11,2,EC2-BASTION
+EC2-BASTION-BACKUP,Instance,,ap-south-1,i-08d5b023503e9d64c,0,0,0,0,0,0,0,18,3,EC2-BASTION
+PROD-TRULOG-APIS-APPLICATION-1ST,Instance,AmazonEC2,ap-south-1,i-075a8ce63cb15d4e9,1,0,0,0,1,0,0,32,5,PROD-EMPTRA-APIS
+PROD-INVINCIBLE-OCEAN-WEB-NEW,Instance,AmazonEC2,ap-south-1,i-0c5701d433e9edea5,1,0,0,0,0,0,0,29,5,PROD-INVINCIBLE-OCEAN-WEB-NEW
+,Volume,AmazonEC2,ap-south-1,vol-009b1bf0f4baedaf3,0,0,0,0,0,0,0,0,0,EC2-BASTION

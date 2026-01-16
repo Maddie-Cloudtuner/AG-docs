@@ -1,0 +1,60 @@
+{{- if and .Values.monitoring.enabled .Values.monitoring.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "kubecost-integration.fullname" . }}
+  {{- if .Values.monitoring.serviceMonitor.namespace }}
+  namespace: {{ .Values.monitoring.serviceMonitor.namespace }}
+  {{- end }}
+  labels:
+    {{- include "kubecost-integration.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "kubecost-integration.selectorLabels" . | nindent 6 }}
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+    scrapeTimeout: 10s
+{{- end }}
+
+---
+{{- if and .Values.monitoring.enabled .Values.monitoring.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "kubecost-integration.fullname" . }}
+  labels:
+    {{- include "kubecost-integration.labels" . | nindent 4 }}
+spec:
+  groups:
+  - name: kubecost-integration.rules
+    rules:
+    {{- range .Values.monitoring.prometheusRule.rules }}
+    - alert: {{ .alert }}
+      expr: {{ .expr }}
+      labels:
+        {{- toYaml .labels | nindent 8 }}
+      annotations:
+        {{- toYaml .annotations | nindent 8 }}
+    {{- end }}
+{{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kubecost-integration.fullname" . }}-config
+  labels:
+    {{- include "kubecost-integration.labels" . | nindent 4 }}
+data:
+  kubecost-config.yaml: |
+    {{- include "kubecost-integration.kubecostConfig" . | nindent 4 }}
+  storage-config.yaml: |
+    {{- include "kubecost-integration.storageConfig" . | nindent 4 }}
+  aggregation-config.yaml: |
+    windows: {{ .Values.costAggregator.config.aggregationWindows | toYaml | nindent 6 }}
+    thresholds:
+      spike: {{ .Values.costAggregator.config.costThresholds.spike }}
+      anomaly: {{ .Values.costAggregator.config.costThresholds.anomaly }}

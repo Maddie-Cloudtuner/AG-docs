@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Status | InvEye</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #F8FAFC;
+            color: #1E293B;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            padding: 0.5rem 1rem;
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            color: #475569;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #E2E8F0;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 1.5rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 1px solid #E2E8F0;
+        }
+
+        .stat-card h3 {
+            font-size: 0.75rem;
+            color: #64748B;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #22C55E;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .section-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .section-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .camera-list {
+            padding: 0.5rem;
+        }
+
+        .camera-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #E2E8F0;
+            gap: 1rem;
+        }
+
+        .camera-item:last-child {
+            border-bottom: none;
+        }
+
+        .camera-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #22C55E;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .camera-info {
+            flex: 1;
+        }
+
+        .camera-info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .camera-info p {
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        .camera-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        .camera-stats strong {
+            color: #1E293B;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: #DCFCE7;
+            color: #22C55E;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <a href="index.html" class="back-btn">← Back</a>
+        <h1 class="page-title">System Status</h1>
+    </header>
+
+    <main class="main-content">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Cameras Online</h3>
+                <div class="value">4/4</div>
+            </div>
+            <div class="stat-card">
+                <h3>Uptime</h3>
+                <div class="value">99.9%</div>
+            </div>
+            <div class="stat-card">
+                <h3>Response</h3>
+                <div class="value">45ms</div>
+            </div>
+            <div class="stat-card">
+                <h3>FPS</h3>
+                <div class="value">30</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2>Camera Health</h2>
+            </div>
+            <div class="camera-list">
+                <div class="camera-item">
+                    <div class="camera-status"></div>
+                    <div class="camera-info">
+                        <h4>CAFETERIA</h4>
+                        <p>192.168.1.101</p>
+                    </div>
+                    <div class="camera-stats"><span>Frames: <strong id="caf-frames">0</strong></span><span>Last:
+                            <strong>1s ago</strong></span></div>
+                    <span class="status-badge">HEALTHY</span>
+                </div>
+                <div class="camera-item">
+                    <div class="camera-status"></div>
+                    <div class="camera-info">
+                        <h4>EMPLOYEE AREA</h4>
+                        <p>192.168.1.102</p>
+                    </div>
+                    <div class="camera-stats"><span>Frames: <strong id="emp-frames">0</strong></span><span>Last:
+                            <strong>1s ago</strong></span></div>
+                    <span class="status-badge">HEALTHY</span>
+                </div>
+                <div class="camera-item">
+                    <div class="camera-status"></div>
+                    <div class="camera-info">
+                        <h4>RECEPTION</h4>
+                        <p>192.168.1.103</p>
+                    </div>
+                    <div class="camera-stats"><span>Frames: <strong id="rec-frames">0</strong></span><span>Last:
+                            <strong>2s ago</strong></span></div>
+                    <span class="status-badge">HEALTHY</span>
+                </div>
+                <div class="camera-item">
+                    <div class="camera-status"></div>
+                    <div class="camera-info">
+                        <h4>BOSS CABIN</h4>
+                        <p>192.168.1.104</p>
+                    </div>
+                    <div class="camera-stats"><span>Frames: <strong id="boss-frames">0</strong></span><span>Last:
+                            <strong>1s ago</strong></span></div>
+                    <span class="status-badge">HEALTHY</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const cameraStats = JSON.parse(localStorage.getItem('cameraStats') || '{}');
+        document.getElementById('caf-frames').textContent = cameraStats.CAFETERIA?.count || 0;
+        document.getElementById('emp-frames').textContent = cameraStats.EMPLOYEE_AREA?.count || 0;
+        document.getElementById('rec-frames').textContent = cameraStats.RECEPTION_AREA?.count || 0;
+        document.getElementById('boss-frames').textContent = cameraStats.BOSS_CABIN?.count || 0;
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+{
+    "name": "inveye-detection-dashboard",
+    "version": "2.0.0",
+    "description": "InvEye Detection Analytics Dashboard - Real-time CCTV monitoring powered by CloudTuner.ai",
+    "main": "index.html",
+    "scripts": {
+        "start": "npx serve .",
+        "dev": "npx serve . -l 3000"
+    },
+    "keywords": [
+        "inveye",
+        "detection",
+        "analytics",
+        "cctv",
+        "cloudtuner"
+    ],
+    "author": "Invincible Ocean",
+    "license": "MIT"
+}

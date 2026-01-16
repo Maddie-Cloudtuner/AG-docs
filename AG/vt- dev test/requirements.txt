@@ -1,0 +1,21 @@
+# Virtual Tagging ML Inference - Requirements
+# Install with: pip install -r requirements.txt
+
+# Database
+psycopg2-binary==2.9.9
+
+# Excel processing
+pandas==2.1.4
+openpyxl==3.1.2
+
+# Data validation
+python-dateutil==2.8.2
+
+# Configuration
+python-dotenv==1.0.0
+
+# Testing
+pytest==7.4.3
+
+# Logging
+colorlog==6.8.0

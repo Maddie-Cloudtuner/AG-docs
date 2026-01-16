@@ -1,0 +1,85 @@
+KPI_ID,Industry,KPI_Name,Category,Description,Criticality,Threshold,Compliance_Standard,Why_This_Matters,Reference_Link
+
+RET001,Retail,Shoplifting Concealment,Theft Prevention,Person hiding merchandise on body,CRITICAL,Any detection,LP standards,1.4% shrink from external theft,https://nrf.com/research/national-retail-security-survey
+RET002,Retail,Organized Retail Crime,Theft Prevention,Coordinated group theft,CRITICAL,Pattern detected,LP standards,Average ORC costs $7200 per incident,https://orcaindustry.com
+RET003,Retail,Cart Push-Out,Theft Prevention,Full cart exiting without payment,CRITICAL,Unpaid exit,LP standards,Single incident $500+ loss,https://losspreventionmedia.com
+RET004,Retail,Sweethearting,Internal Theft,Cashier passing items unscanned,HIGH,Skip detected,Internal policy,28% shrink from internal theft,https://lpportal.com
+RET005,Retail,Till Dipping,Internal Theft,Unauthorized cash drawer access,CRITICAL,Drawer without sale,Internal policy,Cash handling fraud,https://retailfraud.com
+RET006,Retail,Age Verification Alcohol,Legal Compliance,ID check for liquor sale,CRITICAL,Unverified sale,State liquor laws,License revocation and fines,https://ttb.gov
+RET007,Retail,Age Verification Tobacco,Legal Compliance,ID check for tobacco,CRITICAL,Unverified sale,FDA tobacco rules,$11000 fine per violation,https://fda.gov/tobacco
+RET008,Retail,Pharmacy Security,Controlled Substance,Unauthorized pharmacy access,CRITICAL,Unauthorized entry,DEA regulations,Federal crime for diversion,https://deadiversion.usdoj.gov
+RET009,Retail,Customer Slip Fall,Liability,Customer fall incident,CRITICAL,Any fall,Liability law,Average lawsuit $30k-50k,https://osha.gov
+RET010,Retail,Fitting Room Count,Inventory Control,Items in vs out mismatch,HIGH,Mismatch detected,Store policy,High-theft location,https://retaildive.com
+RET011,Retail,Checkout Queue,Customer Experience,Excessive wait time,LOW,>10 min wait,Service SLA,7% abandon per minute,https://retailtouchpoints.com
+RET012,Retail,Shelf Gap Detection,Inventory,Empty shelf space visible,LOW,Gap detected,Merchandising,Lost sales opportunity,https://retailnext.net
+RET013,Retail,Cold Case Monitoring,Food Safety,Refrigerator door left open,MEDIUM,>2 min open,Food safety,Spoilage and energy waste,https://fda.gov/food
+RET014,Retail,Flash Mob Entry,Security,Sudden coordinated group entry,CRITICAL,Influx detected,Emergency response,ORC indicator,https://chainstoreage.com
+RET015,Retail,After-Hours Entry,Security,Entry after store closing,HIGH,Any entry,Store security,Prime internal theft time,https://asisonline.org
+RET016,Retail,Aisle Blockage,Safety/ADA,Pathway obstructed,MEDIUM,Any blockage,ADA compliance,Wheelchair access required,https://ada.gov
+RET017,Retail,Product Tampering,Product Safety,Merchandise opened or damaged,HIGH,Tampering detected,Consumer safety,Liability issue,https://fda.gov
+RET018,Retail,Dwell Time Analytics,Customer Insight,Time in store sections,LOW,Analytics only,Business intel,No threshold pure metric,https://placer.ai
+RET019,Retail,Conversion Tracking,Customer Insight,Visitors vs purchasers,LOW,Below target,Sales targets,Store performance,https://retailnext.net
+RET020,Retail,Return Fraud Behavior,Fraud Prevention,Suspicious return patterns,MEDIUM,Pattern detected,Return policy,Fraudulent returns growing,https://appriss.com
+
+MFG001,Manufacturing,Machine Guard Missing,Machine Safety,Guard not in place during operation,CRITICAL,<100%,OSHA 1910.212,Amputation hazard,https://osha.gov/machine-guarding
+MFG002,Manufacturing,LOTO Not Applied,Energy Control,Lockout tagout not visible,CRITICAL,Any violation,OSHA 1910.147,Top 5 OSHA citation,https://osha.gov/lockout-tagout
+MFG003,Manufacturing,Forklift Speed,Material Handling,Forklift exceeding limit,HIGH,>Speed limit,OSHA trucks,85 deaths annually,https://osha.gov/powered-industrial-trucks
+MFG004,Manufacturing,Forklift Pedestrian,Material Handling,Close call with person,CRITICAL,Close proximity,OSHA trucks,Leading warehouse fatality,https://osha.gov/powered-industrial-trucks
+MFG005,Manufacturing,Crane Load Path,Overhead Operations,Person under load,CRITICAL,Any person,OSHA crane,Instant fatality risk,https://osha.gov/cranes-hoists
+MFG006,Manufacturing,Confined Space Attendant,Confined Space,Entry without attendant,CRITICAL,Entry without,OSHA 1910.146,Rescuers become victims,https://osha.gov/confined-spaces
+MFG007,Manufacturing,Fall Protection,Heights,No harness at elevation,CRITICAL,No harness >6ft,OSHA 1926.502,Falls are number one killer,https://osha.gov/fall-protection
+MFG008,Manufacturing,Chemical Spill,Environmental,Hazmat spill detected,HIGH,Any spill,EPA standards,Environmental and injury,https://epa.gov/emergency-response
+MFG009,Manufacturing,Chemical Spill Response,Environmental,Response time to containment,HIGH,>10 min,EPA SPCC,Reporting requirement,https://epa.gov/oil-spills-prevention
+MFG010,Manufacturing,Hot Work Fire Watch,Welding,No fire watch during welding,HIGH,Watch missing,Hot work permit,30% industrial fires,https://osha.gov/hotwork
+MFG011,Manufacturing,Arc Flash Zone,Electrical,In boundary without PPE,CRITICAL,Any exposure,NFPA 70E,Severe burns and death,https://nfpa.org/70e
+MFG012,Manufacturing,Compressed Gas Secured,Storage,Cylinders not chained,HIGH,Unsecured,OSHA 1910.101,Tip-over hazard,https://osha.gov/compressed-gas
+MFG013,Manufacturing,Line Stoppage,Production,Unexpected production stop,MEDIUM,>5 min,OEE targets,Thousands per hour cost,https://sme.org
+MFG014,Manufacturing,Quality Check Point,Quality,Inspection step skipped,MEDIUM,Any skip,ISO 9001,Recall prevention,https://iso.org/iso-9001
+MFG015,Manufacturing,Fatigue Operator,Alertness,Drowsiness in machinery operator,CRITICAL,Fatigue signs,Safety critical,70% more accidents,https://cdc.gov/niosh/topics/fatigue
+MFG016,Manufacturing,5S Compliance,Lean,Workspace organization,LOW,Score <7,Lean manufacturing,Accident and delay source,https://lean.org
+MFG017,Manufacturing,Noise Zone PPE,Hearing,Hearing protection not worn,MEDIUM,<100%,OSHA 1910.95,Hearing loss prevention,https://osha.gov/noise
+MFG018,Manufacturing,Respirable Dust PPE,Respiratory,Mask in dust areas,HIGH,<100%,OSHA 1910.134,Lung disease prevention,https://osha.gov/respiratory
+MFG019,Manufacturing,Housekeeping Hazard,Housekeeping,Cluttered or blocked pathways,MEDIUM,Any blockage,OSHA housekeeping,Trip and access hazard,https://osha.gov/housekeeping
+MFG020,Manufacturing,Tool Tethering,Tool Safety,Tools at height not secured,HIGH,Unsecured tools,Dropped object,Struck-by injuries,https://osha.gov/struck-by
+
+PET001,Petrol Pump,Smoking Forecourt,Ignition Prevention,Any smoking in fuel area,CRITICAL,Any detection,Petroleum regs,Explosion risk,https://nfpa.org/30a
+PET002,Petrol Pump,Mobile Phone Pump,Ignition Prevention,Phone use during fueling,HIGH,Any usage,Petroleum safety,Static ignition source,https://api.org/safety
+PET003,Petrol Pump,Engine Running,Ignition Prevention,Engine on during fuel,CRITICAL,Engine running,Fire codes,Exhaust and spark risk,https://pei.org
+PET004,Petrol Pump,Static Touch,Ignition Prevention,Vehicle touched before pump,MEDIUM,No touch,Safety advisory,Static discharge,https://pei.org/static-electricity
+PET005,Petrol Pump,Fuel Spill,Environmental,Any fuel spillage,CRITICAL,Any spill,EPA UST,Contamination and fire,https://epa.gov/ust
+PET006,Petrol Pump,Spill Response Time,Environmental,Time to cleanup start,HIGH,>3 min,EPA standards,Liability and compliance,https://epa.gov/ust
+PET007,Petrol Pump,Improper Container,Fire Safety,Non-approved fuel container,HIGH,Non-approved,Fire marshal,Static and spill risk,https://api.org/container-standards
+PET008,Petrol Pump,Overfill Detection,Spill Prevention,Tank overflow during fill,HIGH,Overflow,Spill prevention,Environmental damage,https://epa.gov/ust
+PET009,Petrol Pump,Child at Pump,Child Safety,Unsupervised child in forecourt,HIGH,Any detection,Safety guidelines,Hazardous area,https://safekids.org
+PET010,Petrol Pump,Child in Vehicle,Child Safety,Child alone in parked car,HIGH,Any detection,Child safety laws,Hot car risk,https://noheatstroke.org
+PET011,Petrol Pump,Emergency Shutoff Blocked,Emergency,E-stop not accessible,CRITICAL,Any obstruction,Fire codes,Seconds matter in fire,https://nfpa.org
+PET012,Petrol Pump,Fire Extinguisher Access,Emergency,Extinguisher blocked,HIGH,Any obstruction,Fire codes,Fire response ready,https://nfpa.org
+PET013,Petrol Pump,Drive-Off Detection,Loss Prevention,Vehicle leaving unpaid,HIGH,Any drive-off,Station policy,$50-100 per incident,https://petroretail.net
+PET014,Petrol Pump,Drive-Off Plate Capture,Loss Prevention,License plate of non-payer,HIGH,Capture failed,Evidence,Recovery depends on ID,https://petroretail.net
+PET015,Petrol Pump,Tanker Delivery Safety,Delivery,Proper unloading procedures,CRITICAL,Procedures violated,API standards,Major spill risk,https://api.org/delivery
+PET016,Petrol Pump,Tanker Grounding,Delivery,Ground wire connected,CRITICAL,Not grounded,Fire safety,Static during unload,https://pei.org
+PET017,Petrol Pump,Customer Altercation,Violence,Physical conflict at station,CRITICAL,Any detection,Safety response,24-hour operation risk,https://convenience.org
+PET018,Petrol Pump,Attendant Presence,Service,Staff in forecourt when required,MEDIUM,<Required,Service standards,Full-service and safety,https://convenience.org
+PET019,Petrol Pump,Queue Length,Operations,Vehicles waiting for pumps,LOW,>5 vehicles,Service metrics,Peak hour analysis,https://convenience.org
+PET020,Petrol Pump,LPG Area Access,Gas Safety,Unauthorized near LPG storage,HIGH,Any unauthorized,Gas safety,Explosion risk,https://lpgas.com
+
+EMP001,Employee,Attendance Mismatch,Time Theft,Physical entry vs digital punch,CRITICAL,<100% match,Labor law,7% payroll from time theft,https://dol.gov/agencies/whd
+EMP002,Employee,Early Departure,Time Theft,Leaving before shift end,HIGH,Any early exit,HR policy,Productivity loss,https://shrm.org
+EMP003,Employee,Extended Break,Time Theft,Break exceeding allowed time,MEDIUM,>Allowed + 5 min,HR policy,Common time abuse,https://dol.gov/agencies/whd/rest-periods
+EMP004,Employee,Workstation Absence,Productivity,Not at assigned station,MEDIUM,<85% presence,Work policy,Accountability measure,https://shrm.org
+EMP005,Employee,Unauthorized Area,Access Control,Entering restricted zone,CRITICAL,Any violation,Security policy,Data and theft risk,https://sans.org
+EMP006,Employee,Server Room Entry,IT Security,Any data center access,CRITICAL,All logged,Data security,Audit trail required,https://isaca.org
+EMP007,Employee,Badge Sharing,Credential Abuse,Same badge simultaneous locations,CRITICAL,Any simultaneous,Access policy,Stolen or shared,https://hidglobal.com
+EMP008,Employee,Tailgating Entry,Access Control,Following without scanning,HIGH,Any tailgate,Access policy,Access bypass,https://securitymagazine.com
+EMP009,Employee,Lone Worker Hazard Zone,Lone Worker,Solo in dangerous area,CRITICAL,Any detection,Lone worker regs,No help if injured,https://osha.gov/lone-workers
+EMP010,Employee,Lone Worker Duration,Lone Worker,Extended solo without check,HIGH,>30 min,Lone worker policy,Welfare monitoring,https://hse.gov.uk/lone-working
+EMP011,Employee,Fatigue Critical Role,Alertness,Drowsiness in key operator,CRITICAL,Fatigue detected,Safety critical,3x more accidents,https://cdc.gov/niosh/topics/fatigue
+EMP012,Employee,Driver Fatigue,Alertness,Drowsiness in fleet driver,CRITICAL,Fatigue detected,Fleet safety,Accident prevention,https://fmcsa.dot.gov
+EMP013,Employee,Visitor Without Escort,Visitor Control,Unaccompanied visitor,HIGH,Visitor alone,Security policy,Liability and access,https://asisonline.org
+EMP014,Employee,Visitor Badge Missing,Visitor Control,Visitor ID not visible,MEDIUM,Badge hidden,Visitor policy,Identification needed,https://asisonline.org
+EMP015,Employee,Smoking Wrong Area,Policy,Smoking outside designated zone,MEDIUM,Any violation,Smoke-free policy,Fire and policy,https://cdc.gov/tobacco
+EMP016,Employee,Uniform Non-Compliance,Dress Code,Wrong attire worn,LOW,<100%,Dress code,Brand standards,https://shrm.org
+EMP017,Employee,ID Badge Not Visible,Identity,Employee ID not displayed,MEDIUM,<100%,Security policy,Verification needed,https://asisonline.org
+EMP018,Employee,Workplace Violence,Violence,Physical aggression or threat,CRITICAL,Any detection,Violence policy,Legal duty to protect,https://osha.gov/workplace-violence
+EMP019,Employee,Property Removal,Asset Protection,Items leaving after hours,HIGH,Any removal,Asset policy,Internal theft window,https://asisonline.org
+EMP020,Employee,Contractor PPE,Contractor Safety,Outside worker safety gear,HIGH,<100%,Site safety,Same as employee,https://osha.gov

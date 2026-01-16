@@ -1,0 +1,281 @@
+{
+    "generated_at": "2024-12-17T16:00:00.000000",
+    "session_duration": "0:30:00",
+    "face_stats": {
+        "total_unique_faces": 45,
+        "returning_faces_today": 12,
+        "employees_present": 3,
+        "unknown_faces_today": 30,
+        "session_faces": 45
+    },
+    "faces": [
+        {
+            "face_id": "emp_001",
+            "first_seen": "2024-12-17T08:00:00",
+            "last_seen": "2024-12-17T16:00:00",
+            "visit_count": 1,
+            "is_employee": true,
+            "person_name": "Rajesh Kumar"
+        },
+        {
+            "face_id": "emp_002",
+            "first_seen": "2024-12-17T08:30:00",
+            "last_seen": "2024-12-17T15:45:00",
+            "visit_count": 1,
+            "is_employee": true,
+            "person_name": "Amit Singh"
+        },
+        {
+            "face_id": "vis_a1b2c3",
+            "first_seen": "2024-12-17T10:15:00",
+            "last_seen": "2024-12-17T10:18:00",
+            "visit_count": 1,
+            "is_employee": false,
+            "person_name": null
+        },
+        {
+            "face_id": "vis_d4e5f6",
+            "first_seen": "2024-12-17T09:00:00",
+            "last_seen": "2024-12-17T14:30:00",
+            "visit_count": 2,
+            "is_employee": false,
+            "person_name": null
+        }
+    ],
+    "kpi_summary": {
+        "today": {
+            "total": 8,
+            "smoking": 1,
+            "mobile_phone": 3,
+            "unknown_person": 4
+        },
+        "by_severity": {
+            "critical": 1,
+            "high": 3,
+            "medium": 4
+        },
+        "by_kpi": {
+            "smoking": 1,
+            "mobile_phone": 3,
+            "unknown_person": 4
+        },
+        "active_count": 0
+    },
+    "incidents": [
+        {
+            "id": "smoking_pump_area_1_1702809000",
+            "kpi_name": "smoking",
+            "severity": "critical",
+            "camera_id": "pump_area_1",
+            "timestamp": "2024-12-17T11:30:00",
+            "description": "Smoking in fuel area",
+            "confidence": 0.85,
+            "bbox": [
+                320,
+                180,
+                420,
+                380
+            ],
+            "frame_path": "incidents/smoking_pump_area_1_1702809000.jpg",
+            "resolved": true,
+            "resolved_at": "2024-12-17T11:32:00"
+        },
+        {
+            "id": "mobile_phone_pump_area_2_1702810800",
+            "kpi_name": "mobile_phone",
+            "severity": "high",
+            "camera_id": "pump_area_2",
+            "timestamp": "2024-12-17T12:00:00",
+            "description": "Phone use during fueling",
+            "confidence": 0.78,
+            "bbox": [
+                450,
+                200,
+                520,
+                350
+            ],
+            "frame_path": "incidents/mobile_phone_pump_area_2_1702810800.jpg",
+            "resolved": true,
+            "resolved_at": "2024-12-17T12:01:00"
+        },
+        {
+            "id": "unknown_person_cash_counter_1702815600",
+            "kpi_name": "unknown_person",
+            "severity": "medium",
+            "camera_id": "cash_counter",
+            "timestamp": "2024-12-17T13:20:00",
+            "description": "Unregistered person detected",
+            "confidence": 0.92,
+            "bbox": [
+                100,
+                150,
+                280,
+                450
+            ],
+            "frame_path": "incidents/unknown_person_cash_counter_1702815600.jpg",
+            "resolved": false,
+            "resolved_at": null
+        }
+    ],
+    "camera_stats": {
+        "pump_entrance": {
+            "frames_processed": 27000,
+            "faces_detected": 156,
+            "objects_detected": 890,
+            "incidents_today": 1,
+            "fps": 14.8,
+            "last_update": "2024-12-17T16:00:00"
+        },
+        "pump_area_1": {
+            "frames_processed": 27000,
+            "faces_detected": 234,
+            "objects_detected": 1250,
+            "incidents_today": 3,
+            "fps": 14.5,
+            "last_update": "2024-12-17T16:00:00"
+        },
+        "pump_area_2": {
+            "frames_processed": 27000,
+            "faces_detected": 198,
+            "objects_detected": 1100,
+            "incidents_today": 2,
+            "fps": 14.7,
+            "last_update": "2024-12-17T16:00:00"
+        },
+        "cash_counter": {
+            "frames_processed": 27000,
+            "faces_detected": 312,
+            "objects_detected": 450,
+            "incidents_today": 2,
+            "fps": 14.9,
+            "last_update": "2024-12-17T16:00:00"
+        }
+    },
+    "petrol_pump_kpis": {
+        "smoking": {
+            "count": 1,
+            "severity": "critical",
+            "last_occurrence": "2024-12-17T11:30:00"
+        },
+        "engine_running": {
+            "count": 0,
+            "severity": "critical",
+            "last_occurrence": null
+        },
+        "fuel_spill": {
+            "count": 0,
+            "severity": "critical",
+            "last_occurrence": null
+        },
+        "emergency_blocked": {
+            "count": 0,
+            "severity": "critical",
+            "last_occurrence": null
+        },
+        "tanker_safety": {
+            "count": 0,
+            "severity": "critical",
+            "last_occurrence": null
+        },
+        "tanker_grounding": {
+            "count": 0,
+            "severity": "critical",
+            "last_occurrence": null
+        },
+        "altercation": {
+            "count": 0,
+            "severity": "critical",
+            "last_occurrence": null
+        },
+        "fire": {
+            "count": 0,
+            "severity": "critical",
+            "last_occurrence": null
+        },
+        "mobile_phone": {
+            "count": 3,
+            "severity": "high",
+            "last_occurrence": "2024-12-17T14:15:00"
+        },
+        "spill_response": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "improper_container": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "overfill": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "child_at_pump": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "child_in_vehicle": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "extinguisher_blocked": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "drive_off": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "license_capture": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "lpg_access": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "smoke": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "fight": {
+            "count": 0,
+            "severity": "high",
+            "last_occurrence": null
+        },
+        "static_touch": {
+            "count": 0,
+            "severity": "medium",
+            "last_occurrence": null
+        },
+        "attendant_presence": {
+            "count": 0,
+            "severity": "medium",
+            "last_occurrence": null
+        },
+        "unknown_person": {
+            "count": 4,
+            "severity": "medium",
+            "last_occurrence": "2024-12-17T15:45:00"
+        },
+        "queue_length": {
+            "count": 0,
+            "severity": "low",
+            "last_occurrence": null
+        },
+        "person_count": {
+            "current": 5,
+            "severity": "low",
+            "peak_today": 12
+        }
+    }
+}

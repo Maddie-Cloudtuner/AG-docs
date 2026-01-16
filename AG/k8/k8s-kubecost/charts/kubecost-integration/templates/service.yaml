@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kubecost-integration.fullname" . }}-extractor
+  labels:
+    {{- include "kubecost-integration.labels" . | nindent 4 }}
+    app.kubernetes.io/component: extractor
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: {{ .Values.extractor.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kubecost-integration.fullname" . }}-aggregator
+  labels:
+    {{- include "kubecost-integration.labels" . | nindent 4 }}
+    app.kubernetes.io/component: aggregator
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: {{ .Values.costAggregator.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

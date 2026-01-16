@@ -1,0 +1,26 @@
+{{- if .Values.allocationExporter.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.allocationExporter.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.allocationExporter.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/component: allocation-exporter
+    app.kubernetes.io/part-of: kubecost-integration
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "{{ .Values.allocationExporter.port }}"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.allocationExporter.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    app.kubernetes.io/name: {{ .Values.allocationExporter.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

@@ -1,0 +1,32 @@
+# %YAML:1.0
+
+misc:
+  bbox-padding-scale: 0.2
+
+ll-config:
+  # NvDCF specific config
+  min-detector-confidence: 0.2
+  min-tracker-confidence: 0.4    # Lowered slightly to keep IDs alive during skipped frames
+  min-tracking-match-score: 0.7  # Loosened slightly for smoother tracking
+  
+  # CRITICAL PERFORMANCE FIX:
+  # Set this to 0. Visual tracking consumes ~20% of your GPU. 
+  # For counting people/fire, Spatial (Motion) tracking is usually enough.
+  use-color: 1                   
+
+  # Motion model options
+  # CRITICAL LOGIC FIX:
+  # If PGIE Interval is 4, this MUST be >= 5. 
+  # It tells the tracker: "Trust your prediction for 6 frames before deleting the object."
+  prediction-duration: 20         
+  
+  shadow-tracking-age: 2         
+
+  # Dynamics
+  max-shadow-tracking-age: 20    # Increased to handle longer gaps
+  probation-age: 2               # Lowered to 2 so objects are "confirmed" faster
+  early-termination-age: 1       
+
+  # Resolution
+  tracker-width: 1920
+  tracker-height: 1080

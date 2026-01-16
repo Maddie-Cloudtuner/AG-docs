@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 248, 250, 252;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background-color: #0F172A;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-surface/50 backdrop-blur-lg border border-border hover:border-primary/30 transition-all duration-300;
+  }
+
+  .section-padding {
+    @apply py-20 md:py-32;
+  }
+}

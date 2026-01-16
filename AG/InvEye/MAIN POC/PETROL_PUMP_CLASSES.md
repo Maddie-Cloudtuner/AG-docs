@@ -1,0 +1,47 @@
+names:
+  0: person
+  1: car
+  2: motorcycle
+  3: heavy_vehicle
+  4: fire
+  5: smoke
+  6: cigarette
+  7: violence
+  8: nozzle
+  9: testing_jar
+  10: du_cover_open
+  11: manhole_open
+  12: air_pump
+  13: uniform
+  14: helmet
+  15: plastic_item
+  16: garbage
+  17: cell_phone
+
+
+Missing Objects 
+
+
+names:
+  18: auto_rickshaw
+  19: bus
+  20: fuel_dispenser
+  21: pump_island
+  22: canopy
+  23: tank_cover
+  24: fire_extinguisher
+  25: safety_cone
+  26: spill_kit
+  27: hose
+  28: receipt_printer
+  29: oil_spill
+  30: jerry_can
+  31: bucket
+  32: license_plate
+  33: open_fuel_tank
+  34: debris
+  35: stickers_on_du
+
+   
+
+

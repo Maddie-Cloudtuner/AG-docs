@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RO001 - Petrol Pump Analytics | Roboi</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo">R</div>
+                <span class="brand-name">Roboi</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="compliance">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <span>Compliance</span>
+                </a>
+                <a href="#" class="nav-item" data-page="safety">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                    </svg>
+                    <span>Safety</span>
+                </a>
+                <a href="#" class="nav-item" data-page="vehicles">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
+                    </svg>
+                    <span>Vehicles</span>
+                </a>
+                <a href="#" class="nav-item" data-page="staff">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                    </svg>
+                    <span>Staff</span>
+                </a>
+                <a href="#" class="nav-item" data-page="cameras">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
+                    </svg>
+                    <span>Cameras</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">SM</div>
+                    <div class="user-details">
+                        <span class="user-name">Station Manager</span>
+                        <span class="user-role">RO001</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-title">
+                    <h1>Station RO001</h1>
+                    <div class="station-meta">
+                        <span class="status-dot online"></span>
+                        <span>All systems operational</span>
+                        <span class="separator">•</span>
+                        <span>5 cameras active</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="date-selector">
+                        <span>Today</span>
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M7 10l5 5 5-5z" />
+                        </svg>
+                    </div>
+                    <button class="btn-refresh" id="refreshBtn">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Content Area -->
+            <div class="content-area">
+                <!-- Metrics Overview -->
+                <section class="metrics-row">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Today's Revenue</span>
+                            <span class="metric-trend up">+12.5%</span>
+                        </div>
+                        <div class="metric-value">₹2,34,500</div>
+                        <div class="metric-comparison">vs ₹2,08,400 yesterday</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Vehicles Served</span>
+                            <span class="metric-trend up">+8%</span>
+                        </div>
+                        <div class="metric-value">156</div>
+                        <div class="metric-comparison">128 fueled • 28 air/water only</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Compliance Score</span>
+                            <span class="metric-badge good">Good</span>
+                        </div>
+                        <div class="metric-value">8.2<span class="metric-unit">/10</span></div>
+                        <div class="metric-comparison">Target: 9.0 • Gap: 0.8 points</div>
+                    </div>
+                    <div class="metric-card alert">
+                        <div class="metric-header">
+                            <span class="metric-label">Open Issues</span>
+                            <span class="metric-badge warning">Action Needed</span>
+                        </div>
+                        <div class="metric-value">3</div>
+                        <div class="metric-comparison">1 safety • 2 compliance</div>
+                    </div>
+                </section>
+
+                <!-- Main Grid -->
+                <div class="grid-container">
+                    <!-- Left Column -->
+                    <div class="grid-column left">
+                        <!-- Real-time Operations -->
+                        <section class="card operations-card">
+                            <div class="card-header">
+                                <h3>Live Operations</h3>
+                                <span class="live-indicator">● LIVE</span>
+                            </div>
+                            <div class="pump-grid">
+                                <div class="pump-item active">
+                                    <div class="pump-number">1</div>
+                                    <div class="pump-details">
+                                        <span class="pump-status">Fueling</span>
+                                        <span class="pump-vehicle">White Swift • GJ05AB7890</span>
+                                        <span class="pump-staff">Ramesh Kumar</span>
+                                    </div>
+                                    <div class="pump-timer" data-pump="1">02:34</div>
+                                </div>
+                                <div class="pump-item active">
+                                    <div class="pump-number">2</div>
+                                    <div class="pump-details">
+                                        <span class="pump-status">Fueling</span>
+                                        <span class="pump-vehicle">Red Activa • GJ01XX1234</span>
+                                        <span class="pump-staff">Suresh Patel</span>
+                                    </div>
+                                    <div class="pump-timer" data-pump="2">01:12</div>
+                                </div>
+                                <div class="pump-item idle">
+                                    <div class="pump-number">3</div>
+                                    <div class="pump-details">
+                                        <span class="pump-status">Available</span>
+                                        <span class="pump-info">Last used 4 min ago</span>
+                                    </div>
+                                </div>
+                                <div class="pump-item queued">
+                                    <div class="pump-number">4</div>
+                                    <div class="pump-details">
+                                        <span class="pump-status">1 vehicle waiting</span>
+                                        <span class="pump-vehicle">Blue Tata LPT • MH12CD5678</span>
+                                    </div>
+                                    <div class="pump-wait">~3 min wait</div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span>Avg. service time: 3.2 min</span>
+                                <span>Peak hour: 12:00 - 1:00 PM</span>
+                            </div>
+                        </section>
+
+                        <!-- Staff Performance -->
+                        <section class="card staff-card">
+                            <div class="card-header">
+                                <h3>Staff on Duty</h3>
+                                <span class="shift-info">Morning Shift • 6 AM - 2 PM</span>
+                            </div>
+                            <div class="staff-list">
+                                <div class="staff-item" data-staff-id="STF001">
+                                    <div class="staff-avatar">RK</div>
+                                    <div class="staff-info">
+                                        <span class="staff-name">Ramesh Kumar</span>
+                                        <span class="staff-role">Pump Operator</span>
+                                    </div>
+                                    <div class="staff-metrics">
+                                        <span class="staff-served">32 served</span>
+                                        <div class="staff-compliance ok">
+                                            <span>Uniform ✓</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="staff-item" data-staff-id="STF002">
+                                    <div class="staff-avatar">SP</div>
+                                    <div class="staff-info">
+                                        <span class="staff-name">Suresh Patel</span>
+                                        <span class="staff-role">Pump Operator</span>
+                                    </div>
+                                    <div class="staff-metrics">
+                                        <span class="staff-served">28 served</span>
+                                        <div class="staff-compliance warning">
+                                            <span>Missing cap</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="staff-item" data-staff-id="STF003">
+                                    <div class="staff-avatar">AJ</div>
+                                    <div class="staff-info">
+                                        <span class="staff-name">Amit Joshi</span>
+                                        <span class="staff-role">FSM (Manager)</span>
+                                    </div>
+                                    <div class="staff-metrics">
+                                        <span class="staff-location">Office</span>
+                                        <div class="staff-compliance ok">
+                                            <span>On duty</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="staff-summary">
+                                <div class="summary-item">
+                                    <span class="summary-value">78%</span>
+                                    <span class="summary-label">Greeting rate</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-value">62%</span>
+                                    <span class="summary-label">Zero display</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-value">18/22</span>
+                                    <span class="summary-label">5L tests done</span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="grid-column right">
+                        <!-- Safety & Compliance -->
+                        <section class="card safety-card">
+                            <div class="card-header">
+                                <h3>Safety & Compliance</h3>
+                                <span class="last-check">Last AI scan: 2 min ago</span>
+                            </div>
+                            <div class="safety-grid">
+                                <div class="safety-item ok">
+                                    <div class="safety-icon">🔥</div>
+                                    <div class="safety-info">
+                                        <span class="safety-label">Fire/Smoke</span>
+                                        <span class="safety-status">Clear</span>
+                                    </div>
+                                </div>
+                                <div class="safety-item ok">
+                                    <div class="safety-icon">🚬</div>
+                                    <div class="safety-info">
+                                        <span class="safety-label">Smoking</span>
+                                        <span class="safety-status">None detected</span>
+                                    </div>
+                                </div>
+                                <div class="safety-item ok">
+                                    <div class="safety-icon">⛽</div>
+                                    <div class="safety-info">
+                                        <span class="safety-label">DU Covers</span>
+                                        <span class="safety-status">All closed</span>
+                                    </div>
+                                </div>
+                                <div class="safety-item warning">
+                                    <div class="safety-icon">📱</div>
+                                    <div class="safety-info">
+                                        <span class="safety-label">Mobile Usage</span>
+                                        <span class="safety-status">3 incidents today</span>
+                                    </div>
+                                </div>
+                                <div class="safety-item ok">
+                                    <div class="safety-icon">🕳️</div>
+                                    <div class="safety-info">
+                                        <span class="safety-label">Manholes</span>
+                                        <span class="safety-status">All covered</span>
+                                    </div>
+                                </div>
+                                <div class="safety-item ok">
+                                    <div class="safety-icon">🧹</div>
+                                    <div class="safety-info">
+                                        <span class="safety-label">Cleanliness</span>
+                                        <span class="safety-status">Good (5/5)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Issues Requiring Attention -->
+                        <section class="card issues-card">
+                            <div class="card-header">
+                                <h3>Action Items</h3>
+                                <span class="issues-count">3 open</span>
+                            </div>
+                            <div class="issues-list">
+                                <div class="issue-item high" data-event-id="evt-001">
+                                    <div class="issue-priority">!</div>
+                                    <div class="issue-content">
+                                        <span class="issue-title">Mobile phone usage at pump</span>
+                                        <span class="issue-desc">Customer using phone while refueling at Pump 1</span>
+                                        <span class="issue-time">Detected 2 min ago • Pump 1 Camera</span>
+                                    </div>
+                                    <button class="issue-action">Resolve</button>
+                                </div>
+                                <div class="issue-item medium" data-event-id="evt-002">
+                                    <div class="issue-priority">●</div>
+                                    <div class="issue-content">
+                                        <span class="issue-title">Uniform violation</span>
+                                        <span class="issue-desc">Suresh Patel not wearing cap at Pump 2</span>
+                                        <span class="issue-time">Detected 15 min ago • Pump 2 Camera</span>
+                                    </div>
+                                    <button class="issue-action">View</button>
+                                </div>
+                                <div class="issue-item low" data-event-id="evt-003">
+                                    <div class="issue-priority">○</div>
+                                    <div class="issue-content">
+                                        <span class="issue-title">Zero display compliance low</span>
+                                        <span class="issue-desc">Only 62% of transactions showing zero - below 80%
+                                            target</span>
+                                        <span class="issue-time">Today's trend analysis</span>
+                                    </div>
+                                    <button class="issue-action">Details</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Recent Transactions -->
+                        <section class="card transactions-card">
+                            <div class="card-header">
+                                <h3>Recent Vehicles</h3>
+                                <a href="#" class="view-all" data-page="vehicles">View all →</a>
+                            </div>
+                            <div class="transactions-list">
+                                <div class="transaction-item" data-plate="GJ05AB7890">
+                                    <div class="transaction-plate">GJ05AB7890</div>
+                                    <div class="transaction-details">
+                                        <span>White Maruti Swift</span>
+                                        <span>Pump 1 • 42.5L Petrol</span>
+                                    </div>
+                                    <div class="transaction-time">2 min ago</div>
+                                </div>
+                                <div class="transaction-item" data-plate="GJ01XX1234">
+                                    <div class="transaction-plate">GJ01XX1234</div>
+                                    <div class="transaction-details">
+                                        <span>Red Honda Activa</span>
+                                        <span>Pump 2 • 5.2L Petrol</span>
+                                    </div>
+                                    <div class="transaction-time">8 min ago</div>
+                                </div>
+                                <div class="transaction-item" data-plate="MH12CD5678">
+                                    <div class="transaction-plate">MH12CD5678</div>
+                                    <div class="transaction-details">
+                                        <span>Blue Tata LPT Truck</span>
+                                        <span>Pump 3 • 120L Diesel</span>
+                                    </div>
+                                    <div class="transaction-time">15 min ago</div>
+                                </div>
+                                <div class="transaction-item" data-plate="GJ18WX9999">
+                                    <div class="transaction-plate">GJ18WX9999</div>
+                                    <div class="transaction-details">
+                                        <span>Silver Hyundai Creta</span>
+                                        <span>Pump 1 • 35L Petrol</span>
+                                    </div>
+                                    <div class="transaction-time">22 min ago</div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span>Plate recognition: 94% accurate today</span>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>
